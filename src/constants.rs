@@ -1,3 +1,3 @@
-use bevy::math::Vec3;
+use bevy::math::Vec2;
 
-pub const WINDOW_SIZE: Vec3 = Vec3::new(1024., 768., 0.);
+pub const WINDOW_SIZE: Vec2 = Vec2::new(1024., 768.);

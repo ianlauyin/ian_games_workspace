@@ -25,7 +25,7 @@ fn setup_background(mut commands: Commands, asset_handles: Res<AssetHandles>) {
     commands.spawn(SpriteBundle {
         sprite: Sprite {
             color: Color::srgb(0.05, 0., 0.05),
-            custom_size: Some(WINDOW_SIZE.truncate()),
+            custom_size: Some(WINDOW_SIZE),
             ..default()
         },
         ..default()
@@ -47,16 +47,15 @@ fn setup_background(mut commands: Commands, asset_handles: Res<AssetHandles>) {
 fn blinking_star(mut background_query: Query<(&mut Background, &mut Sprite)>) {
     let (mut background, mut sprite) = background_query.get_single_mut().unwrap();
     let alpha = sprite.color.alpha();
-    println!("{alpha}");
     if alpha >= 0.5 {
         background.appearing = false;
-    } else if alpha <= 0.1 {
+    } else if alpha <= 0.01 {
         background.appearing = true;
     }
     let new_alpha = if background.appearing {
         alpha + 0.005
     } else {
-        alpha - 0.001
+        alpha - 0.003
     };
     sprite.color.set_alpha(new_alpha)
 }

@@ -11,7 +11,7 @@ impl Plugin for SetupPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
-                resolution: WindowResolution::from(WINDOW_SIZE.truncate()),
+                resolution: WindowResolution::from(WINDOW_SIZE),
                 ..default()
             }),
             ..default()
