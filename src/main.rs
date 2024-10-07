@@ -7,11 +7,16 @@ use ui::BackgroundPlugin;
 
 mod asset_loader;
 mod constants;
+mod game;
 mod setup;
 mod states;
 mod ui;
 
 fn main() {
-    let custom_plugins = (AssetPlugin, SetupPlugin, BackgroundPlugin);
-    App::new().add_plugins(custom_plugins).run();
+    let ui_plugins = (AssetPlugin, SetupPlugin, BackgroundPlugin);
+    let game_plugins = (game::VelocityPlugin, game::HealthPlugin);
+    App::new()
+        .add_plugins(ui_plugins)
+        .add_plugins(game_plugins)
+        .run();
 }
