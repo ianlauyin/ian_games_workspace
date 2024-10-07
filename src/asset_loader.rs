@@ -5,10 +5,10 @@ use crate::states::AppState;
 
 #[derive(Resource, Default)]
 pub struct AssetHandles {
-    explosion: Handle<Image>,
-    player: Handle<Image>,
-    stars: Handle<Image>,
-    ufo: Handle<Image>,
+    pub explosion: Handle<Image>,
+    pub player: Handle<Image>,
+    pub stars: Handle<Image>,
+    pub ufo: Handle<Image>,
 }
 
 pub struct AssetPlugin;
@@ -20,13 +20,13 @@ impl Plugin for AssetPlugin {
     }
 }
 
-fn load_assets(mut commands: Commands, asset_server: AssetServer) {
+fn load_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetHandles {
         explosion: asset_server.load("explosion.png"),
         player: asset_server.load("player.png"),
         stars: asset_server.load("stars.png"),
         ufo: asset_server.load("ufo.png"),
-    })
+    });
 }
 
 fn check_assets(
