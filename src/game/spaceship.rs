@@ -56,40 +56,31 @@ fn check_spaceship_position(
     }
 }
 
+enum ControlKey {
+    None,
+    Right,
+    Left,
+}
+
 fn check_spaceship_interaction(
     keys: Res<ButtonInput<KeyCode>>,
     mut spaceship_query: Query<(&mut Velocity, &mut Transform), With<Spaceship>>,
 ) {
     let (velocity, transform) = spaceship_query.get_single_mut().unwrap();
-    let move_right = if keys.pressed(KeyCode::ArrowRight) {
-        Some(true)
+    let control_key = if keys.pressed(KeyCode::ArrowRight) {
+        ControlKey::Right
     } else if keys.pressed(KeyCode::ArrowLeft) {
-        Some(false)
+        ControlKey::Left
     } else {
-        None
+        ControlKey::None
     };
-    handle_spaceship_movement(velocity, transform, move_right);
+    handle_spaceship_movement(velocity, control_key);
 }
 
-const SPACESHIP_ROTATE_AXIS: Vec3 = Vec3::new(1., 1., -0.5);
-
-fn handle_spaceship_movement(
-    mut velocity: Mut<Velocity>,
-    mut transform: Mut<Transform>,
-    move_right: Option<bool>,
-) {
-    let (new_velocity, new_rotation): (f32, Quat) = {
-        match move_right {
-            None => (0., default()),
-            Some(move_right) => {
-                if move_right {
-                    (5., Quat::from_axis_angle(SPACESHIP_ROTATE_AXIS, 0.4))
-                } else {
-                    (-5., Quat::from_axis_angle(SPACESHIP_ROTATE_AXIS, -0.4))
-                }
-            }
-        }
-    };
-    velocity.x = new_velocity;
-    transform.rotation = new_rotation
+fn handle_spaceship_movement(mut velocity: Mut<Velocity>, control_key: ControlKey) {
+    match control_key {
+        ControlKey::Left => velocity.x = -5.,
+        ControlKey::Right => velocity.x = 5.,
+        ControlKey::None => velocity.x = 0.,
+    }
 }

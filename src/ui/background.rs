@@ -53,15 +53,15 @@ fn setup_background(mut commands: Commands, asset_handles: Res<AssetHandles>) {
 fn blinking_star(mut background_query: Query<(&mut Background, &mut Sprite)>) {
     let (mut background, mut sprite) = background_query.get_single_mut().unwrap();
     let alpha = sprite.color.alpha();
-    if alpha >= 0.5 {
+    if alpha >= 0.1 {
         background.appearing = false;
-    } else if alpha <= 0.01 {
+    } else if alpha <= 0.001 {
         background.appearing = true;
     }
     let new_alpha = if background.appearing {
-        alpha + 0.005
+        alpha + 0.001
     } else {
-        alpha - 0.003
+        alpha - 0.001
     };
     sprite.color.set_alpha(new_alpha)
 }
