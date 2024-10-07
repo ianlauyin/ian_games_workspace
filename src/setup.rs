@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
 use crate::constants::WINDOW_SIZE;
-use crate::states::AppState;
+use crate::states::{AppState, GameState};
 
 pub struct SetupPlugin;
 
@@ -17,6 +17,7 @@ impl Plugin for SetupPlugin {
             ..default()
         }))
         .init_state::<AppState>()
+        .init_state::<GameState>()
         .add_systems(Startup, setup_camera);
     }
 }
