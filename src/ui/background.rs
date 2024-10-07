@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::AssetHandles;
 use crate::constants::WINDOW_SIZE;
 use crate::states::AppState;
+use crate::ui::ZIndexMap;
 
 pub struct BackgroundPlugin;
 
@@ -28,6 +29,7 @@ fn setup_background(mut commands: Commands, asset_handles: Res<AssetHandles>) {
             custom_size: Some(WINDOW_SIZE),
             ..default()
         },
+        transform: Transform::from_xyz(0., 0., ZIndexMap::Background.value()),
         ..default()
     });
     commands.spawn((
@@ -38,7 +40,11 @@ fn setup_background(mut commands: Commands, asset_handles: Res<AssetHandles>) {
                 color: Color::default().with_alpha(0.01),
                 ..default()
             },
-            transform: Transform::from_scale(Vec3::splat(1.5)),
+            transform: Transform {
+                scale: Vec3::splat(1.5),
+                translation: Vec3::new(0., 0., ZIndexMap::Stars.value()),
+                ..default()
+            },
             ..default()
         },
     ));

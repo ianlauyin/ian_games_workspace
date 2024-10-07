@@ -3,8 +3,8 @@ use bevy::prelude::*;
 
 #[derive(Component)]
 pub struct Velocity {
-    x: f32,
-    y: f32,
+    pub x: f32,
+    pub y: f32,
 }
 
 pub struct VelocityPlugin;

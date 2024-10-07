@@ -4,13 +4,8 @@ use bevy::prelude::*;
 use crate::states::AppState;
 
 const INITIAL_HEALTH: u8 = 5;
-#[derive(Component)]
-pub struct Health(u8);
 
 pub struct HealthPlugin;
-
-#[derive(Event)]
-pub struct HealthReduceEvent;
 
 impl Plugin for HealthPlugin {
     fn build(&self, app: &mut App) {
@@ -19,6 +14,12 @@ impl Plugin for HealthPlugin {
             .add_systems(Update, reduce_health.run_if(in_state(AppState::InPlay)));
     }
 }
+
+#[derive(Event)]
+pub struct HealthReduceEvent;
+
+#[derive(Component)]
+struct Health(u8);
 
 fn reset_health(mut commands: Commands, mut health_query: Query<&mut Health>) {
     if health_query.is_empty() {
@@ -34,7 +35,7 @@ fn reduce_health(
     mut health_query: Query<&mut Health>,
 ) {
     for _ in health_reduce_event.read() {
-        let health = health_query.get_single_mut().unwrap();
+        let mut health = health_query.get_single_mut().unwrap();
         health.0 -= 1;
     }
 }

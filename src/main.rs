@@ -14,7 +14,13 @@ mod ui;
 
 fn main() {
     let ui_plugins = (AssetPlugin, SetupPlugin, BackgroundPlugin);
-    let game_plugins = (game::VelocityPlugin, game::HealthPlugin);
+
+    let game_plugins = (
+        game::VelocityPlugin,
+        game::HealthPlugin,
+        game::SpaceshipPlugin,
+    );
+
     App::new()
         .add_plugins(ui_plugins)
         .add_plugins(game_plugins)
