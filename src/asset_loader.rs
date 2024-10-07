@@ -6,7 +6,7 @@ use crate::states::AppState;
 #[derive(Resource, Default)]
 pub struct AssetHandles {
     pub explosion: Handle<Image>,
-    pub player: Handle<Image>,
+    pub spaceship: Handle<Image>,
     pub stars: Handle<Image>,
     pub ufo: Handle<Image>,
 }
@@ -23,7 +23,7 @@ impl Plugin for AssetPlugin {
 fn load_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetHandles {
         explosion: asset_server.load("explosion.png"),
-        player: asset_server.load("player.png"),
+        spaceship: asset_server.load("spaceship.png"),
         stars: asset_server.load("stars.png"),
         ufo: asset_server.load("ufo.png"),
     });
@@ -38,7 +38,7 @@ fn check_assets(
         asset_handles.explosion.id(),
         asset_handles.stars.id(),
         asset_handles.ufo.id(),
-        asset_handles.player.id(),
+        asset_handles.spaceship.id(),
     ];
     for asset_id in asset_ids {
         if !asset_is_loaded(asset_id, &asset_server) {
