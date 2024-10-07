@@ -45,7 +45,7 @@ fn check_assets(
             return;
         }
     }
-    next_state.set(AppState::MainMenu);
+    next_state.set(AppState::InPlay);
 }
 
 fn asset_is_loaded(id: AssetId<Image>, asset_server: &Res<AssetServer>) -> bool {
