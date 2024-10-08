@@ -16,15 +16,11 @@ impl Plugin for SpaceshipPlugin {
         app.add_systems(OnEnter(AppState::InPlay), setup_spaceship)
             .add_systems(
                 Update,
-                check_spaceship_position
-                    .run_if(in_state(GameState::Ready))
-                    .run_if(in_state(AppState::InPlay)),
+                check_spaceship_position.run_if(in_state(GameState::Ready)),
             )
             .add_systems(
                 Update,
-                check_spaceship_interaction
-                    .run_if(in_state(GameState::InPlay))
-                    .run_if(in_state(AppState::InPlay)),
+                check_spaceship_interaction.run_if(in_state(GameState::InPlay)),
             );
     }
 }

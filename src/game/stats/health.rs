@@ -1,7 +1,7 @@
 use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 
-use crate::states::AppState;
+use crate::states::{AppState, GameState};
 
 const INITIAL_HEALTH: u8 = 5;
 
@@ -11,7 +11,7 @@ impl Plugin for HealthPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::MainMenu), reset_health)
             .add_event::<HealthReduceEvent>()
-            .add_systems(Update, reduce_health.run_if(in_state(AppState::InPlay)));
+            .add_systems(Update, reduce_health.run_if(in_state(GameState::InPlay)));
     }
 }
 

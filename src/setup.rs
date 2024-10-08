@@ -17,7 +17,7 @@ impl Plugin for SetupPlugin {
             ..default()
         }))
         .init_state::<AppState>()
-        .init_state::<GameState>()
+        .add_sub_state::<GameState>()
         .add_systems(Startup, setup_camera);
     }
 }
