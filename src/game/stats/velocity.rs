@@ -13,10 +13,7 @@ pub struct VelocityPlugin;
 
 impl Plugin for VelocityPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            FixedUpdate,
-            apply_velocity.run_if(in_state(AppState::InPlay)),
-        );
+        app.add_systems(FixedUpdate, apply_velocity.run_if(in_state(AppState::Game)));
     }
 }
 

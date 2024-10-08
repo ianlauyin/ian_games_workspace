@@ -12,7 +12,7 @@ impl Plugin for HealthPlugin {
         app.insert_resource(Health(INITIAL_HEALTH))
             .add_event::<HealthReduceEvent>()
             .add_systems(Update, reduce_health.run_if(in_state(GameState::InPlay)))
-            .add_systems(OnExit(AppState::InPlay), reset_health);
+            .add_systems(OnExit(AppState::Game), reset_health);
     }
 }
 

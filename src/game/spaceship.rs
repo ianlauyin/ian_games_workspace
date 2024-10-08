@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
-use crate::AssetHandles;
 use crate::constants::WINDOW_SIZE;
 use crate::game::Velocity;
+use crate::ImageHandles;
 use crate::states::{AppState, GameState};
 use crate::ui::ZIndexMap;
 
@@ -13,7 +13,7 @@ pub struct SpaceshipPlugin;
 
 impl Plugin for SpaceshipPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(AppState::InPlay), setup_spaceship)
+        app.add_systems(OnEnter(AppState::Game), setup_spaceship)
             .add_systems(
                 Update,
                 check_spaceship_position.run_if(in_state(GameState::Ready)),
@@ -25,7 +25,7 @@ impl Plugin for SpaceshipPlugin {
     }
 }
 
-fn setup_spaceship(mut commands: Commands, asset_handles: Res<AssetHandles>) {
+fn setup_spaceship(mut commands: Commands, asset_handles: Res<ImageHandles>) {
     commands.spawn((
         Spaceship,
         Velocity { x: 0., y: 5. },
