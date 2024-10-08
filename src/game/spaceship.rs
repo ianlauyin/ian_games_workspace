@@ -60,9 +60,9 @@ enum ControlKey {
 
 fn check_spaceship_interaction(
     keys: Res<ButtonInput<KeyCode>>,
-    mut spaceship_query: Query<(&mut Velocity, &mut Transform), With<Spaceship>>,
+    mut spaceship_query: Query<&mut Velocity, With<Spaceship>>,
 ) {
-    let (velocity, transform) = spaceship_query.get_single_mut().unwrap();
+    let velocity = spaceship_query.get_single_mut().unwrap();
     let control_key = if keys.pressed(KeyCode::ArrowRight) {
         ControlKey::Right
     } else if keys.pressed(KeyCode::ArrowLeft) {
