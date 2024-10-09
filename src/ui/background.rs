@@ -72,7 +72,7 @@ fn blinking_stars(mut stars: Mut<Stars>, mut sprite: Mut<Sprite>) {
 
 fn check_stars(
     mut commands: Commands,
-    stars_query: Query<(&Transform), With<Stars>>,
+    stars_query: Query<&Transform, With<Stars>>,
     image_handles: Res<ImageHandles>,
 ) {
     let stars_handle = image_handles.stars.clone();
@@ -87,7 +87,7 @@ fn check_stars(
         spawn_star(&mut commands, stars_handle);
     }
 }
-fn spawn_star(mut commands: &mut Commands, stars_handle: Handle<Image>) {
+fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
     commands.spawn((
         Stars { appearing: true },
         SpriteBundle {
@@ -106,7 +106,7 @@ fn spawn_star(mut commands: &mut Commands, stars_handle: Handle<Image>) {
     ));
 }
 
-fn despawn_star(mut commands: &mut Commands, star: Entity) {
+fn despawn_star(commands: &mut Commands, star: Entity) {
     commands.entity(star).despawn();
 }
 
