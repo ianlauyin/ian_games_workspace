@@ -87,9 +87,7 @@ fn check_stars(
         spawn_star(&mut commands, stars_handle);
     }
 }
-
 fn spawn_star(mut commands: &mut Commands, stars_handle: Handle<Image>) {
-    println!("Hi");
     commands.spawn((
         Stars { appearing: true },
         SpriteBundle {
@@ -109,7 +107,6 @@ fn spawn_star(mut commands: &mut Commands, stars_handle: Handle<Image>) {
 }
 
 fn despawn_star(mut commands: &mut Commands, star: Entity) {
-    println!("Bye");
     commands.entity(star).despawn();
 }
 
