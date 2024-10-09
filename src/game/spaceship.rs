@@ -20,7 +20,7 @@ impl Plugin for SpaceshipPlugin {
             )
             .add_systems(
                 Update,
-                check_spaceship_interaction.run_if(in_state(GameState::InPlay)),
+                handle_spaceship_interaction.run_if(in_state(GameState::InPlay)),
             );
     }
 }
@@ -52,31 +52,19 @@ fn check_spaceship_position(
     }
 }
 
-enum ControlKey {
-    None,
-    Right,
-    Left,
-}
-
-fn check_spaceship_interaction(
+fn handle_spaceship_interaction(
     keys: Res<ButtonInput<KeyCode>>,
-    mut spaceship_query: Query<&mut Velocity, With<Spaceship>>,
+    mut spaceship_query: Query<(&mut Velocity, &Transform), With<Spaceship>>,
 ) {
-    let velocity = spaceship_query.get_single_mut().unwrap();
-    let control_key = if keys.pressed(KeyCode::ArrowRight) {
-        ControlKey::Right
-    } else if keys.pressed(KeyCode::ArrowLeft) {
-        ControlKey::Left
-    } else {
-        ControlKey::None
-    };
-    handle_spaceship_movement(velocity, control_key);
-}
+    let (mut velocity, transform) = spaceship_query.get_single_mut().unwrap();
+    let limit_edge = WINDOW_SIZE.x / 2. - 50.;
 
-fn handle_spaceship_movement(mut velocity: Mut<Velocity>, control_key: ControlKey) {
-    match control_key {
-        ControlKey::Left => velocity.x = -5.,
-        ControlKey::Right => velocity.x = 5.,
-        ControlKey::None => velocity.x = 0.,
-    }
+    velocity.x = match (
+        keys.pressed(KeyCode::ArrowLeft),
+        keys.pressed(KeyCode::ArrowRight),
+    ) {
+        (false, true) if transform.translation.x <= limit_edge => 5.,
+        (true, false) if transform.translation.x >= -limit_edge => -5.,
+        _ => 0.,
+    };
 }
