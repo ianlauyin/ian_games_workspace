@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use rand::{Rng, thread_rng};
 
 use crate::constants::WINDOW_SIZE;
-use crate::game::{HealthReduceEvent, Velocity};
+use crate::game::Velocity;
 use crate::ImageHandles;
 use crate::states::AppState;
 use crate::ui::ZIndexMap;
@@ -83,7 +83,6 @@ fn check_stars_number(
 }
 
 fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
-    commands.trigger(HealthReduceEvent);
     commands.spawn((
         Stars { appearing: true },
         Velocity { x: 0., y: -2. },
