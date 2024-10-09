@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use rand::{Rng, thread_rng};
 
 use crate::constants::WINDOW_SIZE;
+use crate::game::Velocity;
 use crate::ImageHandles;
 use crate::states::AppState;
 use crate::ui::ZIndexMap;
@@ -13,7 +14,8 @@ impl Plugin for BackgroundPlugin {
         app.add_systems(OnExit(AppState::Loading), setup_background)
             .add_systems(
                 FixedUpdate,
-                (check_stars, animate_stars).run_if(in_state(AppState::Game)),
+                (check_stars_number, blinking_stars, cleanup_stars)
+                    .run_if(in_state(AppState::Game)),
             );
     }
 }
@@ -35,42 +37,32 @@ fn setup_background(mut commands: Commands) {
     });
 }
 
-fn animate_stars(
-    mut commands: Commands,
-    mut stars_query: Query<(Entity, &mut Stars, &mut Sprite, &mut Transform)>,
-) {
-    for (entity, stars, sprite, transform) in stars_query.iter_mut() {
-        if transform.translation.y <= -WINDOW_SIZE.y {
-            despawn_star(&mut commands, entity);
-            continue;
+fn blinking_stars(mut stars_query: Query<(&mut Stars, &mut Sprite)>) {
+    for (mut stars, mut sprite) in stars_query.iter_mut() {
+        let alpha = sprite.color.alpha();
+        if alpha >= 0.1 {
+            stars.appearing = false;
+        } else if alpha <= 0.001 {
+            stars.appearing = true;
         }
-        moving_stars(transform);
-        blinking_stars(stars, sprite);
+        let new_alpha = if stars.appearing {
+            alpha + 0.001
+        } else {
+            alpha - 0.001
+        };
+        sprite.color.set_alpha(new_alpha)
     }
 }
 
-fn moving_stars(mut transform: Mut<Transform>) {
-    let translation = transform.translation;
-    let new_translation = translation.with_y(translation.y - 3.);
-    transform.translation = new_translation;
-}
-
-fn blinking_stars(mut stars: Mut<Stars>, mut sprite: Mut<Sprite>) {
-    let alpha = sprite.color.alpha();
-    if alpha >= 0.1 {
-        stars.appearing = false;
-    } else if alpha <= 0.001 {
-        stars.appearing = true;
+fn cleanup_stars(mut commands: Commands, stars_query: Query<(Entity, &Transform), With<Stars>>) {
+    for (entity, transform) in stars_query.iter() {
+        if transform.translation.y <= -WINDOW_SIZE.y {
+            commands.entity(entity).despawn();
+        }
     }
-    let new_alpha = if stars.appearing {
-        alpha + 0.001
-    } else {
-        alpha - 0.001
-    };
-    sprite.color.set_alpha(new_alpha)
 }
 
-fn check_stars(
+fn check_stars_number(
     mut commands: Commands,
     stars_query: Query<&Transform, With<Stars>>,
     image_handles: Res<ImageHandles>,
@@ -83,13 +75,17 @@ fn check_stars(
     let Ok(transform) = stars_query.get_single() else {
         return;
     };
-    if star_random_generator(transform.translation.y) {
+    if transform.translation.y < WINDOW_SIZE.y / 2.
+        && star_random_generator(transform.translation.y)
+    {
         spawn_star(&mut commands, stars_handle);
     }
 }
+
 fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
     commands.spawn((
         Stars { appearing: true },
+        Velocity { x: 0., y: -2. },
         SpriteBundle {
             texture: stars_handle,
             sprite: Sprite {
@@ -106,12 +102,8 @@ fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
     ));
 }
 
-fn despawn_star(commands: &mut Commands, star: Entity) {
-    commands.entity(star).despawn();
-}
-
 fn star_random_generator(base_number: f32) -> bool {
-    if base_number < 0. {
+    if base_number < 1. {
         return true;
     }
     let base_integer = base_number as u32;
