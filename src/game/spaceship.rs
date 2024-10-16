@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::constants::WINDOW_SIZE;
+use crate::constants::{LEFT_EDGE, RIGHT_EDGE, WINDOW_SIZE};
 use crate::game::ShootBulletEvent;
 use crate::game::Velocity;
 use crate::ImageHandles;
@@ -27,12 +27,12 @@ impl Plugin for SpaceshipPlugin {
     }
 }
 
-fn setup_spaceship(mut commands: Commands, asset_handles: Res<ImageHandles>) {
+fn setup_spaceship(mut commands: Commands, image_handles: Res<ImageHandles>) {
     commands.spawn((
         Spaceship,
         Velocity { x: 0., y: 5. },
         SpriteBundle {
-            texture: asset_handles.spaceship.clone(),
+            texture: image_handles.spaceship.clone(),
             sprite: Sprite {
                 custom_size: Some(Vec2::new(100., 100.)),
                 ..default()
@@ -59,14 +59,13 @@ fn handle_spaceship_interaction(
     mut spaceship_query: Query<(&mut Velocity, &Transform), With<Spaceship>>,
 ) {
     let (mut velocity, transform) = spaceship_query.get_single_mut().unwrap();
-    let limit_edge = WINDOW_SIZE.x / 2. - 50.;
 
     velocity.x = match (
         keys.pressed(KeyCode::ArrowLeft),
         keys.pressed(KeyCode::ArrowRight),
     ) {
-        (false, true) if transform.translation.x <= limit_edge => 5.,
-        (true, false) if transform.translation.x >= -limit_edge => -5.,
+        (false, true) if transform.translation.x <= RIGHT_EDGE => 10.,
+        (true, false) if transform.translation.x >= LEFT_EDGE => -10.,
         _ => 0.,
     };
 }
@@ -74,7 +73,7 @@ fn handle_spaceship_interaction(
 fn handle_shoot_bullet(
     mut commands: Commands,
     keys: Res<ButtonInput<KeyCode>>,
-    spaceship_query: Query<(&Transform), With<Spaceship>>,
+    spaceship_query: Query<&Transform, With<Spaceship>>,
 ) {
     if keys.just_pressed(KeyCode::Space) {
         let transform = spaceship_query.get_single().unwrap();

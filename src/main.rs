@@ -20,6 +20,7 @@ fn main() {
         game::HealthPlugin,
         game::SpaceshipPlugin,
         game::BulletPlugin,
+        game::UFOPlugin,
     );
 
     App::new()
