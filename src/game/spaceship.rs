@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
 use crate::constants::WINDOW_SIZE;
+use crate::game::ShootBulletEvent;
 use crate::game::Velocity;
 use crate::ImageHandles;
 use crate::states::{AppState, GameState};
@@ -20,7 +21,8 @@ impl Plugin for SpaceshipPlugin {
             )
             .add_systems(
                 Update,
-                handle_spaceship_interaction.run_if(in_state(GameState::InPlay)),
+                (handle_spaceship_interaction, handle_shoot_bullet)
+                    .run_if(in_state(GameState::InPlay)),
             );
     }
 }
@@ -67,4 +69,16 @@ fn handle_spaceship_interaction(
         (true, false) if transform.translation.x >= -limit_edge => -5.,
         _ => 0.,
     };
+}
+
+fn handle_shoot_bullet(
+    mut commands: Commands,
+    keys: Res<ButtonInput<KeyCode>>,
+    spaceship_query: Query<(&Transform), With<Spaceship>>,
+) {
+    if keys.just_pressed(KeyCode::Space) {
+        let transform = spaceship_query.get_single().unwrap();
+        let Vec3 { x, y, .. } = transform.translation;
+        commands.trigger(ShootBulletEvent { x, y })
+    }
 }

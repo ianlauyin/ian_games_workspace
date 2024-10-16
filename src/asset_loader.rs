@@ -1,4 +1,5 @@
 use bevy::asset::LoadState;
+use bevy::color::palettes::css::YELLOW;
 use bevy::prelude::*;
 
 use crate::constants::WINDOW_SIZE;
@@ -12,6 +13,11 @@ pub struct ImageHandles {
     pub stars: Handle<Image>,
 }
 
+#[derive(Resource)]
+pub struct MeshHandles {
+    pub bullet: (Handle<Mesh>, Handle<ColorMaterial>),
+}
+
 pub struct AssetPlugin;
 
 impl Plugin for AssetPlugin {
@@ -20,12 +26,23 @@ impl Plugin for AssetPlugin {
             .add_systems(Update, check_assets.run_if(in_state(AppState::Loading)));
     }
 }
-fn load_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn load_assets(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
     commands.insert_resource(ImageHandles {
         explosion: asset_server.load("explosion.png"),
         spaceship: asset_server.load("spaceship.png"),
         ufo: asset_server.load("ufo.png"),
         stars: asset_server.load("stars.png"),
+    });
+    commands.insert_resource(MeshHandles {
+        bullet: (
+            meshes.add(Rectangle::default()),
+            materials.add(Color::from(YELLOW)),
+        ),
     });
 }
 

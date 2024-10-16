@@ -19,6 +19,7 @@ fn main() {
         game::VelocityPlugin,
         game::HealthPlugin,
         game::SpaceshipPlugin,
+        game::BulletPlugin,
     );
 
     App::new()
