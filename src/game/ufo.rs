@@ -34,7 +34,6 @@ fn check_spawn_ufo(
     let mut rng = thread_rng();
     let ufo_number = ufo_query.iter().len();
     if ufo_number == 0 || rng.gen_range(1..ufo_number * 5) == 1 {
-        println!("{ufo_number}");
         spawn_ufo(&mut commands, image_handles.ufo.clone());
     }
 }

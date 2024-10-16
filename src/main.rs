@@ -22,6 +22,7 @@ fn main() {
         game::UFOPlugin,
         game::ScorePlugin,
         game::CollisionPlugin,
+        game::ExplosionPlugin,
     );
 
     App::new()

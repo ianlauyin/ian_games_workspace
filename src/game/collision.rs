@@ -2,7 +2,7 @@ use bevy::app::App;
 use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
 
-use crate::game::Bullet;
+use crate::game::{Bullet, ExplosionEvent};
 use crate::game::score::AddScoreEvent;
 use crate::game::ufo::UFO;
 use crate::ui::{BULLET_SIZE, UFO_SIZE};
@@ -14,9 +14,6 @@ impl Plugin for CollisionPlugin {
         app.add_systems(Update, check_bullet_ufo);
     }
 }
-
-#[derive(Component)]
-pub struct CollisionObject;
 
 fn check_bullet_ufo(
     mut commands: Commands,
@@ -39,6 +36,10 @@ fn check_bullet_ufo(
                 commands.trigger(AddScoreEvent);
                 commands.entity(bullet_entity).despawn();
                 commands.entity(ufo_entity).despawn();
+                commands.trigger(ExplosionEvent {
+                    x: ufo_transform.translation.x,
+                    y: ufo_transform.translation.y,
+                });
                 return;
             }
         }
