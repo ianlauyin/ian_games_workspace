@@ -24,9 +24,15 @@ fn check_bullet_ufo(
     ufo_queries: Query<(Entity, &Transform), With<UFO>>,
 ) {
     for (bullet_entity, bullet_transform) in bullet_queries.iter() {
-        let bullet_aabb = Aabb2d::new(bullet_transform.translation.truncate(), BULLET_SIZE);
+        let bullet_aabb = Aabb2d::new(
+            bullet_transform.translation.truncate(),
+            Vec2::new(BULLET_SIZE.x / 2., BULLET_SIZE.y / 2.),
+        );
         for (ufo_entity, ufo_transform) in ufo_queries.iter() {
-            let ufo_aabb = Aabb2d::new(ufo_transform.translation.truncate(), UFO_SIZE);
+            let ufo_aabb = Aabb2d::new(
+                ufo_transform.translation.truncate(),
+                Vec2::new(UFO_SIZE.x / 2., BULLET_SIZE.y / 2.),
+            );
             if !bullet_aabb.intersects(&ufo_aabb) {
                 continue;
             } else {
