@@ -21,6 +21,7 @@ fn main() {
         game::SpaceshipPlugin,
         game::BulletPlugin,
         game::UFOPlugin,
+        game::ScorePlugin,
     );
 
     App::new()
