@@ -20,7 +20,7 @@ impl Plugin for SpaceshipPlugin {
                 check_spaceship_position.run_if(in_state(GameState::Ready)),
             )
             .add_systems(
-                Update,
+                FixedUpdate,
                 (handle_spaceship_interaction, handle_shoot_bullet)
                     .run_if(in_state(GameState::InPlay)),
             );

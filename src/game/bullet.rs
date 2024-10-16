@@ -25,7 +25,7 @@ pub struct BulletPlugin;
 
 impl Plugin for BulletPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, check_bullet.run_if(in_state(GameState::InPlay)))
+        app.add_systems(Update, clear_bullet.run_if(in_state(GameState::InPlay)))
             .observe(shoot_bullet);
     }
 }
@@ -82,9 +82,9 @@ fn shoot_bullet(
     ));
 }
 
-fn check_bullet(mut commands: Commands, bullet_queries: Query<(Entity, &Transform), With<Bullet>>) {
+fn clear_bullet(mut commands: Commands, bullet_queries: Query<(Entity, &Transform), With<Bullet>>) {
     for (entity, transform) in bullet_queries.iter() {
-        if transform.translation.y > WINDOW_SIZE.y / 1.1 {
+        if transform.translation.y > WINDOW_SIZE.y / 2. + 50. {
             commands.entity(entity).despawn();
         }
     }
