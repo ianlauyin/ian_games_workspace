@@ -6,7 +6,6 @@ use setup::SetupPlugin;
 use ui::BackgroundPlugin;
 
 mod asset_loader;
-mod constants;
 mod game;
 mod setup;
 mod states;
@@ -22,6 +21,7 @@ fn main() {
         game::BulletPlugin,
         game::UFOPlugin,
         game::ScorePlugin,
+        game::CollisionPlugin,
     );
 
     App::new()

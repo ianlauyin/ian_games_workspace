@@ -1,11 +1,14 @@
 use bevy::prelude::*;
-use bevy::sprite::MaterialMesh2dBundle;
+use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 use crate::asset_loader::MeshHandles;
-use crate::constants::WINDOW_SIZE;
 use crate::game::Velocity;
 use crate::states::GameState;
+use crate::ui::{BULLET_SIZE, WINDOW_SIZE};
 use crate::ui::ZIndexMap;
+
+#[derive(Component)]
+pub struct Bullet;
 
 #[derive(Event)]
 pub struct ShootBulletEvent {
@@ -25,9 +28,6 @@ impl Plugin for BulletPlugin {
     }
 }
 
-#[derive(Component)]
-struct Bullet;
-
 #[derive(Bundle)]
 struct BulletBundle {
     bullet: Bullet,
@@ -39,18 +39,18 @@ impl BulletBundle {
     fn new(
         x: f32,
         y: f32,
-        mesh_handle: Handle<Mesh>,
+        mesh_handle: Mesh2dHandle,
         material_handle: Handle<ColorMaterial>,
     ) -> Self {
         Self {
             bullet: Bullet,
             velocity: Velocity { x: 0., y: 10. },
             mesh_bundle: MaterialMesh2dBundle {
-                mesh: mesh_handle.into(),
+                mesh: mesh_handle,
                 material: material_handle,
                 transform: Transform {
                     translation: Vec3::new(x, y, ZIndexMap::Bullet.value()),
-                    scale: Vec3::new(5., 5., 0.),
+                    scale: BULLET_SIZE.extend(1.),
                     ..default()
                 },
                 ..default()
@@ -69,13 +69,13 @@ fn shoot_bullet(
     commands.spawn(BulletBundle::new(
         x.clone() - 20.,
         y.clone(),
-        mesh.clone(),
+        mesh.clone().into(),
         material.clone(),
     ));
     commands.spawn(BulletBundle::new(
         x.clone() + 20.,
         y.clone(),
-        mesh,
+        mesh.into(),
         material,
     ));
 }

@@ -1,14 +1,14 @@
 use bevy::prelude::*;
 use rand::{Rng, thread_rng};
 
-use crate::constants::{LEFT_EDGE, RIGHT_EDGE, WINDOW_SIZE};
 use crate::game::Velocity;
 use crate::ImageHandles;
 use crate::states::GameState;
+use crate::ui::{LEFT_EDGE, RIGHT_EDGE, UFO_SIZE, WINDOW_SIZE};
 use crate::ui::ZIndexMap;
 
 #[derive(Component)]
-struct UFO;
+pub struct UFO;
 
 pub struct UFOPlugin;
 
@@ -32,7 +32,7 @@ fn check_spawn_ufo(
             SpriteBundle {
                 texture: image_handles.ufo.clone(),
                 sprite: Sprite {
-                    custom_size: Some(Vec2::new(80., 54.)),
+                    custom_size: Some(UFO_SIZE),
                     ..default()
                 },
                 transform: Transform::from_xyz(x, WINDOW_SIZE.y / 1.1, ZIndexMap::UFO.value()),

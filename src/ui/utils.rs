@@ -1,6 +1,7 @@
 pub enum ZIndexMap {
     Background,
     Stars,
+    Explosion,
     SpaceShip,
     UFO,
     Bullet,
@@ -11,7 +12,8 @@ impl ZIndexMap {
         match self {
             ZIndexMap::Background => 0.,
             ZIndexMap::Stars => 1.,
-            ZIndexMap::SpaceShip | ZIndexMap::UFO | ZIndexMap::Bullet => 2.,
+            ZIndexMap::Explosion => 2.,
+            ZIndexMap::SpaceShip | ZIndexMap::UFO | ZIndexMap::Bullet => 3.,
         }
     }
 }

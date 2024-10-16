@@ -2,8 +2,8 @@ use bevy::asset::LoadState;
 use bevy::color::palettes::css::YELLOW;
 use bevy::prelude::*;
 
-use crate::constants::WINDOW_SIZE;
 use crate::states::AppState;
+use crate::ui::WINDOW_SIZE;
 
 #[derive(Resource)]
 pub struct ImageHandles {

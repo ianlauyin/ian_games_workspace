@@ -2,8 +2,8 @@ use bevy::app::{App, Startup};
 use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
-use crate::constants::WINDOW_SIZE;
 use crate::states::{AppState, GameState};
+use crate::ui::WINDOW_SIZE;
 
 pub struct SetupPlugin;
 

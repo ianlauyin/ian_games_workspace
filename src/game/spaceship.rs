@@ -1,10 +1,10 @@
 use bevy::prelude::*;
 
-use crate::constants::{LEFT_EDGE, RIGHT_EDGE, WINDOW_SIZE};
 use crate::game::ShootBulletEvent;
 use crate::game::Velocity;
 use crate::ImageHandles;
 use crate::states::{AppState, GameState};
+use crate::ui::{LEFT_EDGE, RIGHT_EDGE, SPACESHIP_SIZE, WINDOW_SIZE};
 use crate::ui::ZIndexMap;
 
 #[derive(Component)]
@@ -34,7 +34,7 @@ fn setup_spaceship(mut commands: Commands, image_handles: Res<ImageHandles>) {
         SpriteBundle {
             texture: image_handles.spaceship.clone(),
             sprite: Sprite {
-                custom_size: Some(Vec2::new(100., 100.)),
+                custom_size: Some(SPACESHIP_SIZE),
                 ..default()
             },
             transform: Transform::from_xyz(0., -WINDOW_SIZE.y / 1.5, ZIndexMap::SpaceShip.value()),
