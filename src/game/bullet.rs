@@ -17,7 +17,9 @@ pub struct ShootBulletEvent {
 }
 
 #[derive(Event)]
-pub struct RemoveBulletEvent;
+pub struct RemoveBulletEvent {
+    pub(crate) bullet: Entity,
+}
 
 pub struct BulletPlugin;
 
@@ -82,7 +84,7 @@ fn shoot_bullet(
 
 fn check_bullet(mut commands: Commands, bullet_queries: Query<(Entity, &Transform), With<Bullet>>) {
     for (entity, transform) in bullet_queries.iter() {
-        if transform.translation.y > WINDOW_SIZE.y / 2. {
+        if transform.translation.y > WINDOW_SIZE.y / 1.1 {
             commands.entity(entity).despawn();
         }
     }

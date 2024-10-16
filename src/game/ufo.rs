@@ -10,11 +10,19 @@ use crate::ui::ZIndexMap;
 #[derive(Component)]
 pub struct UFO;
 
+#[derive(Event)]
+pub struct RemoveUFOEvent {
+    pub(crate) ufo: Entity,
+}
+
 pub struct UFOPlugin;
 
 impl Plugin for UFOPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, check_spawn_ufo.run_if(in_state(GameState::InPlay)));
+        app.add_systems(
+            FixedUpdate,
+            (check_spawn_ufo, check_despawn_ufo).run_if(in_state(GameState::InPlay)),
+        );
     }
 }
 
@@ -35,9 +43,17 @@ fn check_spawn_ufo(
                     custom_size: Some(UFO_SIZE),
                     ..default()
                 },
-                transform: Transform::from_xyz(x, WINDOW_SIZE.y / 1.1, ZIndexMap::UFO.value()),
+                transform: Transform::from_xyz(x, WINDOW_SIZE.y, ZIndexMap::UFO.value()),
                 ..default()
             },
         ));
+    }
+}
+
+fn check_despawn_ufo(mut commands: Commands, ufo_queries: Query<(Entity, &Transform), With<UFO>>) {
+    for (entity, transform) in ufo_queries.iter() {
+        if transform.translation.y < -WINDOW_SIZE.y / 1.1 {
+            commands.entity(entity).despawn();
+        }
     }
 }

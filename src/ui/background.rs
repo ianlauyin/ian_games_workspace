@@ -13,7 +13,7 @@ impl Plugin for BackgroundPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnExit(AppState::Loading), setup_background)
             .add_systems(
-                FixedUpdate,
+                Update,
                 (check_stars_number, blinking_stars, cleanup_stars)
                     .run_if(in_state(AppState::Game)),
             );
