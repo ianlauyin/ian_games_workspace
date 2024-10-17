@@ -12,8 +12,8 @@ pub struct HealthPlugin;
 
 impl Plugin for HealthPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_health)
-            .add_systems(OnExit(AppState::Game), reset_health)
+        app.add_systems(OnEnter(AppState::Game), setup_health)
+            .add_systems(OnExit(AppState::Game), cleanup_health)
             .observe(reduce_health);
     }
 }
@@ -43,12 +43,6 @@ fn setup_health(mut commands: Commands) {
     ));
 }
 
-fn reset_health(mut health_query: Query<(&mut Health, &mut Text)>) {
-    let (mut health, mut text) = health_query.get_single_mut().unwrap();
-    health.0 = INITIAL_HEALTH;
-    text.sections[1].value = INITIAL_HEALTH.to_string()
-}
-
 fn reduce_health(
     _: Trigger<HealthReduceEvent>,
     mut health_query: Query<(&mut Health, &mut Text)>,
@@ -68,4 +62,8 @@ fn reduce_health(
         });
         next_state.set(GameState::Result);
     }
+}
+fn cleanup_health(mut commands: Commands, health_queries: Query<Entity, With<Health>>) {
+    let entity = health_queries.get_single().unwrap();
+    commands.entity(entity).despawn();
 }

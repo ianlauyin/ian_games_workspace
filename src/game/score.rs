@@ -10,8 +10,8 @@ pub struct ScorePlugin;
 
 impl Plugin for ScorePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, setup_score)
-            .add_systems(OnEnter(AppState::MainMenu), reset_score)
+        app.add_systems(OnEnter(AppState::Game), setup_score)
+            .add_systems(OnExit(AppState::Game), cleanup_score)
             .observe(add_score);
     }
 }
@@ -43,8 +43,7 @@ fn add_score(_: Trigger<AddScoreEvent>, mut score_query: Query<(&mut Score, &mut
     text.sections[1].value = score.0.to_string();
 }
 
-fn reset_score(mut score_query: Query<(&mut Score, &mut Text)>) {
-    let (mut score, mut text) = score_query.get_single_mut().unwrap();
-    score.0 = 0;
-    text.sections[1].value = String::from("0");
+fn cleanup_score(mut commands: Commands, score_queries: Query<Entity, With<Score>>) {
+    let entity = score_queries.get_single().unwrap();
+    commands.entity(entity).despawn();
 }

@@ -94,9 +94,3 @@ fn remove_bullet(trigger: Trigger<RemoveBulletEvent>, mut commands: Commands) {
     let RemoveBulletEvent { bullet } = trigger.event();
     commands.entity(*bullet).despawn()
 }
-
-fn clear_up_bullet(mut commands: Commands, bullet_queries: Query<Entity, With<Bullet>>) {
-    for entity in bullet_queries.iter() {
-        commands.entity(entity).despawn();
-    }
-}

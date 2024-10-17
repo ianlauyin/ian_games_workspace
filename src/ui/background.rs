@@ -14,7 +14,7 @@ impl Plugin for BackgroundPlugin {
             .add_systems(
                 Update,
                 (check_stars_number, blinking_stars, cleanup_stars)
-                    .run_if(in_state(AppState::Game)),
+                    .run_if(in_state(AppState::Game).or_else(in_state(AppState::MainMenu))),
             );
     }
 }

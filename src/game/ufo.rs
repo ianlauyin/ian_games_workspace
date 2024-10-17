@@ -18,11 +18,12 @@ pub struct UFOPlugin;
 
 impl Plugin for UFOPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            FixedUpdate,
-            (check_spawn_ufo, clear_ufo).run_if(in_state(GameState::InPlay)),
-        )
-        .observe(remove_ufo);
+        app.add_systems(Update, clear_ufo)
+            .add_systems(
+                FixedUpdate,
+                check_spawn_ufo.run_if(in_state(GameState::InPlay)),
+            )
+            .observe(remove_ufo);
     }
 }
 

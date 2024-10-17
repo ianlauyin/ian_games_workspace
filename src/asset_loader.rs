@@ -61,7 +61,7 @@ fn check_assets(
             return;
         }
     }
-    next_state.set(AppState::Game);
+    next_state.set(AppState::MainMenu);
 }
 
 fn asset_is_loaded(id: AssetId<Image>, asset_server: &Res<AssetServer>) -> bool {
