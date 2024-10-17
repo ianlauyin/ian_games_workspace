@@ -9,7 +9,10 @@ pub struct MainMenuPlugin;
 impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::MainMenu), show_main_menu)
-            .add_systems(Update, handle_play.run_if(in_state(AppState::MainMenu)));
+            .add_systems(
+                Update,
+                (start_tips_animation, handle_play).run_if(in_state(AppState::MainMenu)),
+            );
     }
 }
 
@@ -17,7 +20,9 @@ impl Plugin for MainMenuPlugin {
 struct MainMenu;
 
 #[derive(Component)]
-struct StartTips;
+struct StartTips {
+    appearing: bool,
+}
 fn show_main_menu(mut commands: Commands) {
     commands
         .spawn((
@@ -96,7 +101,7 @@ fn show_main_menu(mut commands: Commands) {
                 ..default()
             });
             parent.spawn((
-                StartTips,
+                StartTips { appearing: false },
                 TextBundle {
                     style: Style {
                         margin: UiRect::top(Val::Percent(50.)),
@@ -127,4 +132,20 @@ fn handle_play(
     }
 }
 
-fn start_tip_animation(mut start_tip_queries: Query<&mut Text, With<StartTips>>) {}
+fn start_tips_animation(mut start_tip_queries: Query<(&mut Text, &mut StartTips)>) {
+    let (mut text, mut start_tips) = start_tip_queries.get_single_mut().unwrap();
+    let original_text_alpha = text.sections[0].style.color.alpha();
+    let new_text_alpha = if start_tips.appearing {
+        original_text_alpha + 0.02
+    } else {
+        original_text_alpha - 0.02
+    };
+    text.sections[0].style.color.set_alpha(new_text_alpha);
+    println!("{new_text_alpha}");
+    if new_text_alpha < 0. {
+        start_tips.appearing = true
+    }
+    if new_text_alpha > 1. {
+        start_tips.appearing = false
+    }
+}
