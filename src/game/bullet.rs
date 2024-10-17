@@ -2,9 +2,9 @@ use bevy::prelude::*;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 use crate::asset_loader::MeshHandles;
-use crate::game::Velocity;
 use crate::ui::{BULLET_SIZE, WINDOW_SIZE};
 use crate::ui::ZIndexMap;
+use crate::util::Velocity;
 
 #[derive(Component)]
 pub struct Bullet;

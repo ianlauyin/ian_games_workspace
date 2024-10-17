@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 
 use crate::asset_loader::ImageHandles;
-use crate::game::{ShootBulletEvent, Velocity};
+use crate::game::ShootBulletEvent;
 use crate::states::{AppState, GameState};
 use crate::ui::{LEFT_EDGE, RIGHT_EDGE, SPACESHIP_SIZE, WINDOW_SIZE, ZIndexMap};
+use crate::util::Velocity;
 
 #[derive(Component)]
 pub struct Spaceship;

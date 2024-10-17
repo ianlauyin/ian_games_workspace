@@ -2,9 +2,9 @@ use bevy::prelude::*;
 use rand::{Rng, thread_rng};
 
 use crate::asset_loader::ImageHandles;
-use crate::game::Velocity;
 use crate::states::GameState;
 use crate::ui::{LEFT_EDGE, RIGHT_EDGE, UFO_SIZE, WINDOW_SIZE, ZIndexMap};
+use crate::util::Velocity;
 
 #[derive(Component)]
 pub struct UFO;
