@@ -2,7 +2,8 @@ use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
 
-use crate::states::AppState;
+use crate::game::{ExplosionEvent, Spaceship};
+use crate::states::{AppState, GameState};
 use crate::ui::{WINDOW_SIZE, ZIndexMap};
 
 const INITIAL_HEALTH: u8 = 5;
@@ -48,8 +49,23 @@ fn reset_health(mut health_query: Query<(&mut Health, &mut Text)>) {
     text.sections[1].value = INITIAL_HEALTH.to_string()
 }
 
-fn reduce_health(_: Trigger<HealthReduceEvent>, mut health_query: Query<(&mut Health, &mut Text)>) {
+fn reduce_health(
+    _: Trigger<HealthReduceEvent>,
+    mut health_query: Query<(&mut Health, &mut Text)>,
+    mut commands: Commands,
+    spaceship_queries: Query<(Entity, &Transform), With<Spaceship>>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
     let (mut health, mut text) = health_query.get_single_mut().unwrap();
     health.0 -= 1;
     text.sections[1].value = health.0.to_string();
+    if health.0 == 0 {
+        let (entity, transform) = spaceship_queries.get_single().unwrap();
+        commands.entity(entity).despawn();
+        commands.trigger(ExplosionEvent {
+            x: transform.translation.x,
+            y: transform.translation.y,
+        });
+        next_state.set(GameState::Result);
+    }
 }
