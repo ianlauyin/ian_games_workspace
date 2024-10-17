@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 
 use asset_loader::AssetPlugin;
-pub use asset_loader::ImageHandles;
 use setup::SetupPlugin;
 use ui::BackgroundPlugin;
 

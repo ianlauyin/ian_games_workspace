@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::time::Timer;
 
-use crate::ImageHandles;
+use crate::asset_loader::ImageHandles;
 use crate::ui::ZIndexMap;
 
 #[derive(Event)]

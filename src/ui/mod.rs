@@ -1,6 +1,6 @@
-pub use background::BackgroundPlugin;
+pub use background::*;
 pub use size::*;
-pub use utils::ZIndexMap;
+pub use utils::*;
 
 mod background;
 mod size;

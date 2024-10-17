@@ -3,7 +3,6 @@ use bevy::color::palettes::css::YELLOW;
 use bevy::prelude::*;
 
 use crate::states::AppState;
-use crate::ui::WINDOW_SIZE;
 
 #[derive(Resource)]
 pub struct ImageHandles {
@@ -44,18 +43,6 @@ fn load_assets(
             materials.add(Color::from(YELLOW)),
         ),
     });
-}
-
-fn create_star_texture_atlas(
-    star_id: AssetId<Image>,
-    star_texture: &Image,
-) -> (TextureAtlasLayout, Image) {
-    let mut texture_atlas_builder = TextureAtlasBuilder::default();
-    texture_atlas_builder.initial_size(UVec2::new(WINDOW_SIZE.x as u32, WINDOW_SIZE.y as u32 / 2));
-    for _ in 0..2 {
-        texture_atlas_builder.add_texture(Some(star_id), star_texture);
-    }
-    return texture_atlas_builder.build().unwrap();
 }
 
 fn check_assets(

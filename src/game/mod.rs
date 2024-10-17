@@ -1,16 +1,17 @@
-pub use bullet::{Bullet, BulletPlugin, ShootBulletEvent};
-pub use collision::CollisionPlugin;
-pub use explosion::{ExplosionEvent, ExplosionPlugin};
-pub use score::ScorePlugin;
-pub use spaceship::SpaceshipPlugin;
-pub use stats::health::HealthPlugin;
-pub use stats::velocity::{Velocity, VelocityPlugin};
-pub use ufo::UFOPlugin;
+pub use bullet::*;
+pub use collision::*;
+pub use explosion::*;
+pub use health::*;
+pub use score::*;
+pub use spaceship::*;
+pub use ufo::*;
+pub use velocity::*;
 
 mod bullet;
 mod collision;
 mod explosion;
+mod health;
 mod score;
 mod spaceship;
-mod stats;
 mod ufo;
+mod velocity;

@@ -1,11 +1,10 @@
 use bevy::prelude::*;
 use rand::{Rng, thread_rng};
 
+use crate::asset_loader::ImageHandles;
 use crate::game::Velocity;
-use crate::ImageHandles;
 use crate::states::AppState;
-use crate::ui::WINDOW_SIZE;
-use crate::ui::ZIndexMap;
+use crate::ui::{WINDOW_SIZE, ZIndexMap};
 
 pub struct BackgroundPlugin;
 

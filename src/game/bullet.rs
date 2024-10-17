@@ -26,7 +26,8 @@ pub struct BulletPlugin;
 impl Plugin for BulletPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, clear_bullet.run_if(in_state(GameState::InPlay)))
-            .observe(shoot_bullet);
+            .observe(shoot_bullet)
+            .observe(remove_bullet);
     }
 }
 
@@ -88,4 +89,9 @@ fn clear_bullet(mut commands: Commands, bullet_queries: Query<(Entity, &Transfor
             commands.entity(entity).despawn();
         }
     }
+}
+
+fn remove_bullet(trigger: Trigger<RemoveBulletEvent>, mut commands: Commands) {
+    let RemoveBulletEvent { bullet } = trigger.event();
+    commands.entity(*bullet).despawn()
 }

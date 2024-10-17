@@ -1,11 +1,10 @@
 use bevy::prelude::*;
 use rand::{Rng, thread_rng};
 
+use crate::asset_loader::ImageHandles;
 use crate::game::Velocity;
-use crate::ImageHandles;
 use crate::states::GameState;
-use crate::ui::{LEFT_EDGE, RIGHT_EDGE, UFO_SIZE, WINDOW_SIZE};
-use crate::ui::ZIndexMap;
+use crate::ui::{LEFT_EDGE, RIGHT_EDGE, UFO_SIZE, WINDOW_SIZE, ZIndexMap};
 
 #[derive(Component)]
 pub struct UFO;
@@ -22,7 +21,8 @@ impl Plugin for UFOPlugin {
         app.add_systems(
             FixedUpdate,
             (check_spawn_ufo, clear_ufo).run_if(in_state(GameState::InPlay)),
-        );
+        )
+        .observe(remove_ufo);
     }
 }
 
@@ -62,4 +62,9 @@ fn clear_ufo(mut commands: Commands, ufo_queries: Query<(Entity, &Transform), Wi
             commands.entity(entity).despawn();
         }
     }
+}
+
+fn remove_ufo(trigger: Trigger<RemoveUFOEvent>, mut commands: Commands) {
+    let RemoveUFOEvent { ufo } = trigger.event();
+    commands.entity(*ufo).despawn()
 }
