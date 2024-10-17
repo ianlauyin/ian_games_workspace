@@ -141,7 +141,6 @@ fn start_tips_animation(mut start_tip_queries: Query<(&mut Text, &mut StartTips)
         original_text_alpha - 0.02
     };
     text.sections[0].style.color.set_alpha(new_text_alpha);
-    println!("{new_text_alpha}");
     if new_text_alpha < 0. {
         start_tips.appearing = true
     }

@@ -3,8 +3,8 @@ use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
 
 use crate::game::{
-    AddScoreEvent, Bullet, ExplosionEvent, HealthReduceEvent, RemoveBulletEvent, RemoveUFOEvent,
-    Spaceship, UFO,
+    AddScoreEvent, Bullet, ExplosionEvent, HealthReduceEvent, Invisible,
+    RemoveBulletEvent, RemoveUFOEvent, Spaceship, UFO,
 };
 use crate::states::GameState;
 use crate::ui::{BULLET_SIZE, SPACESHIP_SIZE, UFO_SIZE};
@@ -54,9 +54,12 @@ fn check_bullet_ufo(
 
 fn check_spaceship_ufo(
     mut commands: Commands,
-    spaceship_queries: Query<&Transform, With<Spaceship>>,
+    spaceship_queries: Query<&Transform, (With<Spaceship>, Without<Invisible>)>,
     ufo_queries: Query<(Entity, &Transform), With<UFO>>,
 ) {
+    if spaceship_queries.is_empty() {
+        return;
+    }
     let spaceship_transform = spaceship_queries.get_single().unwrap();
     let spaceship_aabb = Aabb2d::new(
         spaceship_transform.translation.truncate(),

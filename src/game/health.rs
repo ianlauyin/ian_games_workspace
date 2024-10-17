@@ -2,7 +2,7 @@ use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
 
-use crate::game::{ExplosionEvent, Spaceship};
+use crate::game::{ExplosionEvent, InvisibleEvent, Spaceship};
 use crate::states::{AppState, GameState};
 use crate::ui::{WINDOW_SIZE, ZIndexMap};
 
@@ -60,8 +60,9 @@ fn reduce_health(
             x: transform.translation.x,
             y: transform.translation.y,
         });
-        next_state.set(GameState::Result);
+        return next_state.set(GameState::Result);
     }
+    commands.trigger(InvisibleEvent);
 }
 fn cleanup_health(mut commands: Commands, health_queries: Query<Entity, With<Health>>) {
     let entity = health_queries.get_single().unwrap();

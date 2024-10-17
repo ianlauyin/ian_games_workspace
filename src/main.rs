@@ -25,6 +25,7 @@ fn main() {
         game::ScorePlugin,
         game::CollisionPlugin,
         game::ExplosionPlugin,
+        game::InvisiblePlugin,
     );
 
     let util_plugins = VelocityPlugin;
