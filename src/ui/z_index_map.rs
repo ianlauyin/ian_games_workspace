@@ -5,6 +5,7 @@ pub enum ZIndexMap {
     SpaceShip,
     UFO,
     Bullet,
+    MainMenu,
     Text,
 }
 
@@ -15,7 +16,8 @@ impl ZIndexMap {
             ZIndexMap::Stars => 1.,
             ZIndexMap::Explosion => 2.,
             ZIndexMap::SpaceShip | ZIndexMap::UFO | ZIndexMap::Bullet => 3.,
-            ZIndexMap::Text => 4.,
+            ZIndexMap::MainMenu => 4.,
+            ZIndexMap::Text => 5.,
         }
     }
 }

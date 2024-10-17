@@ -84,7 +84,7 @@ fn shoot_bullet(
 
 fn clear_bullet(mut commands: Commands, bullet_queries: Query<(Entity, &Transform), With<Bullet>>) {
     for (entity, transform) in bullet_queries.iter() {
-        if transform.translation.y > WINDOW_SIZE.y / 2. + 50. {
+        if transform.translation.y > WINDOW_SIZE.y / 2. + 200. {
             commands.entity(entity).despawn();
         }
     }

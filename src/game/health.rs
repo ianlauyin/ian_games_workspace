@@ -6,7 +6,7 @@ use crate::game::{ExplosionEvent, Spaceship};
 use crate::states::{AppState, GameState};
 use crate::ui::{WINDOW_SIZE, ZIndexMap};
 
-const INITIAL_HEALTH: u8 = 5;
+const INITIAL_HEALTH: u8 = 3;
 
 pub struct HealthPlugin;
 
