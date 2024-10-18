@@ -42,7 +42,9 @@ fn check_spawn_ufo(
         10..50 => Stage::One,
         50..100 => Stage::Two,
         100..150 => Stage::Three,
-        _ => Stage::Four,
+        150..200 => Stage::Four,
+        200..250 => Stage::Five,
+        _ => Stage::Six,
     };
     if ufo_number == 0 || stage.random_generator(ufo_number as f64) {
         spawn_ufo(&mut commands, image_handles.ufo.clone(), stage);
@@ -55,6 +57,8 @@ enum Stage {
     Two,
     Three,
     Four,
+    Five,
+    Six,
 }
 
 impl Stage {
@@ -63,7 +67,8 @@ impl Stage {
         return match self {
             Stage::Warmup => rng.gen_bool(0.01),
             Stage::One | Stage::Two => rng.gen_bool(1. / (existing_ufo * 10.)),
-            Stage::Three | Stage::Four => rng.gen_bool(1. / (existing_ufo * 5.)),
+            Stage::Three | Stage::Four => rng.gen_bool(1. / (existing_ufo * 3.)),
+            Stage::Five | Stage::Six => rng.gen_bool(1. / (existing_ufo)),
         };
     }
 }
@@ -76,9 +81,13 @@ fn spawn_ufo(commands: &mut Commands, ufo_image_handle: Handle<Image>, stage: St
             x: if rng.gen_bool(0.5) { 3. } else { -3. },
             y: -3.,
         },
-        Stage::Four => Velocity {
+        Stage::Four | Stage::Five => Velocity {
             x: rng.gen_range(-5.0..5.0),
             y: rng.gen_range(-5.0..-3.0),
+        },
+        Stage::Six => Velocity {
+            x: rng.gen_range(-10.0..10.0),
+            y: rng.gen_range(-10.0..-5.0),
         },
     };
 

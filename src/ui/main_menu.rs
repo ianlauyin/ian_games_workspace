@@ -48,18 +48,7 @@ fn show_main_menu(mut commands: Commands) {
         ))
         .with_children(|parent| {
             parent.spawn(TextBundle {
-                text: Text::from_section("Press Arrow Left <- to move left", TextStyle::default()),
-                transform: Transform {
-                    translation: Vec3::default().with_z(ZIndexMap::Text.value()),
-                    ..default()
-                },
-                ..default()
-            });
-            parent.spawn(TextBundle {
-                text: Text::from_section(
-                    "Press Arrow Right -> to move right",
-                    TextStyle::default(),
-                ),
+                text: Text::from_section("Press Arrow move", TextStyle::default()),
                 transform: Transform {
                     translation: Vec3::default().with_z(ZIndexMap::Text.value()),
                     ..default()
