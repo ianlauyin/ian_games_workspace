@@ -4,7 +4,7 @@ use asset_loader::AssetPlugin;
 use setup::SetupPlugin;
 use ui::BackgroundPlugin;
 
-use crate::ui::MainMenuPlugin;
+use crate::ui::{MainMenuPlugin, ResultPlugin};
 use crate::util::VelocityPlugin;
 
 mod asset_loader;
@@ -15,7 +15,13 @@ mod ui;
 mod util;
 
 fn main() {
-    let ui_plugins = (AssetPlugin, SetupPlugin, BackgroundPlugin, MainMenuPlugin);
+    let ui_plugins = (
+        AssetPlugin,
+        SetupPlugin,
+        BackgroundPlugin,
+        MainMenuPlugin,
+        ResultPlugin,
+    );
 
     let game_plugins = (
         game::HealthPlugin,

@@ -3,7 +3,9 @@ use bevy::prelude::*;
 use crate::asset_loader::ImageHandles;
 use crate::game::ShootBulletEvent;
 use crate::states::{AppState, GameState};
-use crate::ui::{LEFT_EDGE, RIGHT_EDGE, SPACESHIP_SIZE, WINDOW_SIZE, ZIndexMap};
+use crate::ui::{
+    BOTTOM_EDGE, LEFT_EDGE, RIGHT_EDGE, SPACESHIP_SIZE, TOP_EDGE, WINDOW_SIZE, ZIndexMap,
+};
 use crate::util::Velocity;
 
 #[derive(Component)]
@@ -58,6 +60,15 @@ fn handle_spaceship_interaction(
     mut spaceship_query: Query<(&mut Velocity, &Transform), With<Spaceship>>,
 ) {
     let (mut velocity, transform) = spaceship_query.get_single_mut().unwrap();
+
+    velocity.y = match (
+        keys.pressed(KeyCode::ArrowUp),
+        keys.pressed(KeyCode::ArrowDown),
+    ) {
+        (true, false) if transform.translation.y <= TOP_EDGE => 10.,
+        (false, true) if transform.translation.y >= BOTTOM_EDGE => -10.,
+        _ => 0.,
+    };
 
     velocity.x = match (
         keys.pressed(KeyCode::ArrowLeft),

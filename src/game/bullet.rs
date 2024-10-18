@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 use crate::asset_loader::MeshHandles;
+use crate::states::AppState;
 use crate::ui::{BULLET_SIZE, WINDOW_SIZE};
 use crate::ui::ZIndexMap;
 use crate::util::Velocity;
@@ -25,6 +26,7 @@ pub struct BulletPlugin;
 impl Plugin for BulletPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, clear_bullet)
+            .add_systems(OnExit(AppState::Game), cleanup_bullet)
             .observe(shoot_bullet)
             .observe(remove_bullet);
     }
@@ -92,5 +94,14 @@ fn clear_bullet(mut commands: Commands, bullet_queries: Query<(Entity, &Transfor
 
 fn remove_bullet(trigger: Trigger<RemoveBulletEvent>, mut commands: Commands) {
     let RemoveBulletEvent { bullet } = trigger.event();
-    commands.entity(*bullet).despawn()
+    let Some(mut entity_commands) = commands.get_entity(*bullet) else {
+        return;
+    };
+    entity_commands.despawn();
+}
+
+fn cleanup_bullet(mut commands: Commands, ufo_queries: Query<Entity, With<Bullet>>) {
+    for entity in ufo_queries.iter() {
+        commands.entity(entity).despawn();
+    }
 }

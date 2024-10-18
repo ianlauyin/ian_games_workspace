@@ -108,7 +108,7 @@ fn show_main_menu(mut commands: Commands) {
                         align_self: AlignSelf::Center,
                         ..default()
                     },
-                    text: Text::from_section("Press Space to start the game", TextStyle::default()),
+                    text: Text::from_section("Press Enter to start the game", TextStyle::default()),
                     transform: Transform {
                         translation: Vec3::default().with_z(ZIndexMap::Text.value()),
                         ..default()
@@ -125,7 +125,7 @@ fn handle_play(
     main_menu_query: Query<Entity, With<MainMenu>>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    if keys.just_pressed(KeyCode::Space) {
+    if keys.just_pressed(KeyCode::Enter) {
         let main_menu = main_menu_query.get_single().unwrap();
         commands.entity(main_menu).despawn_recursive();
         next_state.set(AppState::Game)

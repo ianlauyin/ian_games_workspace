@@ -17,7 +17,7 @@ impl Plugin for ScorePlugin {
 }
 
 #[derive(Component)]
-struct Score(u32);
+pub struct Score(pub u32);
 fn setup_score(mut commands: Commands) {
     commands.spawn((
         Score(0),

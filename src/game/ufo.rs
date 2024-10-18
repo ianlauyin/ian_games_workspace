@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use rand::{Rng, thread_rng};
 
 use crate::asset_loader::ImageHandles;
-use crate::states::GameState;
+use crate::states::{AppState, GameState};
 use crate::ui::{LEFT_EDGE, RIGHT_EDGE, UFO_SIZE, WINDOW_SIZE, ZIndexMap};
 use crate::util::Velocity;
 
@@ -23,6 +23,7 @@ impl Plugin for UFOPlugin {
                 FixedUpdate,
                 check_spawn_ufo.run_if(in_state(GameState::InPlay)),
             )
+            .add_systems(OnExit(AppState::Game), cleanup_ufo)
             .observe(remove_ufo);
     }
 }
@@ -67,5 +68,14 @@ fn clear_ufo(mut commands: Commands, ufo_queries: Query<(Entity, &Transform), Wi
 
 fn remove_ufo(trigger: Trigger<RemoveUFOEvent>, mut commands: Commands) {
     let RemoveUFOEvent { ufo } = trigger.event();
-    commands.entity(*ufo).despawn()
+    let Some(mut entity_commands) = commands.get_entity(*ufo) else {
+        return;
+    };
+    entity_commands.despawn();
+}
+
+fn cleanup_ufo(mut commands: Commands, ufo_queries: Query<Entity, With<UFO>>) {
+    for entity in ufo_queries.iter() {
+        commands.entity(entity).despawn();
+    }
 }

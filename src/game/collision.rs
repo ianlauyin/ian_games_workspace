@@ -3,8 +3,8 @@ use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
 
 use crate::game::{
-    AddScoreEvent, Bullet, ExplosionEvent, HealthReduceEvent, Invisible,
-    RemoveBulletEvent, RemoveUFOEvent, Spaceship, UFO,
+    AddScoreEvent, Bullet, ExplosionEvent, HealthReduceEvent, Invisible, RemoveBulletEvent,
+    RemoveUFOEvent, Spaceship, UFO,
 };
 use crate::states::GameState;
 use crate::ui::{BULLET_SIZE, SPACESHIP_SIZE, UFO_SIZE};
@@ -75,5 +75,6 @@ fn check_spaceship_ufo(
         }
         commands.trigger(HealthReduceEvent);
         commands.trigger(RemoveUFOEvent { ufo: ufo_entity });
+        return;
     }
 }
