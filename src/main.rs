@@ -1,4 +1,7 @@
+#![windows_subsystem = "windows"]
+
 use bevy::prelude::*;
+use bevy_embedded_assets::EmbeddedAssetPlugin;
 
 use asset_loader::AssetPlugin;
 use setup::SetupPlugin;
@@ -37,6 +40,7 @@ fn main() {
     let util_plugins = VelocityPlugin;
 
     App::new()
+        .add_plugins(EmbeddedAssetPlugin::default())
         .add_plugins(ui_plugins)
         .add_plugins(game_plugins)
         .add_plugins(util_plugins)

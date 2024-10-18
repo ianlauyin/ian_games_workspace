@@ -32,10 +32,10 @@ fn load_assets(
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     commands.insert_resource(ImageHandles {
-        explosion: asset_server.load("explosion.png"),
-        spaceship: asset_server.load("spaceship.png"),
-        ufo: asset_server.load("ufo.png"),
-        stars: asset_server.load("stars.png"),
+        explosion: asset_server.load("embedded://explosion.png"),
+        spaceship: asset_server.load("embedded://spaceship.png"),
+        ufo: asset_server.load("embedded://ufo.png"),
+        stars: asset_server.load("embedded://stars.png"),
     });
     commands.insert_resource(MeshHandles {
         bullet: (
