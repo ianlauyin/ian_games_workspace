@@ -11,6 +11,7 @@ impl Plugin for SetupPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
+                canvas: Some("#shooting-game".into()),
                 resolution: WindowResolution::from(WINDOW_SIZE),
                 ..default()
             }),
