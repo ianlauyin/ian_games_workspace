@@ -2,6 +2,7 @@
 
 use bevy::prelude::*;
 use bevy_embedded_assets::EmbeddedAssetPlugin;
+use wasm_bindgen::prelude::wasm_bindgen;
 
 use asset_loader::AssetPlugin;
 use setup::SetupPlugin;
@@ -17,7 +18,8 @@ mod states;
 mod ui;
 mod util;
 
-fn main() {
+#[wasm_bindgen(start)]
+pub fn main() {
     let ui_plugins = (
         AssetPlugin,
         SetupPlugin,
