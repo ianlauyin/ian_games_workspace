@@ -2,9 +2,13 @@
 <head>
     <title>ES6</title>
 </head>
+<body>
+<canvas id="shooting-game"></canvas>
 <script type="module">
-    import init from "./shooting-game.js"
+    import gameModule from "./shooting-game.js"
 
-    init()
+    const game = await gameModule();
+    game.start();
 </script>
+</body>
 </html>

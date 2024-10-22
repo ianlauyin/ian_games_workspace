@@ -3,5 +3,10 @@
     <title>ES5</title>
 </head>
 <script src="shooting-game.js"></script>
-<script>wasm_bindgen()</script>
+<script>
+    shootingGame().then(shootingGame.start);
+</script>
+<body>
+<canvas id="shooting-game"></canvas>
+</body>
 </html>
