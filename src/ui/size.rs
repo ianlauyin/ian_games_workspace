@@ -16,7 +16,7 @@ pub fn get_right_edge(object_width: f32) -> f32 {
 }
 
 pub fn get_top_edge(object_height: f32) -> f32 {
-    (MOBILE_WINDOW_SIZE.x - object_height) / 2.
+    (MOBILE_WINDOW_SIZE.y - object_height) / 2.
 }
 
 pub fn get_bottom_edge(object_height: f32) -> f32 {
