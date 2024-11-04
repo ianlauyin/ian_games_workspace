@@ -1,12 +1,24 @@
 use bevy::math::Vec2;
 
-pub const WINDOW_SIZE: Vec2 = Vec2::new(1024., 768.);
-pub const LEFT_EDGE: f32 = -WINDOW_SIZE.x / 2. + 50.;
-pub const RIGHT_EDGE: f32 = WINDOW_SIZE.x / 2. - 50.;
-pub const TOP_EDGE: f32 = WINDOW_SIZE.y / 2. - 50.;
-pub const BOTTOM_EDGE: f32 = -WINDOW_SIZE.y / 2. + 50.;
+pub const MOBILE_WINDOW_SIZE: Vec2 = Vec2::new(540., 960.);
 
 pub const BULLET_SIZE: Vec2 = Vec2::new(5., 10.);
 
 pub const SPACESHIP_SIZE: Vec2 = Vec2::new(100., 100.);
 pub const UFO_SIZE: Vec2 = Vec2::new(80., 54.);
+
+pub fn get_left_edge(object_width: f32) -> f32 {
+    (-MOBILE_WINDOW_SIZE.x + object_width) / 2.
+}
+
+pub fn get_right_edge(object_width: f32) -> f32 {
+    -get_left_edge(object_width)
+}
+
+pub fn get_top_edge(object_height: f32) -> f32 {
+    (MOBILE_WINDOW_SIZE.x - object_height) / 2.
+}
+
+pub fn get_bottom_edge(object_height: f32) -> f32 {
+    -get_top_edge(object_height)
+}

@@ -3,8 +3,7 @@ use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 use crate::asset_loader::MeshHandles;
 use crate::states::AppState;
-use crate::ui::{BULLET_SIZE, WINDOW_SIZE};
-use crate::ui::ZIndexMap;
+use crate::ui::{BULLET_SIZE, ZIndexMap};
 use crate::util::Velocity;
 
 #[derive(Component)]
@@ -84,9 +83,14 @@ fn shoot_bullet(
     ));
 }
 
-fn clear_bullet(mut commands: Commands, bullet_queries: Query<(Entity, &Transform), With<Bullet>>) {
+fn clear_bullet(
+    mut commands: Commands,
+    bullet_queries: Query<(Entity, &Transform), With<Bullet>>,
+    windows: Query<&Window>,
+) {
+    let window = windows.get_single().unwrap();
     for (entity, transform) in bullet_queries.iter() {
-        if transform.translation.y > WINDOW_SIZE.y / 2. + 200. {
+        if transform.translation.y > window.height() / 2. + BULLET_SIZE.y {
             commands.entity(entity).despawn();
         }
     }

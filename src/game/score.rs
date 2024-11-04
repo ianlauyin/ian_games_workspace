@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy::sprite::Anchor;
 
 use crate::states::AppState;
-use crate::ui::{WINDOW_SIZE, ZIndexMap};
+use crate::ui::ZIndexMap;
 
 #[derive(Event)]
 pub struct AddScoreEvent;
@@ -18,14 +18,15 @@ impl Plugin for ScorePlugin {
 
 #[derive(Component)]
 pub struct Score(pub u32);
-fn setup_score(mut commands: Commands) {
+fn setup_score(mut commands: Commands, windows: Query<&Window>) {
+    let window = windows.get_single().unwrap();
     commands.spawn((
         Score(0),
         Text2dBundle {
             text_anchor: Anchor::BottomRight,
             transform: Transform::from_xyz(
-                WINDOW_SIZE.x / 2. - 20.,
-                -WINDOW_SIZE.y / 2. + 20.,
+                window.width() / 2. - 20.,
+                -window.height() / 2. + 20.,
                 ZIndexMap::Text.value(),
             ),
             text: Text::from_sections([

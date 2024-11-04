@@ -26,15 +26,9 @@ fn check_bullet_ufo(
     ufo_queries: Query<(Entity, &Transform), With<UFO>>,
 ) {
     for (bullet_entity, bullet_transform) in bullet_queries.iter() {
-        let bullet_aabb = Aabb2d::new(
-            bullet_transform.translation.truncate(),
-            Vec2::new(BULLET_SIZE.x / 2., BULLET_SIZE.y / 2.),
-        );
+        let bullet_aabb = Aabb2d::new(bullet_transform.translation.truncate(), BULLET_SIZE / 2.);
         for (ufo_entity, ufo_transform) in ufo_queries.iter() {
-            let ufo_aabb = Aabb2d::new(
-                ufo_transform.translation.truncate(),
-                Vec2::new(UFO_SIZE.x / 2., UFO_SIZE.y / 2.),
-            );
+            let ufo_aabb = Aabb2d::new(ufo_transform.translation.truncate(), UFO_SIZE / 2.);
             if !bullet_aabb.intersects(&ufo_aabb) {
                 continue;
             }
@@ -63,13 +57,10 @@ fn check_spaceship_ufo(
     let spaceship_transform = spaceship_queries.get_single().unwrap();
     let spaceship_aabb = Aabb2d::new(
         spaceship_transform.translation.truncate(),
-        Vec2::new(SPACESHIP_SIZE.x / 2., SPACESHIP_SIZE.y / 2.),
+        SPACESHIP_SIZE / 2.,
     );
     for (ufo_entity, ufo_transform) in ufo_queries.iter() {
-        let ufo_aabb = Aabb2d::new(
-            ufo_transform.translation.truncate(),
-            Vec2::new(UFO_SIZE.x / 2., BULLET_SIZE.y / 2.),
-        );
+        let ufo_aabb = Aabb2d::new(ufo_transform.translation.truncate(), UFO_SIZE / 2.);
         if !spaceship_aabb.intersects(&ufo_aabb) {
             continue;
         }
