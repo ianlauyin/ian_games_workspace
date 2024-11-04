@@ -7,7 +7,7 @@ use setup::SetupPlugin;
 use ui::BackgroundPlugin;
 
 use crate::control::ControlOptionPlugin;
-use crate::ui::{MainMenuPlugin, ResultPlugin};
+use crate::ui::{ControlButtonPlugin, MainMenuPlugin, ResultPlugin};
 use crate::util::VelocityPlugin;
 
 mod asset_loader;
@@ -26,6 +26,7 @@ pub fn start() {
         BackgroundPlugin,
         MainMenuPlugin,
         ResultPlugin,
+        ControlButtonPlugin,
     );
 
     let game_plugins = (

@@ -3,6 +3,7 @@ use std::time::Duration;
 use bevy::prelude::*;
 
 use crate::asset_loader::ImageHandles;
+use crate::control::{ControlMode, ControlOption};
 use crate::game::ShootBulletEvent;
 use crate::states::{AppState, GameState};
 use crate::ui::{
@@ -14,6 +15,9 @@ use crate::util::Velocity;
 pub struct Spaceship {
     bullet_cd: Option<Timer>,
 }
+
+#[derive(Event)]
+pub struct SpaceShipMovementEvent(pub SpaceShipMovement);
 
 pub struct SpaceshipPlugin;
 
@@ -27,11 +31,12 @@ impl Plugin for SpaceshipPlugin {
             .add_systems(
                 FixedUpdate,
                 (
-                    handle_spaceship_interaction,
+                    handle_spaceship_keyboard_interaction,
                     (handle_bullet_cooldown, handle_shoot_bullet).chain(),
                 )
                     .run_if(in_state(GameState::InPlay)),
-            );
+            )
+            .observe(handle_spaceship_movement);
     }
 }
 
@@ -73,59 +78,114 @@ fn check_spaceship_position(
     }
 }
 
-fn handle_spaceship_interaction(
+fn handle_spaceship_keyboard_interaction(
+    mut commands: Commands,
     keys: Res<ButtonInput<KeyCode>>,
-    mut spaceship_query: Query<(&mut Velocity, &Transform), With<Spaceship>>,
-    windows: Query<&Window>,
+    control_option: Res<ControlOption>,
 ) {
-    let (mut velocity, transform) = spaceship_query.get_single_mut().unwrap();
-    let window = windows.get_single().unwrap();
-
-    velocity.y = match (
+    if control_option.mode != ControlMode::Keyboard {
+        return;
+    }
+    let movement = match (
         keys.pressed(KeyCode::ArrowUp),
         keys.pressed(KeyCode::ArrowDown),
-    ) {
-        (true, false)
-            if transform.translation.y
-                <= get_top_edge(window.height(), get_spaceship_size(window.width()).y) =>
-        {
-            10.
-        }
-        (false, true)
-            if transform.translation.y
-                >= get_bottom_edge(window.height(), get_spaceship_size(window.width()).y) =>
-        {
-            -10.
-        }
-        _ => 0.,
-    };
-
-    velocity.x = match (
         keys.pressed(KeyCode::ArrowLeft),
         keys.pressed(KeyCode::ArrowRight),
     ) {
-        (false, true)
-            if transform.translation.x
-                <= get_right_edge(window.width(), get_spaceship_size(window.width()).x) =>
-        {
-            10.
+        (true, false, true, false) => SpaceShipMovement::UpLeft,
+        (true, false, false, true) => SpaceShipMovement::UpRight,
+        (false, true, true, false) => SpaceShipMovement::DownLeft,
+        (false, true, false, true) => SpaceShipMovement::DownRight,
+        (true, false, _, _) => SpaceShipMovement::Up,
+        (false, true, _, _) => SpaceShipMovement::Down,
+        (_, _, true, false) => SpaceShipMovement::Left,
+        (_, _, false, true) => SpaceShipMovement::Right,
+        _ => SpaceShipMovement::Rest,
+    };
+    commands.trigger(SpaceShipMovementEvent(movement))
+}
+
+#[derive(Eq, PartialEq)]
+pub enum SpaceShipMovement {
+    Up,
+    UpRight,
+    Right,
+    DownRight,
+    Down,
+    DownLeft,
+    Left,
+    UpLeft,
+    Rest,
+}
+
+pub fn handle_spaceship_movement(
+    trigger: Trigger<SpaceShipMovementEvent>,
+    mut spaceship_query: Query<(&mut Velocity, &Transform), With<Spaceship>>,
+    window_query: Query<&Window>,
+) {
+    let window = window_query.get_single().unwrap();
+    let Ok((mut velocity, transform)) = spaceship_query.get_single_mut() else {
+        return;
+    };
+
+    let Vec3 { x, y, z: _ } = transform.translation;
+
+    if trigger.event().0 == SpaceShipMovement::Rest {
+        velocity.x = 0.;
+        velocity.y = 0.;
+        return;
+    }
+
+    velocity.x = match trigger.event().0 {
+        SpaceShipMovement::Left if !meet_left_edge(x, window) => -10.,
+        SpaceShipMovement::UpLeft | SpaceShipMovement::DownLeft if !meet_left_edge(x, window) => {
+            -7.
         }
-        (true, false)
-            if transform.translation.x
-                >= get_left_edge(window.width(), get_spaceship_size(window.width()).x) =>
+        SpaceShipMovement::Right if !meet_right_edge(x, window) => 10.,
+        SpaceShipMovement::UpRight | SpaceShipMovement::DownRight
+            if !meet_right_edge(x, window) =>
         {
-            -10.
+            7.
         }
         _ => 0.,
     };
+
+    velocity.y = match trigger.event().0 {
+        SpaceShipMovement::Up if !meet_top_edge(y, window) => 10.,
+        SpaceShipMovement::UpLeft | SpaceShipMovement::UpRight if !meet_top_edge(y, window) => 7.,
+        SpaceShipMovement::Down if !meet_bottom_edge(y, window) => -10.,
+        SpaceShipMovement::DownLeft | SpaceShipMovement::DownRight
+            if !meet_bottom_edge(y, window) =>
+        {
+            -7.
+        }
+        _ => 0.,
+    };
+}
+
+fn meet_top_edge(position: f32, window: &Window) -> bool {
+    position >= get_top_edge(window.height(), get_spaceship_size(window.width()).y)
+}
+
+fn meet_bottom_edge(position: f32, window: &Window) -> bool {
+    position <= get_bottom_edge(window.height(), get_spaceship_size(window.width()).y)
+}
+
+fn meet_left_edge(position: f32, window: &Window) -> bool {
+    position <= get_left_edge(window.width(), get_spaceship_size(window.width()).x)
+}
+
+fn meet_right_edge(position: f32, window: &Window) -> bool {
+    position >= get_right_edge(window.width(), get_spaceship_size(window.width()).x)
 }
 
 fn handle_shoot_bullet(
     mut commands: Commands,
     keys: Res<ButtonInput<KeyCode>>,
     mut spaceship_query: Query<(&Transform, &mut Spaceship)>,
+    control_option: Res<ControlOption>,
 ) {
-    if keys.pressed(KeyCode::Space) {
+    if keys.pressed(KeyCode::Space) || control_option.mode == ControlMode::Hover {
         let (transform, mut spaceship) = spaceship_query.get_single_mut().unwrap();
         let Vec3 { x, y, .. } = transform.translation;
         if spaceship.bullet_cd.is_none() {

@@ -44,7 +44,7 @@ struct CheckBox {
 }
 
 fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
-    let is_click_mode = control_option.mode == ControlMode::Click;
+    let is_click_mode = control_option.mode == ControlMode::Hover;
     commands
         .spawn((
             MainMenu,
@@ -138,7 +138,7 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                                     if is_click_mode { "-> " } else { "" },
                                     TextStyle::default(),
                                 ),
-                                TextSection::new("Use Clicking to play", TextStyle::default()),
+                                TextSection::new("Use Hover to play", TextStyle::default()),
                             ]),
                             ..default()
                         },
@@ -240,12 +240,12 @@ fn change_control(
     mut control_option: ResMut<ControlOption>,
 ) {
     let ChangeControlEvent { is_click_mode } = trigger.event();
-    let current_is_click_mode = control_option.mode == ControlMode::Click;
+    let current_is_click_mode = control_option.mode == ControlMode::Hover;
     if *is_click_mode == current_is_click_mode {
         return;
     }
     control_option.mode = if *is_click_mode {
-        ControlMode::Click
+        ControlMode::Hover
     } else {
         ControlMode::Keyboard
     };
