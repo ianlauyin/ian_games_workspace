@@ -7,8 +7,7 @@ use crate::control::{ControlMode, ControlOption};
 use crate::game::ShootBulletEvent;
 use crate::states::{AppState, GameState};
 use crate::ui::{
-    FULL_WINDOW_SIZE, get_bottom_edge, get_left_edge, get_right_edge, get_spaceship_size, get_top_edge,
-    ZIndexMap,
+    get_bottom_edge, get_left_edge, get_right_edge, get_top_edge, SPACESHIP_SIZE, ZIndexMap,
 };
 use crate::util::Velocity;
 
@@ -53,12 +52,12 @@ fn setup_spaceship(
         SpriteBundle {
             texture: image_handles.spaceship.clone(),
             sprite: Sprite {
-                custom_size: Some(get_spaceship_size(window.width())),
+                custom_size: Some(SPACESHIP_SIZE),
                 ..default()
             },
             transform: Transform::from_xyz(
                 0.,
-                -window.height() / 1.5,
+                -window.height() / 2. - SPACESHIP_SIZE.y,
                 ZIndexMap::SpaceShip.value(),
             ),
             ..default()
@@ -73,7 +72,7 @@ fn check_spaceship_position(
 ) {
     let window = windows.get_single().unwrap();
     let (transform, mut velocity) = spaceship_query.get_single_mut().unwrap();
-    if transform.translation.y >= -window.height() / 2.5 {
+    if transform.translation.y >= -window.height() / 2. + SPACESHIP_SIZE.y {
         velocity.y = 0.;
         next_state.set(GameState::InPlay);
     }
@@ -122,9 +121,7 @@ pub enum SpaceShipMovement {
 pub fn handle_spaceship_movement(
     trigger: Trigger<SpaceShipMovementEvent>,
     mut spaceship_query: Query<(&mut Velocity, &Transform), With<Spaceship>>,
-    window_query: Query<&Window>,
 ) {
-    let window = window_query.get_single().unwrap();
     let Ok((mut velocity, transform)) = spaceship_query.get_single_mut() else {
         return;
     };
@@ -137,60 +134,37 @@ pub fn handle_spaceship_movement(
         return;
     }
 
-    let full_velocity = if window.width() >= FULL_WINDOW_SIZE.x {
-        10.
-    } else {
-        7.
-    };
-    let half_velocity = if window.width() >= FULL_WINDOW_SIZE.x {
-        7.
-    } else {
-        5.
-    };
-
     velocity.x = match trigger.event().0 {
-        SpaceShipMovement::Left if !meet_left_edge(x, window) => -full_velocity,
-        SpaceShipMovement::UpLeft | SpaceShipMovement::DownLeft if !meet_left_edge(x, window) => {
-            -half_velocity
-        }
-        SpaceShipMovement::Right if !meet_right_edge(x, window) => full_velocity,
-        SpaceShipMovement::UpRight | SpaceShipMovement::DownRight
-            if !meet_right_edge(x, window) =>
-        {
-            half_velocity
-        }
+        SpaceShipMovement::Left if !meet_left_edge(x) => -10.,
+        SpaceShipMovement::UpLeft | SpaceShipMovement::DownLeft if !meet_left_edge(x) => -7.,
+        SpaceShipMovement::Right if !meet_right_edge(x) => 10.,
+        SpaceShipMovement::UpRight | SpaceShipMovement::DownRight if !meet_right_edge(x) => 7.,
         _ => 0.,
     };
 
     velocity.y = match trigger.event().0 {
-        SpaceShipMovement::Up if !meet_top_edge(y, window) => full_velocity,
-        SpaceShipMovement::UpLeft | SpaceShipMovement::UpRight if !meet_top_edge(y, window) => {
-            half_velocity
-        }
-        SpaceShipMovement::Down if !meet_bottom_edge(y, window) => -full_velocity,
-        SpaceShipMovement::DownLeft | SpaceShipMovement::DownRight
-            if !meet_bottom_edge(y, window) =>
-        {
-            -half_velocity
-        }
+        SpaceShipMovement::Up if !meet_top_edge(y) => 10.,
+        SpaceShipMovement::UpLeft | SpaceShipMovement::UpRight if !meet_top_edge(y) => 7.,
+        SpaceShipMovement::Down if !meet_bottom_edge(y) => -10.,
+        SpaceShipMovement::DownLeft | SpaceShipMovement::DownRight if !meet_bottom_edge(y) => -7.,
         _ => 0.,
     };
 }
 
-fn meet_top_edge(position: f32, window: &Window) -> bool {
-    position >= get_top_edge(window.height(), get_spaceship_size(window.width()).y)
+fn meet_top_edge(position: f32) -> bool {
+    position >= get_top_edge(SPACESHIP_SIZE.y)
 }
 
-fn meet_bottom_edge(position: f32, window: &Window) -> bool {
-    position <= get_bottom_edge(window.height(), get_spaceship_size(window.width()).y)
+fn meet_bottom_edge(position: f32) -> bool {
+    position <= get_bottom_edge(SPACESHIP_SIZE.y)
 }
 
-fn meet_left_edge(position: f32, window: &Window) -> bool {
-    position <= get_left_edge(window.width(), get_spaceship_size(window.width()).x)
+fn meet_left_edge(position: f32) -> bool {
+    position <= get_left_edge(SPACESHIP_SIZE.x)
 }
 
-fn meet_right_edge(position: f32, window: &Window) -> bool {
-    position >= get_right_edge(window.width(), get_spaceship_size(window.width()).x)
+fn meet_right_edge(position: f32) -> bool {
+    position >= get_right_edge(SPACESHIP_SIZE.x)
 }
 
 fn handle_shoot_bullet(

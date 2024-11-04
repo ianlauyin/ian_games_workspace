@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
 use crate::states::{AppState, GameState};
-use crate::ui::FULL_WINDOW_SIZE;
+use crate::ui::MOBILE_WINDOW_SIZE;
 
 pub struct SetupPlugin;
 
@@ -13,7 +13,7 @@ impl Plugin for SetupPlugin {
             primary_window: Some(Window {
                 canvas: Some("#shooting-game".into()),
                 fit_canvas_to_parent: true,
-                resolution: WindowResolution::from(FULL_WINDOW_SIZE),
+                resolution: WindowResolution::from(MOBILE_WINDOW_SIZE),
                 ..default()
             }),
             ..default()

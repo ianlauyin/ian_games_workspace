@@ -4,7 +4,7 @@ use rand::{Rng, thread_rng};
 use crate::asset_loader::ImageHandles;
 use crate::game::Score;
 use crate::states::{AppState, GameState};
-use crate::ui::{get_left_edge, get_right_edge, get_ufo_size, ZIndexMap};
+use crate::ui::{get_left_edge, get_right_edge, UFO_SIZE, ZIndexMap};
 use crate::util::Velocity;
 
 #[derive(Component)]
@@ -98,30 +98,30 @@ fn spawn_ufo(
         },
     };
 
-    let x = rng.gen_range(ufo_edge(window, get_left_edge)..ufo_edge(window, get_right_edge));
+    let x = rng.gen_range(ufo_edge(get_left_edge)..ufo_edge(get_right_edge));
     commands.spawn((
         UFO,
         velocity,
         SpriteBundle {
             texture: ufo_image_handle,
             sprite: Sprite {
-                custom_size: Some(get_ufo_size(window.width())),
+                custom_size: Some(UFO_SIZE),
                 ..default()
             },
-            transform: Transform::from_xyz(x, window.height() / 2. + 50., ZIndexMap::UFO.value()),
+            transform: Transform::from_xyz(
+                x,
+                window.height() / 2. + UFO_SIZE.y,
+                ZIndexMap::UFO.value(),
+            ),
             ..default()
         },
     ));
 }
 
-fn handle_horizontal_ufo(
-    mut ufo_queries: Query<(&mut Velocity, &Transform), With<UFO>>,
-    windows: Query<&Window>,
-) {
-    let window = windows.get_single().unwrap();
+fn handle_horizontal_ufo(mut ufo_queries: Query<(&mut Velocity, &Transform), With<UFO>>) {
     for (mut velocity, transform) in ufo_queries.iter_mut() {
-        if transform.translation.x <= ufo_edge(window, get_left_edge)
-            || transform.translation.x >= ufo_edge(window, get_right_edge)
+        if transform.translation.x <= ufo_edge(get_left_edge)
+            || transform.translation.x >= ufo_edge(get_right_edge)
         {
             velocity.x = -velocity.x
         }
@@ -135,7 +135,7 @@ fn clear_ufo(
 ) {
     let window = windows.get_single().unwrap();
     for (entity, transform) in ufo_queries.iter() {
-        if transform.translation.y < -window.height() / 2. - 50. {
+        if transform.translation.y < -window.height() / 2. - UFO_SIZE.y {
             commands.entity(entity).despawn();
         }
     }
@@ -155,6 +155,6 @@ fn cleanup_ufo(mut commands: Commands, ufo_queries: Query<Entity, With<UFO>>) {
     }
 }
 
-fn ufo_edge(window: &Window, edge_function: impl FnOnce(f32, f32) -> f32) -> f32 {
-    edge_function(window.width(), get_ufo_size(window.width()).x)
+fn ufo_edge(edge_function: impl FnOnce(f32) -> f32) -> f32 {
+    edge_function(UFO_SIZE.x)
 }

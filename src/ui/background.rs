@@ -3,7 +3,7 @@ use rand::{Rng, thread_rng};
 
 use crate::asset_loader::ImageHandles;
 use crate::states::AppState;
-use crate::ui::{FULL_WINDOW_SIZE, is_mobile, ZIndexMap};
+use crate::ui::{MOBILE_WINDOW_SIZE, ZIndexMap};
 use crate::util::Velocity;
 
 pub struct BackgroundPlugin;
@@ -24,17 +24,11 @@ struct Stars {
     appearing: bool,
 }
 
-fn setup_background(mut commands: Commands, windows: Query<&Window>) {
-    let window = windows.get_single().unwrap();
-    let custom_size = if is_mobile(window.width()) {
-        Vec2::new(window.width(), window.height())
-    } else {
-        FULL_WINDOW_SIZE
-    };
+fn setup_background(mut commands: Commands) {
     commands.spawn(SpriteBundle {
         sprite: Sprite {
             color: Color::srgb(0.05, 0., 0.05),
-            custom_size: Some(custom_size),
+            custom_size: Some(MOBILE_WINDOW_SIZE),
             ..default()
         },
         transform: Transform::from_xyz(0., 0., ZIndexMap::Background.value()),
