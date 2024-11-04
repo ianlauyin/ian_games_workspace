@@ -12,7 +12,8 @@ impl Plugin for ResultPlugin {
         app.add_systems(OnEnter(GameState::Result), show_result)
             .add_systems(
                 Update,
-                (end_tips_animation, handle_return).run_if(in_state(GameState::Result)),
+                (end_tips_animation, handle_return_button_interaction)
+                    .run_if(in_state(GameState::Result)),
             );
     }
 }
@@ -24,6 +25,10 @@ struct Result;
 struct EndTips {
     appearing: bool,
 }
+
+#[derive(Component)]
+struct ReturnButton;
+
 fn show_result(mut commands: Commands, score_query: Query<&Score>) {
     let Score(score) = score_query.get_single().unwrap();
     commands
@@ -66,7 +71,7 @@ fn show_result(mut commands: Commands, score_query: Query<&Score>) {
                         ..default()
                     },
                     text: Text::from_section(
-                        "Press Enter to return to main menu",
+                        "Click Return to return to main menu",
                         TextStyle::default(),
                     ),
                     transform: Transform {
@@ -76,19 +81,59 @@ fn show_result(mut commands: Commands, score_query: Query<&Score>) {
                     ..default()
                 },
             ));
+            parent
+                .spawn((
+                    ReturnButton,
+                    Interaction::default(),
+                    NodeBundle {
+                        style: Style {
+                            align_self: AlignSelf::FlexEnd,
+                            width: Val::Px(100.),
+                            height: Val::Px(50.),
+                            border: UiRect::all(Val::Px(2.)),
+                            display: Display::Flex,
+                            align_items: AlignItems::Center,
+                            justify_content: JustifyContent::Center,
+                            ..default()
+                        },
+                        background_color: BackgroundColor::from(Color::srgba(0.1, 0.1, 0.1, 1.)),
+                        border_color: BorderColor::from(Color::BLACK),
+                        ..default()
+                    },
+                ))
+                .with_children(|button_node| {
+                    button_node.spawn(TextBundle {
+                        text: Text::from_section("Return", TextStyle::default()),
+                        ..default()
+                    });
+                });
         });
 }
 
-fn handle_return(
+fn handle_return_button_interaction(
     mut commands: Commands,
-    keys: Res<ButtonInput<KeyCode>>,
+    mut return_button_query: Query<(&Interaction, &mut BackgroundColor), With<ReturnButton>>,
+    mut window_query: Query<&mut Window>,
     result_query: Query<Entity, With<Result>>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    if keys.just_pressed(KeyCode::Enter) {
-        let result = result_query.get_single().unwrap();
-        commands.entity(result).despawn_recursive();
-        next_state.set(AppState::MainMenu)
+    let mut window = window_query.get_single_mut().unwrap();
+    let (interaction, mut background) = return_button_query.get_single_mut().unwrap();
+    match interaction {
+        Interaction::None => {
+            window.cursor.icon = CursorIcon::default();
+            background.0.set_alpha(1.)
+        }
+        Interaction::Hovered => {
+            window.cursor.icon = CursorIcon::Pointer;
+            background.0.set_alpha(0.5)
+        }
+        Interaction::Pressed => {
+            window.cursor.icon = CursorIcon::default();
+            let result = result_query.get_single().unwrap();
+            commands.entity(result).despawn_recursive();
+            next_state.set(AppState::MainMenu)
+        }
     }
 }
 
