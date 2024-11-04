@@ -7,7 +7,8 @@ use crate::control::{ControlMode, ControlOption};
 use crate::game::ShootBulletEvent;
 use crate::states::{AppState, GameState};
 use crate::ui::{
-    get_bottom_edge, get_left_edge, get_right_edge, get_spaceship_size, get_top_edge, ZIndexMap,
+    FULL_WINDOW_SIZE, get_bottom_edge, get_left_edge, get_right_edge, get_spaceship_size, get_top_edge,
+    ZIndexMap,
 };
 use crate::util::Velocity;
 
@@ -136,28 +137,41 @@ pub fn handle_spaceship_movement(
         return;
     }
 
+    let full_velocity = if window.width() >= FULL_WINDOW_SIZE.x {
+        10.
+    } else {
+        7.
+    };
+    let half_velocity = if window.width() >= FULL_WINDOW_SIZE.x {
+        7.
+    } else {
+        5.
+    };
+
     velocity.x = match trigger.event().0 {
-        SpaceShipMovement::Left if !meet_left_edge(x, window) => -10.,
+        SpaceShipMovement::Left if !meet_left_edge(x, window) => -full_velocity,
         SpaceShipMovement::UpLeft | SpaceShipMovement::DownLeft if !meet_left_edge(x, window) => {
-            -7.
+            -half_velocity
         }
-        SpaceShipMovement::Right if !meet_right_edge(x, window) => 10.,
+        SpaceShipMovement::Right if !meet_right_edge(x, window) => full_velocity,
         SpaceShipMovement::UpRight | SpaceShipMovement::DownRight
             if !meet_right_edge(x, window) =>
         {
-            7.
+            half_velocity
         }
         _ => 0.,
     };
 
     velocity.y = match trigger.event().0 {
-        SpaceShipMovement::Up if !meet_top_edge(y, window) => 10.,
-        SpaceShipMovement::UpLeft | SpaceShipMovement::UpRight if !meet_top_edge(y, window) => 7.,
-        SpaceShipMovement::Down if !meet_bottom_edge(y, window) => -10.,
+        SpaceShipMovement::Up if !meet_top_edge(y, window) => full_velocity,
+        SpaceShipMovement::UpLeft | SpaceShipMovement::UpRight if !meet_top_edge(y, window) => {
+            half_velocity
+        }
+        SpaceShipMovement::Down if !meet_bottom_edge(y, window) => -full_velocity,
         SpaceShipMovement::DownLeft | SpaceShipMovement::DownRight
             if !meet_bottom_edge(y, window) =>
         {
-            -7.
+            -half_velocity
         }
         _ => 0.,
     };
