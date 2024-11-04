@@ -53,8 +53,8 @@ fn show_result(mut commands: Commands, score_query: Query<&Score>) {
                 ..default()
             },
         ))
-        .with_children(|parent| {
-            parent.spawn(TextBundle {
+        .with_children(|background| {
+            background.spawn(TextBundle {
                 text: Text::from_section(format!("Final Score: {score}"), TextStyle::default()),
                 transform: Transform {
                     translation: Vec3::default().with_z(ZIndexMap::Text.value()),
@@ -62,50 +62,65 @@ fn show_result(mut commands: Commands, score_query: Query<&Score>) {
                 },
                 ..default()
             });
-            parent.spawn((
-                EndTips { appearing: false },
-                TextBundle {
+            background
+                .spawn(NodeBundle {
                     style: Style {
-                        margin: UiRect::top(Val::Percent(50.)),
-                        align_self: AlignSelf::Center,
-                        ..default()
-                    },
-                    text: Text::from_section(
-                        "Click Return to return to main menu",
-                        TextStyle::default(),
-                    ),
-                    transform: Transform {
-                        translation: Vec3::default().with_z(ZIndexMap::Text.value()),
+                        height: Val::Percent(100.),
+                        display: Display::Flex,
+                        flex_direction: FlexDirection::Column,
+                        justify_content: JustifyContent::FlexEnd,
+                        row_gap: Val::Px(5.),
                         ..default()
                     },
                     ..default()
-                },
-            ));
-            parent
-                .spawn((
-                    ReturnButton,
-                    Interaction::default(),
-                    NodeBundle {
-                        style: Style {
-                            align_self: AlignSelf::FlexEnd,
-                            width: Val::Px(100.),
-                            height: Val::Px(50.),
-                            border: UiRect::all(Val::Px(2.)),
-                            display: Display::Flex,
-                            align_items: AlignItems::Center,
-                            justify_content: JustifyContent::Center,
+                })
+                .with_children(|return_container| {
+                    return_container.spawn((
+                        EndTips { appearing: false },
+                        TextBundle {
+                            style: Style {
+                                align_self: AlignSelf::Center,
+                                ..default()
+                            },
+                            text: Text::from_section(
+                                "Click Return to return to main menu",
+                                TextStyle::default(),
+                            ),
+                            transform: Transform {
+                                translation: Vec3::default().with_z(ZIndexMap::Text.value()),
+                                ..default()
+                            },
                             ..default()
                         },
-                        background_color: BackgroundColor::from(Color::srgba(0.1, 0.1, 0.1, 1.)),
-                        border_color: BorderColor::from(Color::BLACK),
-                        ..default()
-                    },
-                ))
-                .with_children(|button_node| {
-                    button_node.spawn(TextBundle {
-                        text: Text::from_section("Return", TextStyle::default()),
-                        ..default()
-                    });
+                    ));
+                    return_container
+                        .spawn((
+                            ReturnButton,
+                            Interaction::default(),
+                            NodeBundle {
+                                style: Style {
+                                    align_self: AlignSelf::FlexEnd,
+                                    width: Val::Px(120.),
+                                    height: Val::Px(50.),
+                                    border: UiRect::all(Val::Px(2.)),
+                                    display: Display::Flex,
+                                    align_items: AlignItems::Center,
+                                    justify_content: JustifyContent::Center,
+                                    ..default()
+                                },
+                                background_color: BackgroundColor::from(Color::srgba(
+                                    0.1, 0.1, 0.1, 1.,
+                                )),
+                                border_color: BorderColor::from(Color::BLACK),
+                                ..default()
+                            },
+                        ))
+                        .with_children(|button_node| {
+                            button_node.spawn(TextBundle {
+                                text: Text::from_section("Return", TextStyle::default()),
+                                ..default()
+                            });
+                        });
                 });
         });
 }

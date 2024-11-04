@@ -57,6 +57,7 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                     width: Val::Percent(80.),
                     height: Val::Percent(80.),
                     padding: UiRect::all(Val::Px(10.)),
+                    row_gap: Val::Px(5.),
                     ..default()
                 },
                 background_color: BackgroundColor::from(Color::srgba(0.1, 0.1, 0.1, 0.5)),
@@ -68,6 +69,46 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
             },
         ))
         .with_children(|menu_background| {
+            menu_background.spawn(TextBundle {
+                text: Text::from_section(
+                    "Whenever the ufo crash you, you will lose health.",
+                    TextStyle::default(),
+                ),
+                transform: Transform {
+                    translation: Vec3::default().with_z(ZIndexMap::Text.value()),
+                    ..default()
+                },
+                ..default()
+            });
+            menu_background.spawn(TextBundle {
+                text: Text::from_section(
+                    "Every 50 score will increase the difficulty",
+                    TextStyle::default(),
+                ),
+                transform: Transform {
+                    translation: Vec3::default().with_z(ZIndexMap::Text.value()),
+                    ..default()
+                },
+                ..default()
+            });
+            menu_background.spawn(TextBundle {
+                style: Style {
+                    margin: UiRect::top(Val::Px(50.)),
+                    ..default()
+                },
+                text: Text::from_section(
+                    "In KeyBoard Mode:",
+                    TextStyle {
+                        color: Color::srgba(0., 0., 1., 1.),
+                        ..default()
+                    },
+                ),
+                transform: Transform {
+                    translation: Vec3::default().with_z(ZIndexMap::Text.value()),
+                    ..default()
+                },
+                ..default()
+            });
             menu_background.spawn(TextBundle {
                 text: Text::from_section("Press Arrow move", TextStyle::default()),
                 transform: Transform {
@@ -90,8 +131,11 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                     ..default()
                 },
                 text: Text::from_section(
-                    "Whenever the ufo crash you, you will lose health.",
-                    TextStyle::default(),
+                    "In Hover Mode:",
+                    TextStyle {
+                        color: Color::srgba(0., 1., 0., 1.),
+                        ..default()
+                    },
                 ),
                 transform: Transform {
                     translation: Vec3::default().with_z(ZIndexMap::Text.value()),
@@ -100,10 +144,15 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                 ..default()
             });
             menu_background.spawn(TextBundle {
-                text: Text::from_section(
-                    "Every 50 score will increase the difficulty",
-                    TextStyle::default(),
-                ),
+                text: Text::from_section("Hover on Arrow to move", TextStyle::default()),
+                transform: Transform {
+                    translation: Vec3::default().with_z(ZIndexMap::Text.value()),
+                    ..default()
+                },
+                ..default()
+            });
+            menu_background.spawn(TextBundle {
+                text: Text::from_section("Bullet will shoot automatically", TextStyle::default()),
                 transform: Transform {
                     translation: Vec3::default().with_z(ZIndexMap::Text.value()),
                     ..default()
@@ -125,26 +174,6 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                 .with_children(|option_node| {
                     option_node.spawn((
                         CheckBox {
-                            is_click_mode: true,
-                        },
-                        Interaction::default(),
-                        TextBundle {
-                            style: Style {
-                                align_self: AlignSelf::FlexEnd,
-                                ..default()
-                            },
-                            text: Text::from_sections([
-                                TextSection::new(
-                                    if is_click_mode { "-> " } else { "" },
-                                    TextStyle::default(),
-                                ),
-                                TextSection::new("Use Hover to play", TextStyle::default()),
-                            ]),
-                            ..default()
-                        },
-                    ));
-                    option_node.spawn((
-                        CheckBox {
                             is_click_mode: false,
                         },
                         Interaction::default(),
@@ -158,7 +187,39 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                                     if is_click_mode { "" } else { "-> " },
                                     TextStyle::default(),
                                 ),
-                                TextSection::new("Use Keyboard to play", TextStyle::default()),
+                                TextSection::new(
+                                    "Use Keyboard to play",
+                                    TextStyle {
+                                        color: Color::srgba(0., 0., 1., 1.),
+                                        ..default()
+                                    },
+                                ),
+                            ]),
+                            ..default()
+                        },
+                    ));
+                    option_node.spawn((
+                        CheckBox {
+                            is_click_mode: true,
+                        },
+                        Interaction::default(),
+                        TextBundle {
+                            style: Style {
+                                align_self: AlignSelf::FlexEnd,
+                                ..default()
+                            },
+                            text: Text::from_sections([
+                                TextSection::new(
+                                    if is_click_mode { "-> " } else { "" },
+                                    TextStyle::default(),
+                                ),
+                                TextSection::new(
+                                    "Use Hover to play",
+                                    TextStyle {
+                                        color: Color::srgba(0., 1., 0., 1.),
+                                        ..default()
+                                    },
+                                ),
                             ]),
                             ..default()
                         },
