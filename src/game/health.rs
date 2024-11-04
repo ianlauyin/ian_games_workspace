@@ -4,7 +4,7 @@ use bevy::sprite::Anchor;
 
 use crate::game::{ExplosionEvent, InvisibleEvent, Spaceship};
 use crate::states::{AppState, GameState};
-use crate::ui::{WINDOW_SIZE, ZIndexMap};
+use crate::ui::ZIndexMap;
 
 const INITIAL_HEALTH: u8 = 3;
 
@@ -24,14 +24,15 @@ pub struct HealthReduceEvent;
 #[derive(Component)]
 struct Health(u8);
 
-fn setup_health(mut commands: Commands) {
+fn setup_health(mut commands: Commands, windows: Query<&Window>) {
+    let window = windows.get_single().unwrap();
     commands.spawn((
         Health(INITIAL_HEALTH),
         Text2dBundle {
             text_anchor: Anchor::BottomLeft,
             transform: Transform::from_xyz(
-                -WINDOW_SIZE.x / 2. + 20.,
-                -WINDOW_SIZE.y / 2. + 20.,
+                -window.width() / 2. + 20.,
+                -window.height() / 2. + 20.,
                 ZIndexMap::Text.value(),
             ),
             text: Text::from_sections([

@@ -3,7 +3,7 @@ use rand::{Rng, thread_rng};
 
 use crate::asset_loader::ImageHandles;
 use crate::states::AppState;
-use crate::ui::{WINDOW_SIZE, ZIndexMap};
+use crate::ui::{FULL_WINDOW_SIZE, is_mobile, ZIndexMap};
 use crate::util::Velocity;
 
 pub struct BackgroundPlugin;
@@ -24,11 +24,17 @@ struct Stars {
     appearing: bool,
 }
 
-fn setup_background(mut commands: Commands) {
+fn setup_background(mut commands: Commands, windows: Query<&Window>) {
+    let window = windows.get_single().unwrap();
+    let custom_size = if is_mobile(window.width()) {
+        Vec2::new(window.width(), window.height())
+    } else {
+        FULL_WINDOW_SIZE
+    };
     commands.spawn(SpriteBundle {
         sprite: Sprite {
             color: Color::srgb(0.05, 0., 0.05),
-            custom_size: Some(WINDOW_SIZE),
+            custom_size: Some(custom_size),
             ..default()
         },
         transform: Transform::from_xyz(0., 0., ZIndexMap::Background.value()),
@@ -53,9 +59,14 @@ fn blinking_stars(mut stars_query: Query<(&mut Stars, &mut Sprite)>) {
     }
 }
 
-fn cleanup_stars(mut commands: Commands, stars_query: Query<(Entity, &Transform), With<Stars>>) {
+fn cleanup_stars(
+    mut commands: Commands,
+    stars_query: Query<(Entity, &Transform), With<Stars>>,
+    windows: Query<&Window>,
+) {
+    let window = windows.get_single().unwrap();
     for (entity, transform) in stars_query.iter() {
-        if transform.translation.y <= -WINDOW_SIZE.y {
+        if transform.translation.y <= -window.height() {
             commands.entity(entity).despawn();
         }
     }
@@ -65,23 +76,25 @@ fn check_stars_number(
     mut commands: Commands,
     stars_query: Query<&Transform, With<Stars>>,
     image_handles: Res<ImageHandles>,
+    windows: Query<&Window>,
 ) {
     let stars_handle = image_handles.stars.clone();
+    let window = windows.get_single().unwrap();
     if stars_query.is_empty() {
-        spawn_star(&mut commands, stars_handle);
+        spawn_star(&mut commands, stars_handle, window);
         return;
     }
     let Ok(transform) = stars_query.get_single() else {
         return;
     };
-    if transform.translation.y < WINDOW_SIZE.y / 2.
+    if transform.translation.y < window.resolution.height() / 2.
         && star_random_generator(transform.translation.y)
     {
-        spawn_star(&mut commands, stars_handle);
+        spawn_star(&mut commands, stars_handle, window);
     }
 }
 
-fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
+fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>, window: &Window) {
     commands.spawn((
         Stars { appearing: true },
         Velocity { x: 0., y: -2. },
@@ -93,7 +106,7 @@ fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
             },
             transform: Transform {
                 scale: Vec3::new(1.5, 1.5, 0.),
-                translation: Vec3::new(0., WINDOW_SIZE.y - 100., ZIndexMap::Stars.value()),
+                translation: Vec3::new(0., window.height(), ZIndexMap::Stars.value()),
                 ..default()
             },
             ..default()

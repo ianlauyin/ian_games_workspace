@@ -3,8 +3,7 @@ use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 use crate::asset_loader::MeshHandles;
 use crate::states::AppState;
-use crate::ui::{BULLET_SIZE, WINDOW_SIZE};
-use crate::ui::ZIndexMap;
+use crate::ui::{get_bullet_size, ZIndexMap};
 use crate::util::Velocity;
 
 #[derive(Component)]
@@ -45,6 +44,7 @@ impl BulletBundle {
         y: f32,
         mesh_handle: Mesh2dHandle,
         material_handle: Handle<ColorMaterial>,
+        window_width: f32,
     ) -> Self {
         Self {
             bullet: Bullet,
@@ -54,7 +54,7 @@ impl BulletBundle {
                 material: material_handle,
                 transform: Transform {
                     translation: Vec3::new(x, y, ZIndexMap::Bullet.value()),
-                    scale: BULLET_SIZE.extend(1.),
+                    scale: get_bullet_size(window_width).extend(1.),
                     ..default()
                 },
                 ..default()
@@ -67,7 +67,9 @@ fn shoot_bullet(
     trigger: Trigger<ShootBulletEvent>,
     mut commands: Commands,
     mesh_handles: Res<MeshHandles>,
+    windows: Query<&Window>,
 ) {
+    let window = windows.get_single().unwrap();
     let ShootBulletEvent { x, y } = trigger.event();
     let (mesh, material) = mesh_handles.bullet.clone();
     commands.spawn(BulletBundle::new(
@@ -75,18 +77,25 @@ fn shoot_bullet(
         y.clone(),
         mesh.clone().into(),
         material.clone(),
+        window.width(),
     ));
     commands.spawn(BulletBundle::new(
         x.clone() + 20.,
         y.clone(),
         mesh.into(),
         material,
+        window.width(),
     ));
 }
 
-fn clear_bullet(mut commands: Commands, bullet_queries: Query<(Entity, &Transform), With<Bullet>>) {
+fn clear_bullet(
+    mut commands: Commands,
+    bullet_queries: Query<(Entity, &Transform), With<Bullet>>,
+    windows: Query<&Window>,
+) {
+    let window = windows.get_single().unwrap();
     for (entity, transform) in bullet_queries.iter() {
-        if transform.translation.y > WINDOW_SIZE.y / 2. + 200. {
+        if transform.translation.y > window.height() / 2. + 200. {
             commands.entity(entity).despawn();
         }
     }

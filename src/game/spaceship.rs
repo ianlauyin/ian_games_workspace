@@ -6,7 +6,7 @@ use crate::asset_loader::ImageHandles;
 use crate::game::ShootBulletEvent;
 use crate::states::{AppState, GameState};
 use crate::ui::{
-    BOTTOM_EDGE, LEFT_EDGE, RIGHT_EDGE, SPACESHIP_SIZE, TOP_EDGE, WINDOW_SIZE, ZIndexMap,
+    get_bottom_edge, get_left_edge, get_right_edge, get_spaceship_size, get_top_edge, ZIndexMap,
 };
 use crate::util::Velocity;
 
@@ -35,17 +35,26 @@ impl Plugin for SpaceshipPlugin {
     }
 }
 
-fn setup_spaceship(mut commands: Commands, image_handles: Res<ImageHandles>) {
+fn setup_spaceship(
+    mut commands: Commands,
+    image_handles: Res<ImageHandles>,
+    windows: Query<&Window>,
+) {
+    let window = windows.get_single().unwrap();
     commands.spawn((
         Spaceship { bullet_cd: None },
         Velocity { x: 0., y: 5. },
         SpriteBundle {
             texture: image_handles.spaceship.clone(),
             sprite: Sprite {
-                custom_size: Some(SPACESHIP_SIZE),
+                custom_size: Some(get_spaceship_size(window.width())),
                 ..default()
             },
-            transform: Transform::from_xyz(0., -WINDOW_SIZE.y / 1.5, ZIndexMap::SpaceShip.value()),
+            transform: Transform::from_xyz(
+                0.,
+                -window.height() / 1.5,
+                ZIndexMap::SpaceShip.value(),
+            ),
             ..default()
         },
     ));
@@ -54,9 +63,11 @@ fn setup_spaceship(mut commands: Commands, image_handles: Res<ImageHandles>) {
 fn check_spaceship_position(
     mut next_state: ResMut<NextState<GameState>>,
     mut spaceship_query: Query<(&Transform, &mut Velocity), With<Spaceship>>,
+    windows: Query<&Window>,
 ) {
+    let window = windows.get_single().unwrap();
     let (transform, mut velocity) = spaceship_query.get_single_mut().unwrap();
-    if transform.translation.y >= -WINDOW_SIZE.y / 2.5 {
+    if transform.translation.y >= -window.height() / 2.5 {
         velocity.y = 0.;
         next_state.set(GameState::InPlay);
     }
@@ -65,15 +76,27 @@ fn check_spaceship_position(
 fn handle_spaceship_interaction(
     keys: Res<ButtonInput<KeyCode>>,
     mut spaceship_query: Query<(&mut Velocity, &Transform), With<Spaceship>>,
+    windows: Query<&Window>,
 ) {
     let (mut velocity, transform) = spaceship_query.get_single_mut().unwrap();
+    let window = windows.get_single().unwrap();
 
     velocity.y = match (
         keys.pressed(KeyCode::ArrowUp),
         keys.pressed(KeyCode::ArrowDown),
     ) {
-        (true, false) if transform.translation.y <= TOP_EDGE => 10.,
-        (false, true) if transform.translation.y >= BOTTOM_EDGE => -10.,
+        (true, false)
+            if transform.translation.y
+                <= get_top_edge(window.height(), get_spaceship_size(window.width()).y) =>
+        {
+            10.
+        }
+        (false, true)
+            if transform.translation.y
+                >= get_bottom_edge(window.height(), get_spaceship_size(window.width()).y) =>
+        {
+            -10.
+        }
         _ => 0.,
     };
 
@@ -81,8 +104,18 @@ fn handle_spaceship_interaction(
         keys.pressed(KeyCode::ArrowLeft),
         keys.pressed(KeyCode::ArrowRight),
     ) {
-        (false, true) if transform.translation.x <= RIGHT_EDGE => 10.,
-        (true, false) if transform.translation.x >= LEFT_EDGE => -10.,
+        (false, true)
+            if transform.translation.x
+                <= get_right_edge(window.width(), get_spaceship_size(window.width()).x) =>
+        {
+            10.
+        }
+        (true, false)
+            if transform.translation.x
+                >= get_left_edge(window.width(), get_spaceship_size(window.width()).x) =>
+        {
+            -10.
+        }
         _ => 0.,
     };
 }

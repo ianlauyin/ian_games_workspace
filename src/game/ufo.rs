@@ -4,7 +4,7 @@ use rand::{Rng, thread_rng};
 use crate::asset_loader::ImageHandles;
 use crate::game::Score;
 use crate::states::{AppState, GameState};
-use crate::ui::{LEFT_EDGE, RIGHT_EDGE, UFO_SIZE, WINDOW_SIZE, ZIndexMap};
+use crate::ui::{get_left_edge, get_right_edge, get_ufo_size, ZIndexMap};
 use crate::util::Velocity;
 
 #[derive(Component)]
@@ -34,9 +34,11 @@ fn check_spawn_ufo(
     image_handles: ResMut<ImageHandles>,
     ufo_query: Query<Entity, With<UFO>>,
     score_query: Query<&Score>,
+    windows: Query<&Window>,
 ) {
     let ufo_number = ufo_query.iter().len();
     let Score(score) = score_query.get_single().unwrap();
+    let window = windows.get_single().unwrap();
     let stage = match score {
         0..10 => Stage::Warmup,
         10..50 => Stage::One,
@@ -47,7 +49,7 @@ fn check_spawn_ufo(
         _ => Stage::Six,
     };
     if ufo_number == 0 || stage.random_generator(ufo_number as f64) {
-        spawn_ufo(&mut commands, image_handles.ufo.clone(), stage);
+        spawn_ufo(&mut commands, image_handles.ufo.clone(), stage, window);
     }
 }
 
@@ -73,7 +75,12 @@ impl Stage {
     }
 }
 
-fn spawn_ufo(commands: &mut Commands, ufo_image_handle: Handle<Image>, stage: Stage) {
+fn spawn_ufo(
+    commands: &mut Commands,
+    ufo_image_handle: Handle<Image>,
+    stage: Stage,
+    window: &Window,
+) {
     let mut rng = thread_rng();
     let velocity = match stage {
         Stage::Warmup | Stage::One => Velocity { x: 0., y: -3. },
@@ -91,33 +98,44 @@ fn spawn_ufo(commands: &mut Commands, ufo_image_handle: Handle<Image>, stage: St
         },
     };
 
-    let x = rng.gen_range(LEFT_EDGE..RIGHT_EDGE);
+    let x = rng.gen_range(ufo_edge(window, get_left_edge)..ufo_edge(window, get_right_edge));
     commands.spawn((
         UFO,
         velocity,
         SpriteBundle {
             texture: ufo_image_handle,
             sprite: Sprite {
-                custom_size: Some(UFO_SIZE),
+                custom_size: Some(get_ufo_size(window.width())),
                 ..default()
             },
-            transform: Transform::from_xyz(x, WINDOW_SIZE.y / 2. + 50., ZIndexMap::UFO.value()),
+            transform: Transform::from_xyz(x, window.height() / 2. + 50., ZIndexMap::UFO.value()),
             ..default()
         },
     ));
 }
 
-fn handle_horizontal_ufo(mut ufo_queries: Query<(&mut Velocity, &Transform), With<UFO>>) {
+fn handle_horizontal_ufo(
+    mut ufo_queries: Query<(&mut Velocity, &Transform), With<UFO>>,
+    windows: Query<&Window>,
+) {
+    let window = windows.get_single().unwrap();
     for (mut velocity, transform) in ufo_queries.iter_mut() {
-        if transform.translation.x <= LEFT_EDGE || transform.translation.x >= RIGHT_EDGE {
+        if transform.translation.x <= ufo_edge(window, get_left_edge)
+            || transform.translation.x >= ufo_edge(window, get_right_edge)
+        {
             velocity.x = -velocity.x
         }
     }
 }
 
-fn clear_ufo(mut commands: Commands, ufo_queries: Query<(Entity, &Transform), With<UFO>>) {
+fn clear_ufo(
+    mut commands: Commands,
+    ufo_queries: Query<(Entity, &Transform), With<UFO>>,
+    windows: Query<&Window>,
+) {
+    let window = windows.get_single().unwrap();
     for (entity, transform) in ufo_queries.iter() {
-        if transform.translation.y < -WINDOW_SIZE.y / 2. - 50. {
+        if transform.translation.y < -window.height() / 2. - 50. {
             commands.entity(entity).despawn();
         }
     }
@@ -135,4 +153,8 @@ fn cleanup_ufo(mut commands: Commands, ufo_queries: Query<Entity, With<UFO>>) {
     for entity in ufo_queries.iter() {
         commands.entity(entity).despawn();
     }
+}
+
+fn ufo_edge(window: &Window, edge_function: impl FnOnce(f32, f32) -> f32) -> f32 {
+    edge_function(window.width(), get_ufo_size(window.width()).x)
 }
