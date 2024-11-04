@@ -6,10 +6,12 @@ use asset_loader::AssetPlugin;
 use setup::SetupPlugin;
 use ui::BackgroundPlugin;
 
+use crate::control::ControlOptionPlugin;
 use crate::ui::{MainMenuPlugin, ResultPlugin};
 use crate::util::VelocityPlugin;
 
 mod asset_loader;
+mod control;
 mod game;
 mod setup;
 mod states;
@@ -44,5 +46,6 @@ pub fn start() {
         .add_plugins(ui_plugins)
         .add_plugins(game_plugins)
         .add_plugins(util_plugins)
+        .add_plugins(ControlOptionPlugin)
         .run();
 }
