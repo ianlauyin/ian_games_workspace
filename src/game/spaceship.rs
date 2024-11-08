@@ -178,7 +178,7 @@ fn handle_shoot_bullet(
         let Vec3 { x, y, .. } = transform.translation;
         if spaceship.bullet_cd.is_none() {
             commands.trigger(ShootBulletEvent { x, y });
-            spaceship.bullet_cd = Some(Timer::new(Duration::from_millis(100), TimerMode::Once));
+            spaceship.bullet_cd = Some(Timer::new(Duration::from_millis(200), TimerMode::Once));
         }
     }
 }
