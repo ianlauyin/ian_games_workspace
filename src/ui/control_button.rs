@@ -84,8 +84,8 @@ fn create_control_button(mut commands: Commands, control_option: Res<ControlOpti
                     position_type: PositionType::Absolute,
                     justify_self: JustifySelf::Center,
                     bottom: Val::Px(20.),
-                    width: Val::Px(180.),
-                    height: Val::Px(180.),
+                    width: Val::Px(300.),
+                    height: Val::Px(300.),
                     display: Display::Grid,
                     grid_template_columns: vec![RepeatedGridTrack::auto(3)],
                     grid_template_rows: vec![RepeatedGridTrack::auto(3)],
@@ -140,7 +140,7 @@ fn handle_spaceship_clicking_interaction(
     }
     let mut all_not_pressed = true;
     for (interaction, mut background_color, button_direction) in control_button_query.iter_mut() {
-        if *interaction == Interaction::Pressed || *interaction == Interaction::Hovered {
+        if *interaction == Interaction::Pressed {
             background_color.0.set_alpha(0.1);
             all_not_pressed = false;
             let movement = match button_direction {

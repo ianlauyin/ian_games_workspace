@@ -7,7 +7,7 @@ use crate::control::{ControlMode, ControlOption};
 use crate::game::ShootBulletEvent;
 use crate::states::{AppState, GameState};
 use crate::ui::{
-    get_bottom_edge, get_left_edge, get_right_edge, get_top_edge, SPACESHIP_SIZE, ZIndexMap,
+    get_bottom_edge, get_left_edge, get_right_edge, get_top_edge, ZIndexMap, SPACESHIP_SIZE,
 };
 use crate::util::Velocity;
 
@@ -173,7 +173,7 @@ fn handle_shoot_bullet(
     mut spaceship_query: Query<(&Transform, &mut Spaceship)>,
     control_option: Res<ControlOption>,
 ) {
-    if keys.pressed(KeyCode::Space) || control_option.mode == ControlMode::Hover {
+    if keys.pressed(KeyCode::Space) || control_option.mode == ControlMode::Button {
         let (transform, mut spaceship) = spaceship_query.get_single_mut().unwrap();
         let Vec3 { x, y, .. } = transform.translation;
         if spaceship.bullet_cd.is_none() {

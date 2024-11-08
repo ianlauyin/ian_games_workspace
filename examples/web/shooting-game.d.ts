@@ -22,11 +22,13 @@ export interface InitOutput {
   readonly __wbindgen_export_0: (a: number, b: number) => number;
   readonly __wbindgen_export_1: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly __wbindgen_export_3: (a: number, b: number) => void;
-  readonly __wbindgen_export_4: (a: number, b: number, c: number) => void;
-  readonly __wbindgen_export_5: (a: number, b: number, c: number, d: number) => void;
-  readonly __wbindgen_export_6: (a: number, b: number, c: number) => void;
-  readonly __wbindgen_export_7: (a: number) => void;
+  readonly __wbindgen_export_3: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_export_4: (a: number, b: number, c: number, d: number) => void;
+  readonly __wbindgen_export_5: (a: number, b: number) => void;
+  readonly __wbindgen_export_6: (a: number, b: number) => void;
+  readonly __wbindgen_export_7: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_export_8: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_export_9: (a: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;

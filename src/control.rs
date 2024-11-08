@@ -4,7 +4,7 @@ use bevy::prelude::Resource;
 #[derive(Eq, PartialEq)]
 pub enum ControlMode {
     Keyboard,
-    Hover,
+    Button,
 }
 
 #[derive(Resource)]

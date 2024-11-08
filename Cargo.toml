@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "shooting_game_lib"
-crate-type = ["cdylib"]
+crate-type = ["cdylib","rlib"]
 path = "./src/lib.rs"
 
 [dependencies]
