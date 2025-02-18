@@ -2,8 +2,8 @@ use bevy::app::App;
 use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
-use crate::constant::{ZIndexMap, MOBILE_WINDOW_SIZE};
-use crate::states::{AppState, GameState};
+use crate::constant::{ZIndex, MOBILE_WINDOW_SIZE};
+use crate::states::AppState;
 
 pub struct SetupPlugin;
 
@@ -33,6 +33,6 @@ fn setup_background(mut commands: Commands) {
             custom_size: Some(MOBILE_WINDOW_SIZE),
             ..default()
         },
-        Transform::from_xyz(0., 0., ZIndexMap::BACKGROUND),
+        ZIndex::BACKGROUND.component(),
     ));
 }

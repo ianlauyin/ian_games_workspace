@@ -1,6 +1,6 @@
-use bevy::prelude::Resource;
+use bevy::prelude::{Component, Resource};
 
-#[derive(Eq, PartialEq)]
+#[derive(Component, Clone, Eq, PartialEq)]
 pub enum ControlMode {
     Keyboard,
     Button,
@@ -12,10 +12,7 @@ pub struct ControlOption {
 }
 
 impl ControlOption {
-    pub fn toggle(&mut self) {
-        self.mode = match self.mode {
-            ControlMode::Keyboard => ControlMode::Button,
-            ControlMode::Button => ControlMode::Keyboard,
-        };
+    pub fn set_mode(&mut self, mode: &ControlMode) {
+        self.mode = mode.clone();
     }
 }

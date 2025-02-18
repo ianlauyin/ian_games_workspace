@@ -1,7 +1,6 @@
 use bevy::prelude::*;
-use rand::{rng, Rng};
 
-use crate::constant::{ZIndexMap, MOBILE_WINDOW_SIZE};
+use crate::constant::{ZIndex, MOBILE_WINDOW_SIZE};
 use crate::res::ImageHandles;
 use crate::states::AppState;
 use crate::ui_component::Blink;
@@ -28,25 +27,12 @@ fn check_stars_number(
     image_handles: Res<ImageHandles>,
 ) {
     let stars_handle = image_handles.stars.clone();
-    if stars_query.is_empty() {
+    let Some(first_star_transform) = stars_query.iter().next() else {
         spawn_star(&mut commands, stars_handle);
-        return;
-    }
-    let Ok(transform) = stars_query.get_single() else {
         return;
     };
-    if transform.translation.y < MOBILE_WINDOW_SIZE.y / 2.
-        && star_random_generator(transform.translation.y)
-    {
+    if stars_query.iter().len() == 1 && first_star_transform.translation.y < 0. {
         spawn_star(&mut commands, stars_handle);
-    }
-}
-
-fn cleanup_stars(mut commands: Commands, stars_query: Query<(Entity, &Transform), With<Stars>>) {
-    for (entity, transform) in stars_query.iter() {
-        if transform.translation.y <= -MOBILE_WINDOW_SIZE.y {
-            commands.entity(entity).despawn();
-        }
     }
 }
 
@@ -57,23 +43,20 @@ fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
         Velocity { x: 0., y: -2. },
         Sprite {
             image: stars_handle,
-            color: Color::default().with_alpha(0.01),
             ..default()
         },
         Transform {
-            scale: Vec3::new(1.5, 1.5, 0.),
-            translation: Vec3::new(0., MOBILE_WINDOW_SIZE.y, ZIndexMap::STARS),
+            scale: Vec2::new(0.8, 0.8).extend(0.),
+            translation: Vec3::new(0., MOBILE_WINDOW_SIZE.y, ZIndex::STARS.value()),
             ..default()
         },
     ));
 }
 
-fn star_random_generator(base_number: f32) -> bool {
-    if base_number < 1. {
-        return true;
+fn cleanup_stars(mut commands: Commands, stars_query: Query<(Entity, &Transform), With<Stars>>) {
+    for (entity, transform) in stars_query.iter() {
+        if transform.translation.y <= -MOBILE_WINDOW_SIZE.y {
+            commands.entity(entity).despawn();
+        }
     }
-    let base_integer = base_number as u32;
-    let mut rng = rng();
-    let random_value: u32 = rng.random_range(0..base_integer);
-    random_value == 1
 }

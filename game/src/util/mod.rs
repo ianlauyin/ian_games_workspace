@@ -1,4 +1,5 @@
 mod velocity;
+
 pub use velocity::Velocity;
 
 use bevy::prelude::{App, Plugin};

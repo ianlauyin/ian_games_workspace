@@ -18,11 +18,7 @@ impl Plugin for VelocityPlugin {
 fn apply_velocity(mut items: Query<(&Velocity, &mut Transform)>) {
     for (velocity, mut transform) in items.iter_mut() {
         let origin_translation = transform.translation;
-        let new_translation = Vec3::new(
-            origin_translation.x + velocity.x,
-            origin_translation.y + velocity.y,
-            origin_translation.z,
-        );
-        transform.translation = new_translation;
+        transform.translation.x = origin_translation.x + velocity.x;
+        transform.translation.y = origin_translation.y + velocity.y;
     }
 }

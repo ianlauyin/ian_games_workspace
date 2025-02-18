@@ -3,10 +3,10 @@ use std::mem::swap;
 use bevy::prelude::*;
 
 #[derive(Component)]
-#[require(Sprite)]
 pub struct Blink {
     appearing: bool,
     speed: f32,
+    current_alpha: f32,
     max_alpha: f32,
     min_alpha: f32,
 }
@@ -16,6 +16,7 @@ impl Default for Blink {
         Self {
             appearing: true,
             speed: 1.,
+            current_alpha: 1.,
             max_alpha: 1.,
             min_alpha: 0.,
         }
@@ -30,34 +31,48 @@ impl Blink {
         };
         Self {
             speed,
+            current_alpha: min_alpha,
             max_alpha,
             min_alpha,
             ..default()
         }
     }
 
-    pub fn new_with_range(mut max_alpha: f32, mut min_alpha: f32) -> Self {
-        if max_alpha < min_alpha {
-            warn!("max_alpha must be greater than min_alpha");
-            swap(&mut max_alpha, &mut min_alpha);
-        };
-        Self {
-            max_alpha,
-            min_alpha,
-            ..default()
-        }
-    }
+    // pub fn new_with_range(mut max_alpha: f32, mut min_alpha: f32) -> Self {
+    //     if max_alpha < min_alpha {
+    //         warn!("max_alpha must be greater than min_alpha");
+    //         swap(&mut max_alpha, &mut min_alpha);
+    //     };
+    //     Self {
+    //         max_alpha,
+    //         min_alpha,
+    //         ..default()
+    //     }
+    // }
 
     pub fn new_with_speed(speed: f32) -> Self {
         Self { speed, ..default() }
     }
 
-    fn check_alpha(&mut self, current_alpha: f32) {
-        if current_alpha >= self.max_alpha {
+    fn get_alpha(&mut self) -> f32 {
+        self.current_alpha
+    }
+
+    fn update_alpha(&mut self) {
+        self.current_alpha += if self.appearing {
+            self.speed
+        } else {
+            -self.speed
+        };
+        self.check_alpha();
+    }
+
+    fn check_alpha(&mut self) {
+        if self.current_alpha >= self.max_alpha {
             self.appearing = false;
             return;
         }
-        if current_alpha <= self.min_alpha {
+        if self.current_alpha <= self.min_alpha {
             self.appearing = true;
         }
     }
@@ -71,15 +86,19 @@ impl Plugin for BlinkPlugin {
     }
 }
 
-fn handle_blink(mut blink_query: Query<(&mut Blink, &mut Sprite)>) {
-    for (mut blink, mut sprite) in blink_query.iter_mut() {
-        let alpha = sprite.color.alpha();
-        blink.check_alpha(alpha);
-        let new_alpha = if blink.appearing {
-            alpha + blink.speed
-        } else {
-            alpha - blink.speed
-        };
-        sprite.color.set_alpha(new_alpha)
+fn handle_blink(mut blink_query: Query<(&mut Blink, Option<&mut Sprite>, Option<&mut TextColor>)>) {
+    for (mut blink, sprite_op, text_color_op) in blink_query.iter_mut() {
+        blink.update_alpha();
+        let new_alpha = blink.get_alpha();
+        alter_alpha(sprite_op, text_color_op, new_alpha)
+    }
+}
+
+fn alter_alpha(sprite_op: Option<Mut<Sprite>>, text_color_op: Option<Mut<TextColor>>, alpha: f32) {
+    if let Some(mut sprite) = sprite_op {
+        sprite.color.set_alpha(alpha);
+    }
+    if let Some(mut text_color) = text_color_op {
+        text_color.set_alpha(alpha);
     }
 }
