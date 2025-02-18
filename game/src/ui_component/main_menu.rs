@@ -5,7 +5,7 @@ use bevy::winit::cursor::CursorIcon;
 
 use crate::control::{ControlMode, ControlOption};
 use crate::states::AppState;
-use crate::ui::ZIndexMap;
+use crate::ui_component::ZIndexMap;
 
 pub struct MainMenuPlugin;
 

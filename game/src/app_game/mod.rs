@@ -15,3 +15,9 @@ mod invisible;
 mod score;
 mod spaceship;
 mod ufo;
+
+use bevy::prelude::{App, Plugin};
+pub struct GamePlugin;
+impl Plugin for GamePlugin {
+    fn build(&self, app: &mut App) {}
+}

@@ -2,7 +2,7 @@ use bevy::color::palettes::css::YELLOW;
 use bevy::prelude::*;
 
 use crate::states::AppState;
-use crate::ui::{ZIndexMap, BULLET_SIZE};
+use crate::ui_component::{ZIndexMap, BULLET_SIZE};
 use crate::util::Velocity;
 
 #[derive(Component)]

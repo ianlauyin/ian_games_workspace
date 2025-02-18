@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy::time::Timer;
 
 use crate::asset_loader::ImageHandles;
-use crate::ui::ZIndexMap;
+use crate::ui_component::ZIndexMap;
 
 #[derive(Event)]
 pub struct ExplosionEvent {

@@ -2,9 +2,9 @@ use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
 
-use crate::game::{ExplosionEvent, InvisibleEvent, Spaceship};
+use crate::app_game::{ExplosionEvent, InvisibleEvent, Spaceship};
 use crate::states::{AppState, GameState};
-use crate::ui::ZIndexMap;
+use crate::ui_component::ZIndexMap;
 
 const INITIAL_HEALTH: u8 = 3;
 

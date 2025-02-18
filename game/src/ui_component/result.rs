@@ -5,7 +5,7 @@ use bevy::winit::cursor::CursorIcon;
 
 use crate::game::Score;
 use crate::states::{AppState, GameState};
-use crate::ui::ZIndexMap;
+use crate::ui_component::ZIndexMap;
 
 pub struct ResultPlugin;
 
@@ -108,7 +108,7 @@ fn handle_return_button_interaction(
     result_query: Query<Entity, With<Result>>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    let mut window_entity = window_query.get_single_mut().unwrap();
+    let window_entity = window_query.get_single_mut().unwrap();
     let (interaction, mut background) = return_button_query.get_single_mut().unwrap();
     match interaction {
         Interaction::None => {

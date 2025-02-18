@@ -2,12 +2,12 @@ use bevy::app::App;
 use bevy::math::bounding::{Aabb2d, IntersectsVolume};
 use bevy::prelude::*;
 
-use crate::game::{
+use crate::app_game::{
     AddScoreEvent, Bullet, ExplosionEvent, HealthReduceEvent, Invisible, RemoveBulletEvent,
     RemoveUFOEvent, Spaceship, UFO,
 };
 use crate::states::GameState;
-use crate::ui::{BULLET_SIZE, SPACESHIP_SIZE, UFO_SIZE};
+use crate::ui_component::{BULLET_SIZE, SPACESHIP_SIZE, UFO_SIZE};
 
 pub struct CollisionPlugin;
 

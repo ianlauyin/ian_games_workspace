@@ -1,47 +1,23 @@
 use bevy::asset::LoadState;
-use bevy::color::palettes::css::YELLOW;
 use bevy::prelude::*;
 
+use crate::res::ImageHandles;
 use crate::states::AppState;
 
-#[derive(Resource)]
-pub struct ImageHandles {
-    pub explosion: Handle<Image>,
-    pub spaceship: Handle<Image>,
-    pub ufo: Handle<Image>,
-    pub stars: Handle<Image>,
-}
+pub struct AssetLoaderPlugin;
 
-#[derive(Resource)]
-pub struct MeshHandles {
-    pub bullet: (Handle<Mesh>, Handle<ColorMaterial>),
-}
-
-pub struct AssetPlugin;
-
-impl Plugin for AssetPlugin {
+impl Plugin for AssetLoaderPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(PreStartup, load_assets)
             .add_systems(Update, check_assets.run_if(in_state(AppState::Loading)));
     }
 }
-fn load_assets(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
-) {
+fn load_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(ImageHandles {
         explosion: asset_server.load("embedded://explosion.png"),
         spaceship: asset_server.load("embedded://spaceship.png"),
         ufo: asset_server.load("embedded://ufo.png"),
         stars: asset_server.load("embedded://stars.png"),
-    });
-    commands.insert_resource(MeshHandles {
-        bullet: (
-            meshes.add(Rectangle::default()),
-            materials.add(Color::from(YELLOW)),
-        ),
     });
 }
 

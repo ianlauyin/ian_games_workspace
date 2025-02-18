@@ -4,9 +4,9 @@ use bevy::prelude::*;
 
 use crate::asset_loader::ImageHandles;
 use crate::control::{ControlMode, ControlOption};
-use crate::game::ShootBulletEvent;
+use crate::app_game::ShootBulletEvent;
 use crate::states::{AppState, GameState};
-use crate::ui::{
+use crate::ui_component::{
     get_bottom_edge, get_left_edge, get_right_edge, get_top_edge, ZIndexMap, SPACESHIP_SIZE,
 };
 use crate::util::Velocity;

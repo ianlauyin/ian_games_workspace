@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy::sprite::Anchor;
 
 use crate::states::AppState;
-use crate::ui::ZIndexMap;
+use crate::ui_component::ZIndexMap;
 
 #[derive(Event)]
 pub struct AddScoreEvent;

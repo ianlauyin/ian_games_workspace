@@ -3,7 +3,7 @@ use std::time::Duration;
 use bevy::app::App;
 use bevy::prelude::*;
 
-use crate::game::Spaceship;
+use crate::app_game::Spaceship;
 use crate::states::GameState;
 
 #[derive(Event)]

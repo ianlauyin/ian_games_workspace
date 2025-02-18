@@ -1,9 +1,9 @@
-use bevy::app::{App, Startup};
+use bevy::app::App;
 use bevy::prelude::*;
 use bevy::window::WindowResolution;
 
+use crate::constant::{ZIndexMap, MOBILE_WINDOW_SIZE};
 use crate::states::{AppState, GameState};
-use crate::ui::MOBILE_WINDOW_SIZE;
 
 pub struct SetupPlugin;
 
@@ -18,11 +18,21 @@ impl Plugin for SetupPlugin {
             }),
             ..default()
         }))
-        .init_state::<AppState>()
-        .add_sub_state::<GameState>()
-        .add_systems(Startup, setup_camera);
+        .add_systems(OnExit(AppState::Loading), (setup_camera, setup_background));
     }
 }
+
 fn setup_camera(mut commands: Commands) {
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn(Camera2d::default());
+}
+
+fn setup_background(mut commands: Commands) {
+    commands.spawn((
+        Sprite {
+            color: Color::srgb(0.05, 0., 0.05),
+            custom_size: Some(MOBILE_WINDOW_SIZE),
+            ..default()
+        },
+        Transform::from_xyz(0., 0., ZIndexMap::BACKGROUND),
+    ));
 }

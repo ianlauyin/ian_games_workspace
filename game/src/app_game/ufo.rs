@@ -2,9 +2,9 @@ use bevy::prelude::*;
 use rand::{rng, Rng};
 
 use crate::asset_loader::ImageHandles;
-use crate::game::Score;
+use crate::app_game::Score;
 use crate::states::{AppState, GameState};
-use crate::ui::{get_left_edge, get_right_edge, ZIndexMap, UFO_SIZE};
+use crate::ui_component::{get_left_edge, get_right_edge, ZIndexMap, UFO_SIZE};
 use crate::util::Velocity;
 
 #[derive(Component)]
