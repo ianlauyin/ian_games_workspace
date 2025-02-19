@@ -34,8 +34,9 @@ fn handle_interaction_ui(
             }
         }
     }
-    let window = windows.get_single().unwrap();
-    commands.entity(window).insert(curosr_icon);
+    if let Ok(window) = windows.get_single() {
+        commands.entity(window).insert(curosr_icon);
+    }
 }
 
 fn alter_alpha(
