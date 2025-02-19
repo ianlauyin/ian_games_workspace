@@ -1,2 +1,3 @@
 [workspace]
-members = ["game"]
+members = ["game","backend"]
+resolver = "2"
