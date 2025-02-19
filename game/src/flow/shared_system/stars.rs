@@ -3,8 +3,7 @@ use bevy::prelude::*;
 use crate::constant::{ZIndex, MOBILE_WINDOW_SIZE};
 use crate::res::ImageHandles;
 use crate::states::AppState;
-use crate::ui_component::Blink;
-use crate::util::Velocity;
+use crate::ui_component::{Blink, Velocity};
 
 pub struct StarsPlugin;
 

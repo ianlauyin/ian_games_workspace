@@ -9,7 +9,6 @@ mod game_component;
 mod res;
 mod states;
 mod ui_component;
-mod util;
 
 fn main() {
     App::new()
@@ -19,6 +18,5 @@ fn main() {
         .add_plugins(res::ResPlugin)
         .add_plugins(states::StatePlugin)
         .add_plugins(ui_component::UIComponentPlugin)
-        .add_plugins(util::UtilPlugin)
         .run();
 }
