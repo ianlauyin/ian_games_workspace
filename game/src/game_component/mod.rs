@@ -1,5 +1,4 @@
-use bevy::prelude::*;
-
+use bevy::prelude::{App, Plugin};
 pub struct GameComponentPlugin;
 
 impl Plugin for GameComponentPlugin {

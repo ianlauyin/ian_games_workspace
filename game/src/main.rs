@@ -9,6 +9,7 @@ mod game_component;
 mod res;
 mod states;
 mod ui_component;
+mod util;
 
 fn main() {
     App::new()
