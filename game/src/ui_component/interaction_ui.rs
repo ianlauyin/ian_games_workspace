@@ -14,7 +14,7 @@ impl Plugin for InteractionUIPlugin {
 
 fn handle_interaction_ui(
     mut commands: Commands,
-    mut selectable_text_query: Query<
+    mut interaction_ui_query: Query<
         (
             &Interaction,
             Option<&mut BackgroundColor>,
@@ -25,7 +25,7 @@ fn handle_interaction_ui(
     windows: Query<Entity, With<Window>>,
 ) {
     let mut curosr_icon = CursorIcon::default();
-    for (interaction, background_color_op, text_color_op) in selectable_text_query.iter_mut() {
+    for (interaction, background_color_op, text_color_op) in interaction_ui_query.iter_mut() {
         match interaction {
             Interaction::None => alter_alpha(background_color_op, text_color_op, 1.),
             _ => {

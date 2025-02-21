@@ -4,6 +4,7 @@ use bevy::prelude::*;
 use crate::res::{ControlMode, ControlOption};
 use crate::states::AppState;
 use crate::ui_component::{Blink, InteractionUI, MainContainer, SelectableText};
+use crate::util::cleanup;
 
 pub struct MainMenuPlugin;
 
@@ -21,7 +22,8 @@ impl Plugin for MainMenuPlugin {
                     handle_start_button_interaction,
                 )
                     .run_if(in_state(AppState::MainMenu)),
-            );
+            )
+            .add_systems(OnExit(AppState::MainMenu), cleanup::<MainMenu>);
     }
 }
 

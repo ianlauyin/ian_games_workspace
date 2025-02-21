@@ -6,6 +6,7 @@ use bevy_embedded_assets::EmbeddedAssetPlugin;
 mod constant;
 mod flow;
 mod game_component;
+mod game_events;
 mod res;
 mod states;
 mod ui_component;
@@ -16,6 +17,7 @@ fn main() {
         .add_plugins(EmbeddedAssetPlugin::default())
         .add_plugins(flow::FlowPlugin)
         .add_plugins(game_component::GameComponentPlugin)
+        .add_plugins(game_events::GameEventsPlugin)
         .add_plugins(res::ResPlugin)
         .add_plugins(states::StatePlugin)
         .add_plugins(ui_component::UIComponentPlugin)

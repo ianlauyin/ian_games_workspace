@@ -46,7 +46,7 @@ fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
         },
         Transform {
             scale: Vec2::new(0.8, 0.8).extend(0.),
-            translation: Vec3::new(0., MOBILE_WINDOW_SIZE.y, ZIndex::STARS.value()),
+            translation: Vec3::new(0., MOBILE_WINDOW_SIZE.y, ZIndex::STARS.z_value()),
             ..default()
         },
     ));

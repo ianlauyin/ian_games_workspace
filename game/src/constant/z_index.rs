@@ -12,7 +12,7 @@ pub enum ZIndex {
 }
 
 impl ZIndex {
-    pub fn value(&self) -> f32 {
+    pub fn z_value(&self) -> f32 {
         match self {
             ZIndex::BACKGROUND => 0.,
             ZIndex::STARS => 1.,
@@ -24,6 +24,6 @@ impl ZIndex {
     }
 
     pub fn component(&self) -> BevyZIndex {
-        BevyZIndex(self.value() as i32)
+        BevyZIndex(self.z_value() as i32)
     }
 }
