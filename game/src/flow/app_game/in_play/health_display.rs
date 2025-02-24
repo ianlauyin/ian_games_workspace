@@ -1,7 +1,7 @@
 use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 
-use crate::components::{Health, Player};
+use crate::components::Health;
 use crate::states::GameState;
 use crate::util::cleanup_components;
 
@@ -25,9 +25,9 @@ impl Plugin for HealthDisplayPlugin {
 struct HealthDisplay;
 
 #[derive(Component)]
-struct PlayerHealthText(u8);
+struct PlayerHealthText;
 
-fn display_health(mut commands: Commands, health_q: Query<(&Health, &Player)>) {
+fn display_health(mut commands: Commands, health_q: Query<&Health>) {
     commands
         .spawn((
             HealthDisplay,
@@ -41,27 +41,30 @@ fn display_health(mut commands: Commands, health_q: Query<(&Health, &Player)>) {
             },
         ))
         .with_children(|health_display| {
-            health_display.spawn(Text::new("Health:"));
-            for (health, player) in health_q.iter() {
-                health_display
-                    .spawn((Text::new(format!("Player {}: ", player.0)),))
-                    .with_child((
-                        PlayerHealthText(player.0),
-                        TextSpan::new(health.0.to_string()),
-                    ));
-            }
+            let Ok(health) = health_q.get_single() else {
+                warn!("Health not found in display_health");
+                return;
+            };
+            health_display
+                .spawn(Text::new("Health:"))
+                .with_child((PlayerHealthText, TextSpan::new(health.0.to_string())));
         });
 }
 
 fn update_health_text(
-    health_q: Query<(&Health, &Player), Changed<Health>>,
-    mut player_health_text_q: Query<(&mut TextSpan, &PlayerHealthText)>,
+    health_q: Query<&Health, Changed<Health>>,
+    mut player_health_text_q: Query<&mut TextSpan, With<PlayerHealthText>>,
 ) {
-    for (health, player) in health_q.iter() {
-        for (mut text_span, player_health_text) in player_health_text_q.iter_mut() {
-            if player_health_text.0 == player.0 {
-                text_span.0 = health.0.to_string();
-            }
-        }
+    if health_q.is_empty() {
+        return;
     }
+    let Ok(health) = health_q.get_single() else {
+        warn!("Health not found in update_health_text");
+        return;
+    };
+    let Ok(mut text_span) = player_health_text_q.get_single_mut() else {
+        warn!("Player health text not found in update_health_text");
+        return;
+    };
+    text_span.0 = health.0.to_string();
 }

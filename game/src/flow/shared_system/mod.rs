@@ -1,10 +1,11 @@
 mod stars;
+mod cleanup;
 
 use bevy::prelude::{App, Plugin};
 pub struct SharedSystemPlugin;
 
 impl Plugin for SharedSystemPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(stars::StarsPlugin);
+        app.add_plugins((stars::StarsPlugin, cleanup::CleanupPlugin));
     }
 }

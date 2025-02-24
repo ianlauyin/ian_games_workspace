@@ -1,7 +1,7 @@
 use bevy::app::{App, Plugin};
 use bevy::prelude::*;
 
-use crate::components::{Player, Score};
+use crate::components::Score;
 use crate::states::GameState;
 use crate::util::cleanup_components;
 
@@ -25,9 +25,9 @@ impl Plugin for ScoreDisplayPlugin {
 struct ScoreDisplay;
 
 #[derive(Component)]
-struct PlayerScoreText(u8);
+struct PlayerScoreText;
 
-fn display_score(mut commands: Commands, score_q: Query<(&Score, &Player)>) {
+fn display_score(mut commands: Commands, score_q: Query<&Score>) {
     commands
         .spawn((
             ScoreDisplay,
@@ -41,27 +41,30 @@ fn display_score(mut commands: Commands, score_q: Query<(&Score, &Player)>) {
             },
         ))
         .with_children(|score_display| {
-            score_display.spawn(Text::new("Score:"));
-            for (score, player) in score_q.iter() {
-                score_display
-                    .spawn((Text::new(format!("Player {}: ", player.0)),))
-                    .with_child((
-                        PlayerScoreText(player.0),
-                        TextSpan::new(score.0.to_string()),
-                    ));
-            }
+            let Ok(score) = score_q.get_single() else {
+                warn!("Score not found in display_score");
+                return;
+            };
+            score_display
+                .spawn(Text::new("Score:"))
+                .with_child((PlayerScoreText, TextSpan::new(score.0.to_string())));
         });
 }
 
 fn update_score_text(
-    score_q: Query<(&Score, &Player), Changed<Score>>,
-    mut player_score_text_q: Query<(&mut TextSpan, &PlayerScoreText)>,
+    score_q: Query<&Score, Changed<Score>>,
+    mut player_score_text_q: Query<&mut TextSpan, With<PlayerScoreText>>,
 ) {
-    for (score, player) in score_q.iter() {
-        for (mut text_span, player_score_text) in player_score_text_q.iter_mut() {
-            if player_score_text.0 == player.0 {
-                text_span.0 = score.0.to_string();
-            }
-        }
+    if score_q.is_empty() {
+        return;
     }
+    let Ok(score) = score_q.get_single() else {
+        warn!("Score not found in update_score_text");
+        return;
+    };
+    let Ok(mut text_span) = player_score_text_q.get_single_mut() else {
+        warn!("Player score text not found in update_score_text");
+        return;
+    };
+    text_span.0 = score.0.to_string();
 }

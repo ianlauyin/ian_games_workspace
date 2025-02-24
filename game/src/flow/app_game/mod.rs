@@ -1,6 +1,6 @@
-mod cleanup;
 mod in_play;
 mod ready;
+mod result;
 mod triggers;
 
 use bevy::prelude::{App, Plugin};
@@ -11,7 +11,7 @@ impl Plugin for AppGamePlugin {
             ready::ReadyPlugin,
             in_play::InPlayPlugin,
             triggers::TriggersPlugin,
-            cleanup::CleanupPlugin,
+            result::ResultPlugin,
         ));
     }
 }

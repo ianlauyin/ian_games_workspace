@@ -60,7 +60,7 @@ fn cleanup_stars(mut commands: Commands, stars_query: Query<(Entity, &Transform)
     for (entity, transform) in stars_query.iter() {
         if edge.over_bottom_out(transform.translation.y) {
             if let Some(mut entity_commands) = commands.get_entity(entity) {
-                entity_commands.despawn_recursive();
+                entity_commands.despawn();
             }
         }
     }
