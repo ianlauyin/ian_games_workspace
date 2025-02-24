@@ -15,6 +15,9 @@ impl UFO {
     pub fn new(position: Vec2) -> Self {
         Self { position }
     }
+    pub fn get_position(&self) -> Vec2 {
+        self.position
+    }
 }
 
 pub struct UFOPlugin;

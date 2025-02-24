@@ -24,23 +24,23 @@ impl Plugin for CollisablePlugin {
 }
 
 fn check_collision(
-    mut commands: Commands,
+    mut event_writer: EventWriter<CollidedEvent>,
     collisable_query: Query<(Entity, &Transform, &Sprite), With<Collisable>>,
 ) {
     for (i, (entity, transform, sprite)) in collisable_query.iter().enumerate() {
         let aabb = Aabb2d::new(
             transform.translation.truncate(),
-            sprite.custom_size.unwrap(),
+            sprite.custom_size.unwrap() / 2.,
         );
 
         for (other_entity, other_transform, other_sprite) in collisable_query.iter().skip(i + 1) {
             let other_aabb = Aabb2d::new(
                 other_transform.translation.truncate(),
-                other_sprite.custom_size.unwrap(),
+                other_sprite.custom_size.unwrap() / 2.,
             );
 
             if aabb.intersects(&other_aabb) {
-                commands.trigger(CollidedEvent {
+                event_writer.send(CollidedEvent {
                     entity1: entity,
                     entity2: other_entity,
                 });

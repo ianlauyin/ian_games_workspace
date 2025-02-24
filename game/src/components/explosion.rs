@@ -12,7 +12,7 @@ pub struct Explosion {
 }
 
 impl Explosion {
-    fn new(position: Vec2) -> Self {
+    pub fn new(position: Vec2) -> Self {
         Self {
             position,
             timer: Timer::from_seconds(0.5, TimerMode::Once),

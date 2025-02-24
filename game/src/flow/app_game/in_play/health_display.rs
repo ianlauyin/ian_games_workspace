@@ -11,10 +11,13 @@ impl Plugin for HealthDisplayPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::InPlay), display_health)
             .add_systems(
+                Update,
+                update_health_text.run_if(in_state(GameState::InPlay)),
+            )
+            .add_systems(
                 OnExit(GameState::InPlay),
                 cleanup_components::<HealthDisplay>,
-            )
-            .add_observer(update_health_text);
+            );
     }
 }
 
@@ -51,18 +54,14 @@ fn display_health(mut commands: Commands, health_q: Query<(&Health, &Player)>) {
 }
 
 fn update_health_text(
-    ev: Trigger<OnReplace, Health>,
-    health_q: Query<(&Health, &Player)>,
+    health_q: Query<(&Health, &Player), Changed<Health>>,
     mut player_health_text_q: Query<(&mut TextSpan, &PlayerHealthText)>,
 ) {
-    let Ok((health, player)) = health_q.get(ev.entity()) else {
-        warn!("Cannot find player with updated health");
-        return;
-    };
-
-    for (mut text_span, player_health_text) in player_health_text_q.iter_mut() {
-        if player_health_text.0 == player.0 {
-            text_span.0 = health.0.to_string();
+    for (health, player) in health_q.iter() {
+        for (mut text_span, player_health_text) in player_health_text_q.iter_mut() {
+            if player_health_text.0 == player.0 {
+                text_span.0 = health.0.to_string();
+            }
         }
     }
 }

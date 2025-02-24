@@ -1,5 +1,7 @@
+mod collision;
 mod control;
 mod enemy;
+mod finish;
 mod health_display;
 mod score_display;
 
@@ -13,6 +15,8 @@ impl Plugin for InPlayPlugin {
             health_display::HealthDisplayPlugin,
             score_display::ScoreDisplayPlugin,
             enemy::EnemyPlugin,
+            collision::CollisionPlugin,
+            finish::FinishPlugin,
         ));
     }
 }
