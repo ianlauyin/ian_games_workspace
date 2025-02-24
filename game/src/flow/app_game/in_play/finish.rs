@@ -1,18 +1,29 @@
 use bevy::prelude::*;
 
-use crate::{components::Health, states::GameState};
+use crate::{
+    components::{Explosion, Health, Spaceship},
+    states::GameState,
+};
 
 pub struct FinishPlugin;
 
 impl Plugin for FinishPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, check_finish);
+        app.add_systems(Update, check_finish.run_if(in_state(GameState::InPlay)));
     }
 }
 
-fn check_finish(health_q: Query<&Health>, mut next_state: ResMut<NextState<GameState>>) {
+fn check_finish(
+    mut commands: Commands,
+    health_q: Query<&Health>,
+    mut next_state: ResMut<NextState<GameState>>,
+    spaceship_q: Query<(Entity, &Spaceship)>,
+) {
     for health in health_q.iter() {
         if health.0 == 0 {
+            let (entity, spaceship) = spaceship_q.get_single().unwrap();
+            commands.spawn(Explosion::new(spaceship.get_position()));
+            commands.entity(entity).despawn_recursive();
             next_state.set(GameState::Result);
         }
     }

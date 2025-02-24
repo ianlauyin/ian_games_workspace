@@ -3,56 +3,46 @@ use std::time::Duration;
 use bevy::app::App;
 use bevy::prelude::*;
 
-use crate::app_game::Spaceship;
-use crate::states::GameState;
-
-#[derive(Event)]
-pub struct InvisibleEvent;
-
-pub struct InvisiblePlugin;
-
-impl Plugin for InvisiblePlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, apply_invisible.run_if(in_state(GameState::InPlay)))
-            .add_observer(trigger_invisible_ship);
-    }
-}
+use crate::ui_components::Blink;
 
 #[derive(Component)]
 pub struct Invisible {
     timer: Timer,
 }
 
-fn trigger_invisible_ship(
-    _: Trigger<InvisibleEvent>,
-    mut commands: Commands,
-    spaceship_query: Query<Entity, With<Spaceship>>,
-) {
-    let entity = spaceship_query.get_single().unwrap();
-    commands.entity(entity).insert(Invisible {
-        timer: Timer::new(Duration::from_secs(1), TimerMode::Once),
-    });
+impl Invisible {
+    pub fn new() -> Self {
+        Self {
+            timer: Timer::new(Duration::from_secs(1), TimerMode::Once),
+        }
+    }
 }
 
-fn apply_invisible(
+pub struct InvisiblePlugin;
+
+impl Plugin for InvisiblePlugin {
+    fn build(&self, app: &mut App) {
+        app.add_systems(Update, handle_invisible_timer)
+            .add_observer(invisible_on_add);
+    }
+}
+
+fn invisible_on_add(ev: Trigger<OnAdd, Invisible>, mut commands: Commands) {
+    commands
+        .entity(ev.entity())
+        .insert(Blink::new_with_speed(1.1));
+}
+
+fn handle_invisible_timer(
     mut commands: Commands,
-    mut invisible_query: Query<(Entity, &mut Sprite, &mut Invisible)>,
+    mut invisible_query: Query<(Entity, &mut Invisible)>,
     time: Res<Time>,
 ) {
-    if invisible_query.is_empty() {
-        return;
-    }
-    for (entity, mut sprite, mut invisible) in invisible_query.iter_mut() {
+    for (entity, mut invisible) in invisible_query.iter_mut() {
         invisible.timer.tick(time.delta());
         if invisible.timer.finished() {
-            sprite.color.set_alpha(1.);
             commands.entity(entity).remove::<Invisible>();
-            continue;
-        }
-        if sprite.color.alpha() >= 1. {
-            sprite.color.set_alpha(0.)
-        } else {
-            sprite.color.set_alpha(1.)
+            commands.entity(entity).remove::<Blink>();
         }
     }
 }

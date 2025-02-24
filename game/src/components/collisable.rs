@@ -3,6 +3,8 @@ use bevy::{
     prelude::*,
 };
 
+use super::invisible::Invisible;
+
 #[derive(Component)]
 #[require(Sprite)]
 #[derive(Default)]
@@ -25,7 +27,7 @@ impl Plugin for CollisablePlugin {
 
 fn check_collision(
     mut event_writer: EventWriter<CollidedEvent>,
-    collisable_query: Query<(Entity, &Transform, &Sprite), With<Collisable>>,
+    collisable_query: Query<(Entity, &Transform, &Sprite), (With<Collisable>, Without<Invisible>)>,
 ) {
     for (i, (entity, transform, sprite)) in collisable_query.iter().enumerate() {
         let aabb = Aabb2d::new(

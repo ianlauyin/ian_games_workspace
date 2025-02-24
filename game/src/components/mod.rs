@@ -1,6 +1,7 @@
 mod collisable;
 mod explosion;
 mod health;
+mod invisible;
 mod player;
 mod score;
 mod spaceship;
@@ -8,9 +9,10 @@ mod ufo;
 mod velocity;
 
 use bevy::prelude::{App, Plugin};
-pub use collisable::{CollidedEvent, Collisable};
+pub use collisable::CollidedEvent;
 pub use explosion::Explosion;
 pub use health::Health;
+pub use invisible::Invisible;
 pub use player::Player;
 pub use score::Score;
 pub use spaceship::Spaceship;
@@ -26,6 +28,7 @@ impl Plugin for ComponentPlugin {
             collisable::CollisablePlugin,
             explosion::ExplosionPlugin,
             velocity::VelocityPlugin,
+            invisible::InvisiblePlugin,
         ));
     }
 }

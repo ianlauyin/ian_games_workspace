@@ -20,6 +20,9 @@ impl Spaceship {
             bullet_cd: None,
         }
     }
+    pub fn get_position(&self) -> Vec2 {
+        self.position
+    }
 }
 
 pub struct SpaceshipPlugin;
