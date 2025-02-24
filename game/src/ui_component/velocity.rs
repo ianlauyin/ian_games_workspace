@@ -7,6 +7,15 @@ pub struct Velocity {
     pub y: f32,
 }
 
+impl Velocity {
+    pub fn from_vec2(vec2: Vec2) -> Self {
+        Self {
+            x: vec2.x,
+            y: vec2.y,
+        }
+    }
+}
+
 pub struct VelocityPlugin;
 
 impl Plugin for VelocityPlugin {

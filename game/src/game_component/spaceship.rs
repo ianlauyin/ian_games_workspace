@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::constant::ZIndex::SPACESHIP;
+use crate::constant::ZIndex;
 use crate::constant::SPACESHIP_SIZE;
 use crate::res::ImageHandles;
 
@@ -23,7 +23,8 @@ pub struct SpaceshipPlugin;
 
 impl Plugin for SpaceshipPlugin {
     fn build(&self, app: &mut App) {
-        app.add_observer(handle_spaceship_on_added);
+        app.add_systems(Update, listen_spaceship_position)
+            .add_observer(handle_spaceship_on_added);
     }
 }
 
@@ -40,22 +41,15 @@ fn handle_spaceship_on_added(
             custom_size: Some(SPACESHIP_SIZE),
             ..default()
         },
-        Transform::from_translation(spaceship.position.extend(SPACESHIP.z_value())),
+        Transform::from_translation(spaceship.position.extend(ZIndex::SPACESHIP.z_value())),
     ));
 }
 
-// fn check_spaceship_position(
-//     mut next_state: ResMut<NextState<GameState>>,
-//     mut spaceship_query: Query<(&Transform, &mut Velocity), With<Spaceship>>,
-//     windows: Query<&Window>,
-// ) {
-//     let window = windows.get_single().unwrap();
-//     let (transform, mut velocity) = spaceship_query.get_single_mut().unwrap();
-//     if transform.translation.y >= -window.height() / 2. + SPACESHIP_SIZE.y {
-//         velocity.y = 0.;
-//         next_state.set(GameState::InPlay);
-//     }
-// }
+fn listen_spaceship_position(mut spaceship_query: Query<(&Transform, &mut Spaceship)>) {
+    for (transform, mut spaceship) in spaceship_query.iter_mut() {
+        spaceship.position = transform.translation.xy();
+    }
+}
 
 // fn handle_shoot_bullet(
 //     mut commands: Commands,

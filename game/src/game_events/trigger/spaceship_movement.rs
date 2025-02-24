@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 
-use crate::{game_component::Spaceship, ui_component::Velocity};
+use crate::{
+    constant::SPACESHIP_SIZE, game_component::Spaceship, ui_component::Velocity, util::EdgeUtil,
+};
 
 pub struct SpaceshipMovementPlugin;
 
@@ -41,36 +43,23 @@ pub fn handle_spaceship_movement(
         velocity.y = 0.;
         return;
     }
+    let edge = EdgeUtil::new(SPACESHIP_SIZE);
 
     velocity.x = match trigger.event().0 {
-        SpaceShipMovement::Left if !meet_left_edge(x) => -10.,
-        SpaceShipMovement::UpLeft | SpaceShipMovement::DownLeft if !meet_left_edge(x) => -7.,
-        SpaceShipMovement::Right if !meet_right_edge(x) => 10.,
-        SpaceShipMovement::UpRight | SpaceShipMovement::DownRight if !meet_right_edge(x) => 7.,
+        SpaceShipMovement::Left if !edge.over_left_in(x) => -10.,
+        SpaceShipMovement::UpLeft | SpaceShipMovement::DownLeft if !edge.over_left_in(x) => -7.,
+        SpaceShipMovement::Right if !edge.over_right_in(x) => 10.,
+        SpaceShipMovement::UpRight | SpaceShipMovement::DownRight if !edge.over_right_in(x) => 7.,
         _ => 0.,
     };
 
     velocity.y = match trigger.event().0 {
-        SpaceShipMovement::Up if !meet_top_edge(y) => 10.,
-        SpaceShipMovement::UpLeft | SpaceShipMovement::UpRight if !meet_top_edge(y) => 7.,
-        SpaceShipMovement::Down if !meet_bottom_edge(y) => -10.,
-        SpaceShipMovement::DownLeft | SpaceShipMovement::DownRight if !meet_bottom_edge(y) => -7.,
+        SpaceShipMovement::Up if !edge.over_top_in(y) => 10.,
+        SpaceShipMovement::UpLeft | SpaceShipMovement::UpRight if !edge.over_top_in(y) => 7.,
+        SpaceShipMovement::Down if !edge.over_bottom_in(y) => -10.,
+        SpaceShipMovement::DownLeft | SpaceShipMovement::DownRight if !edge.over_bottom_in(y) => {
+            -7.
+        }
         _ => 0.,
     };
-}
-
-fn meet_top_edge(position: f32) -> bool {
-    false
-}
-
-fn meet_bottom_edge(position: f32) -> bool {
-    false
-}
-
-fn meet_left_edge(position: f32) -> bool {
-    false
-}
-
-fn meet_right_edge(position: f32) -> bool {
-    false
 }

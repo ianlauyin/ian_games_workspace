@@ -3,14 +3,14 @@ use bevy::prelude::*;
 
 use crate::game_component::{Player, Score};
 use crate::states::GameState;
-use crate::util::cleanup;
+use crate::util::cleanup_components;
 
 pub struct ScoreDisplayPlugin;
 
 impl Plugin for ScoreDisplayPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::InPlay), display_score)
-            .add_systems(OnExit(GameState::InPlay), cleanup::<ScoreDisplay>)
+            .add_systems(OnExit(GameState::InPlay), cleanup_components::<ScoreDisplay>)
             .add_observer(update_score_text);
     }
 }

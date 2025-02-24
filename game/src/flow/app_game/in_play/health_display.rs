@@ -3,14 +3,14 @@ use bevy::prelude::*;
 
 use crate::game_component::{Health, Player};
 use crate::states::GameState;
-use crate::util::cleanup;
+use crate::util::cleanup_components;
 
 pub struct HealthDisplayPlugin;
 
 impl Plugin for HealthDisplayPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::InPlay), display_health)
-            .add_systems(OnExit(GameState::InPlay), cleanup::<HealthDisplay>)
+            .add_systems(OnExit(GameState::InPlay), cleanup_components::<HealthDisplay>)
             .add_observer(update_health_text);
     }
 }

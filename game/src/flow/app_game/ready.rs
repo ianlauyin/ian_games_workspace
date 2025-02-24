@@ -1,10 +1,11 @@
 use bevy::prelude::*;
 
 use crate::{
-    constant::{MOBILE_WINDOW_SIZE, SPACESHIP_SIZE},
+    constant::SPACESHIP_SIZE,
     game_component::{Health, Player, Score, Spaceship},
     states::GameState,
     ui_component::Velocity,
+    util::EdgeUtil,
 };
 
 pub struct ReadyPlugin;
@@ -28,9 +29,10 @@ fn setup_score_and_health(mut commands: Commands) {
 }
 
 fn spawn_spaceship(mut commands: Commands) {
+    let edge = EdgeUtil::new(SPACESHIP_SIZE);
     commands.spawn((
         Player(1),
-        Spaceship::new(Vec2::new(0., -MOBILE_WINDOW_SIZE.y / 2. - SPACESHIP_SIZE.y)),
+        Spaceship::new(Vec2::new(0., edge.bottom_out())),
         Velocity { x: 0., y: 5. },
     ));
 }
@@ -39,8 +41,9 @@ fn check_spaceship_position(
     mut next_state: ResMut<NextState<GameState>>,
     mut spaceship_query: Query<(&Transform, &mut Velocity), With<Spaceship>>,
 ) {
+    let edge = EdgeUtil::new(SPACESHIP_SIZE);
     let (transform, mut velocity) = spaceship_query.get_single_mut().unwrap();
-    if transform.translation.y >= -MOBILE_WINDOW_SIZE.y / 2. + SPACESHIP_SIZE.y {
+    if !edge.over_bottom_in(transform.translation.y) {
         velocity.y = 0.;
         next_state.set(GameState::InPlay);
     }

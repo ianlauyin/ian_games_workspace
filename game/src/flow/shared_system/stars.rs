@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 
-use crate::constant::{ZIndex, MOBILE_WINDOW_SIZE};
+use crate::constant::{ZIndex, STAR_SIZE};
 use crate::res::ImageHandles;
 use crate::states::AppState;
 use crate::ui_component::{Blink, Velocity};
+use crate::util::EdgeUtil;
 
 pub struct StarsPlugin;
 
@@ -36,25 +37,27 @@ fn check_stars_number(
 }
 
 fn spawn_star(commands: &mut Commands, stars_handle: Handle<Image>) {
+    let edge = EdgeUtil::new(STAR_SIZE);
     commands.spawn((
         Stars,
         Blink::new(0.001, 0.1, 0.001),
         Velocity { x: 0., y: -2. },
         Sprite {
             image: stars_handle,
+            custom_size: Some(STAR_SIZE),
             ..default()
         },
         Transform {
-            scale: Vec2::new(0.8, 0.8).extend(0.),
-            translation: Vec3::new(0., MOBILE_WINDOW_SIZE.y, ZIndex::STARS.z_value()),
+            translation: Vec3::new(0., edge.top_out(), ZIndex::STARS.z_value()),
             ..default()
         },
     ));
 }
 
 fn cleanup_stars(mut commands: Commands, stars_query: Query<(Entity, &Transform), With<Stars>>) {
+    let edge = EdgeUtil::new(STAR_SIZE);
     for (entity, transform) in stars_query.iter() {
-        if transform.translation.y <= -MOBILE_WINDOW_SIZE.y {
+        if edge.over_bottom_out(transform.translation.y) {
             commands.entity(entity).despawn();
         }
     }

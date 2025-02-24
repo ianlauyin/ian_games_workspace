@@ -1,4 +1,5 @@
 mod control;
+mod enemy;
 mod health_display;
 mod score_display;
 
@@ -11,6 +12,7 @@ impl Plugin for InPlayPlugin {
             control::ControlPlugin,
             health_display::HealthDisplayPlugin,
             score_display::ScoreDisplayPlugin,
+            enemy::EnemyPlugin,
         ));
     }
 }
