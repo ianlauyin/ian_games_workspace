@@ -58,8 +58,8 @@ fn apply_explosion(
         transform.scale.x += 0.01;
         transform.scale.y += 0.01;
         if explosion.timer.finished() {
-            if let Some(entity_commands) = commands.get_entity(entity) {
-                entity_commands.despawn_recursive();
+            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn();
             }
         }
     }

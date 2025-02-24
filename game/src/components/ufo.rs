@@ -62,8 +62,8 @@ fn cleanup_on_out_screen(
     let edge = EdgeUtil::new(UFO_SIZE);
     for (entity, transform) in ufo_query.iter() {
         if edge.over_bottom_out(transform.translation.y) {
-            if let Some(entity_commands) = commands.get_entity(entity) {
-                entity_commands.despawn_recursive();
+            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn();
             }
         }
     }

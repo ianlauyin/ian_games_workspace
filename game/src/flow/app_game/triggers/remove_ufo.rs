@@ -40,7 +40,7 @@ fn handle_remove_ufo(
     if let Some(player_tag) = ev.by {
         commands.trigger(AddScoreEvent::new(player_tag, 1));
     }
-    if let Some(entity_commands) = commands.get_entity(ufo) {
-        entity_commands.despawn_recursive();
+    if let Some(mut entity_commands) = commands.get_entity(ufo) {
+        entity_commands.despawn();
     }
 }

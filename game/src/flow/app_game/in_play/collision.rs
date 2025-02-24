@@ -74,8 +74,8 @@ fn handle_bullet_ufo_collision(
     ufo: &UFO,
     ufo_entity: Entity,
 ) {
-    if let Some(entity_commands) = commands.get_entity(bullet_entity) {
-        entity_commands.despawn_recursive();
+    if let Some(mut entity_commands) = commands.get_entity(bullet_entity) {
+        entity_commands.despawn();
     }
     commands.trigger(RemoveUFOEvent::by_player(ufo_entity, bullet.get_player()));
     commands.spawn(Explosion::new(ufo.get_position()));

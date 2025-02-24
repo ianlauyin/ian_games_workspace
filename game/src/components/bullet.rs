@@ -65,8 +65,8 @@ fn cleanup_on_out_screen(
     let edge = EdgeUtil::new(BULLET_SIZE);
     for (entity, transform) in bullet_queries.iter() {
         if edge.over_top_out(transform.translation.y) {
-            if let Some(entity_commands) = commands.get_entity(entity) {
-                entity_commands.despawn_recursive();
+            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn();
             }
         }
     }

@@ -25,8 +25,8 @@ fn check_finish(
     if let Ok((entity, spaceship)) = spaceship_q.get_single() {
         if health.0 == 0 {
             commands.spawn(Explosion::new(spaceship.get_position()));
-            if let Some(entity_commands) = commands.get_entity(entity) {
-                entity_commands.despawn_recursive();
+            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn();
             }
             next_state.set(GameState::Result);
         }
