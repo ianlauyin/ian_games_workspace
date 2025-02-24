@@ -9,7 +9,6 @@ use crate::res::ImageHandles;
 use super::collisable::Collisable;
 
 #[derive(Component)]
-#[require(Collisable)]
 pub struct Spaceship {
     position: Vec2,
     cooldown: Option<Timer>,
@@ -59,6 +58,7 @@ fn handle_spaceship_on_added(
             ..default()
         },
         Transform::from_translation(spaceship.position.extend(ZIndex::SPACESHIP.z_value())),
+        Collisable::Player,
     ));
 }
 

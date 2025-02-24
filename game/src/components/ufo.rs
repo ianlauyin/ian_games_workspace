@@ -7,7 +7,6 @@ use crate::util::EdgeUtil;
 use super::collisable::Collisable;
 
 #[derive(Component)]
-#[require(Collisable)]
 pub struct UFO {
     position: Vec2,
 }
@@ -44,6 +43,7 @@ fn handle_ufo_on_added(
             ..default()
         },
         Transform::from_translation(ufo.position.extend(ZIndex::UFO.z_value())),
+        Collisable::Enemy,
     ));
 }
 

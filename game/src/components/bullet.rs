@@ -6,7 +6,7 @@ use crate::{
     util::EdgeUtil,
 };
 
-use super::{Player, Spaceship, Velocity};
+use super::{collisable::Collisable, Player, Spaceship, Velocity};
 
 #[derive(Component)]
 pub struct Bullet {
@@ -16,6 +16,9 @@ pub struct Bullet {
 impl Bullet {
     pub fn by_player(player: u8) -> Self {
         Self { player }
+    }
+    pub fn get_player(&self) -> u8 {
+        self.player
     }
 }
 
@@ -47,6 +50,7 @@ fn bullet_on_added(
                     custom_size: Some(BULLET_SIZE),
                     ..default()
                 },
+                Collisable::Player,
             ));
         }
     }

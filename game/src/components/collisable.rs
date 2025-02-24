@@ -7,13 +7,15 @@ use super::invisible::Invisible;
 
 #[derive(Component)]
 #[require(Sprite)]
-#[derive(Default)]
-pub struct Collisable;
+pub enum Collisable {
+    Enemy,
+    Player,
+}
 
 #[derive(Event)]
 pub struct CollidedEvent {
-    pub entity1: Entity,
-    pub entity2: Entity,
+    pub player: Entity,
+    pub enemy: Entity,
 }
 
 pub struct CollisablePlugin;
@@ -27,24 +29,29 @@ impl Plugin for CollisablePlugin {
 
 fn check_collision(
     mut event_writer: EventWriter<CollidedEvent>,
-    collisable_query: Query<(Entity, &Transform, &Sprite), (With<Collisable>, Without<Invisible>)>,
+    collisable_query: Query<(Entity, &Transform, &Sprite, &Collisable), Without<Invisible>>,
 ) {
-    for (i, (entity, transform, sprite)) in collisable_query.iter().enumerate() {
+    let mut players: Vec<(Entity, Aabb2d)> = Vec::new();
+    let mut enemies: Vec<(Entity, Aabb2d)> = Vec::new();
+
+    for (entity, transform, sprite, collisable) in collisable_query.iter() {
         let aabb = Aabb2d::new(
             transform.translation.truncate(),
             sprite.custom_size.unwrap() / 2.,
         );
 
-        for (other_entity, other_transform, other_sprite) in collisable_query.iter().skip(i + 1) {
-            let other_aabb = Aabb2d::new(
-                other_transform.translation.truncate(),
-                other_sprite.custom_size.unwrap() / 2.,
-            );
+        match collisable {
+            Collisable::Player => players.push((entity, aabb)),
+            Collisable::Enemy => enemies.push((entity, aabb)),
+        }
+    }
 
-            if aabb.intersects(&other_aabb) {
+    for (player_entity, player_aabb) in players.iter() {
+        for (enemy_entity, enemy_aabb) in enemies.iter() {
+            if player_aabb.intersects(enemy_aabb) {
                 event_writer.send(CollidedEvent {
-                    entity1: entity,
-                    entity2: other_entity,
+                    player: *player_entity,
+                    enemy: *enemy_entity,
                 });
                 return;
             }
