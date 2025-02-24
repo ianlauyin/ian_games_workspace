@@ -1,9 +1,10 @@
 use bevy::prelude::*;
 
+use crate::components::Velocity;
 use crate::constant::{ZIndex, STAR_SIZE};
 use crate::res::ImageHandles;
 use crate::states::AppState;
-use crate::ui_component::{Blink, Velocity};
+use crate::ui_components::Blink;
 use crate::util::EdgeUtil;
 
 pub struct StarsPlugin;

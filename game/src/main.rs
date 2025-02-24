@@ -3,23 +3,21 @@
 use bevy::prelude::App;
 use bevy_embedded_assets::EmbeddedAssetPlugin;
 
+mod components;
 mod constant;
 mod flow;
-mod game_component;
-mod game_events;
 mod res;
 mod states;
-mod ui_component;
+mod ui_components;
 mod util;
 
 fn main() {
     App::new()
         .add_plugins(EmbeddedAssetPlugin::default())
+        .add_plugins(components::ComponentPlugin)
         .add_plugins(flow::FlowPlugin)
-        .add_plugins(game_component::GameComponentPlugin)
-        .add_plugins(game_events::GameEventsPlugin)
         .add_plugins(res::ResPlugin)
         .add_plugins(states::StatePlugin)
-        .add_plugins(ui_component::UIComponentPlugin)
+        .add_plugins(ui_components::UIComponentsPlugin)
         .run();
 }

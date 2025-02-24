@@ -3,7 +3,7 @@ use bevy::prelude::*;
 
 use crate::res::{ControlMode, ControlOption};
 use crate::states::AppState;
-use crate::ui_component::{Blink, InteractionUI, MainContainer, SelectableText};
+use crate::ui_components::{Blink, InteractionUI, MainContainer, SelectableText};
 use crate::util::cleanup_components;
 
 pub struct MainMenuPlugin;

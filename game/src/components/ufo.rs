@@ -3,7 +3,10 @@ use bevy::prelude::*;
 use crate::constant::{ZIndex, UFO_SIZE};
 use crate::res::ImageHandles;
 
+use super::collisable::Collisable;
+
 #[derive(Component)]
+#[require(Collisable)]
 pub struct UFO {
     position: Vec2,
 }

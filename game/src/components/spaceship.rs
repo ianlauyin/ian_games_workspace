@@ -4,7 +4,10 @@ use crate::constant::ZIndex;
 use crate::constant::SPACESHIP_SIZE;
 use crate::res::ImageHandles;
 
+use super::collisable::Collisable;
+
 #[derive(Component)]
+#[require(Collisable)]
 pub struct Spaceship {
     position: Vec2,
     bullet_cd: Option<Timer>,

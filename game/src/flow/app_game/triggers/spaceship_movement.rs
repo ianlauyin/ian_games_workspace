@@ -1,16 +1,7 @@
 use bevy::prelude::*;
 
-use crate::{
-    constant::SPACESHIP_SIZE, game_component::Spaceship, ui_component::Velocity, util::EdgeUtil,
-};
-
-pub struct SpaceshipMovementPlugin;
-
-impl Plugin for SpaceshipMovementPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_observer(handle_spaceship_movement);
-    }
-}
+use crate::components::{Spaceship, Velocity};
+use crate::{constant::SPACESHIP_SIZE, util::EdgeUtil};
 
 #[derive(Event)]
 pub struct SpaceShipMovementEvent(pub SpaceShipMovement);
@@ -26,6 +17,14 @@ pub enum SpaceShipMovement {
     Left,
     UpLeft,
     Rest,
+}
+
+pub struct SpaceshipMovementPlugin;
+
+impl Plugin for SpaceshipMovementPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_observer(handle_spaceship_movement);
+    }
 }
 
 pub fn handle_spaceship_movement(

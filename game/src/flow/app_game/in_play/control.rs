@@ -1,10 +1,10 @@
 use bevy::prelude::*;
 
+use super::super::triggers::{SpaceShipMovement, SpaceShipMovementEvent};
+use crate::ui_components::{ControlButton, ControlButtonPanel};
 use crate::{
-    game_events::trigger::{SpaceShipMovement, SpaceShipMovementEvent},
     res::{ControlMode, ControlOption},
     states::GameState,
-    ui_component::{ControlButton, ControlButtonPanel},
 };
 pub struct ControlPlugin;
 

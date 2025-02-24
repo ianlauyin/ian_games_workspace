@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game_component::UFO;
+use crate::components::UFO;
 
 use super::AddScoreEvent;
 

@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game_component::{Player, Score};
+use crate::components::{Player, Score};
 
 #[derive(Event)]
 pub struct AddScoreEvent {

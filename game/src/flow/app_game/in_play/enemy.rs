@@ -1,13 +1,8 @@
 use bevy::prelude::*;
 use rand::{rng, Rng};
 
-use crate::{
-    constant::UFO_SIZE,
-    game_component::{Player, Score, UFO},
-    states::GameState,
-    ui_component::Velocity,
-    util::EdgeUtil,
-};
+use crate::components::{Player, Score, Velocity, UFO};
+use crate::{constant::UFO_SIZE, states::GameState, util::EdgeUtil};
 
 pub struct EnemyPlugin;
 

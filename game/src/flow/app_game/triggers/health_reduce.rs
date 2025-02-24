@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::game_component::{Health, Player};
+use crate::components::{Health, Player};
 
 #[derive(Event)]
 pub struct HealthReduceEvent {
