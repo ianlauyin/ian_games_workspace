@@ -53,12 +53,18 @@ fn handle_clicking_interaction(
                 ControlButton::Left => SpaceShipMovement::Left,
                 ControlButton::UpLeft => SpaceShipMovement::UpLeft,
             };
-            commands.trigger(SpaceShipMovementEvent(movement));
+            commands.trigger(SpaceShipMovementEvent {
+                movement,
+                player: 1,
+            });
         }
         background_color.0.set_alpha(0.5);
     }
     if all_not_pressed {
-        commands.trigger(SpaceShipMovementEvent(SpaceShipMovement::Rest));
+        commands.trigger(SpaceShipMovementEvent {
+            movement: SpaceShipMovement::Rest,
+            player: 1,
+        });
     }
 }
 
@@ -87,5 +93,8 @@ fn handle_spaceship_keyboard_interaction(
         (_, _, false, true) => SpaceShipMovement::Right,
         _ => SpaceShipMovement::Rest,
     };
-    commands.trigger(SpaceShipMovementEvent(movement))
+    commands.trigger(SpaceShipMovementEvent {
+        movement,
+        player: 1,
+    });
 }

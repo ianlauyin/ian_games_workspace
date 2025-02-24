@@ -12,7 +12,9 @@ pub fn cleanup_components<T: Component>(
     component_q: Query<Entity, With<T>>,
 ) {
     for entity in component_q.iter() {
-        commands.entity(entity).despawn_recursive();
+        if let Some(entity_commands) = commands.get_entity(entity) {
+            entity_commands.despawn_recursive();
+        };
     }
 }
 

@@ -36,15 +36,17 @@ fn handle_ufo_on_added(
     ufo_query: Query<&UFO>,
 ) {
     let ufo = ufo_query.get(ev.entity()).unwrap();
-    commands.entity(ev.entity()).insert((
-        Sprite {
-            image: image_handles.ufo.clone(),
-            custom_size: Some(UFO_SIZE),
-            ..default()
-        },
-        Transform::from_translation(ufo.position.extend(ZIndex::UFO.z_value())),
-        Collisable::Enemy,
-    ));
+    if let Some(mut entity_commands) = commands.get_entity(ev.entity()) {
+        entity_commands.insert((
+            Sprite {
+                image: image_handles.ufo.clone(),
+                custom_size: Some(UFO_SIZE),
+                ..default()
+            },
+            Transform::from_translation(ufo.position.extend(ZIndex::UFO.z_value())),
+            Collisable::Enemy,
+        ));
+    }
 }
 
 fn listen_ufo_position(mut ufo_query: Query<(&Transform, &mut UFO)>) {
@@ -60,7 +62,9 @@ fn cleanup_on_out_screen(
     let edge = EdgeUtil::new(UFO_SIZE);
     for (entity, transform) in ufo_query.iter() {
         if edge.over_bottom_out(transform.translation.y) {
-            commands.entity(entity).despawn_recursive();
+            if let Some(entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn_recursive();
+            }
         }
     }
 }

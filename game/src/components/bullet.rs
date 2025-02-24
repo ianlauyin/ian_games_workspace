@@ -40,18 +40,20 @@ fn bullet_on_added(
     let bullet = bullet_q.get(ev.entity()).unwrap();
     for (player, spaceship) in spaceship_q.iter() {
         if player.0 == bullet.player {
-            commands.entity(ev.entity()).insert((
-                Velocity { x: 0., y: 10. },
-                Transform::from_translation(
-                    spaceship.get_position().extend(ZIndex::BULLET.z_value()),
-                ),
-                Sprite {
-                    color: Color::from(YELLOW),
-                    custom_size: Some(BULLET_SIZE),
-                    ..default()
-                },
-                Collisable::Player,
-            ));
+            if let Some(mut entity_commands) = commands.get_entity(ev.entity()) {
+                entity_commands.insert((
+                    Velocity { x: 0., y: 10. },
+                    Transform::from_translation(
+                        spaceship.get_position().extend(ZIndex::BULLET.z_value()),
+                    ),
+                    Sprite {
+                        color: Color::from(YELLOW),
+                        custom_size: Some(BULLET_SIZE),
+                        ..default()
+                    },
+                    Collisable::Player,
+                ));
+            }
         }
     }
 }
@@ -63,7 +65,9 @@ fn cleanup_on_out_screen(
     let edge = EdgeUtil::new(BULLET_SIZE);
     for (entity, transform) in bullet_queries.iter() {
         if edge.over_top_out(transform.translation.y) {
-            commands.entity(entity).despawn();
+            if let Some(entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn_recursive();
+            }
         }
     }
 }

@@ -34,10 +34,10 @@ fn handle_interaction_ui(
             }
         }
     }
-    if let Ok(window) = windows.get_single() {
-        commands.entity(window).insert(curosr_icon);
-    } else {
-        warn!("Window not found in handle_interaction_ui");
+    for window in windows.iter() {
+        if let Some(mut entity_commands) = commands.get_entity(window) {
+            entity_commands.insert(curosr_icon.clone());
+        }
     }
 }
 

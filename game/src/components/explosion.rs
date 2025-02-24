@@ -36,14 +36,16 @@ fn handle_explosion_on_added(
     image_handles: Res<ImageHandles>,
 ) {
     let explosion = explosion_query.get(ev.entity()).unwrap();
-    commands.entity(ev.entity()).insert((
-        Sprite {
-            image: image_handles.explosion.clone(),
-            custom_size: Some(EXPLOSION_SIZE),
-            ..default()
-        },
-        Transform::from_translation(explosion.position.extend(EXPLOSION.z_value())),
-    ));
+    if let Some(mut entity_commands) = commands.get_entity(ev.entity()) {
+        entity_commands.insert((
+            Sprite {
+                image: image_handles.explosion.clone(),
+                custom_size: Some(EXPLOSION_SIZE),
+                ..default()
+            },
+            Transform::from_translation(explosion.position.extend(EXPLOSION.z_value())),
+        ));
+    }
 }
 
 fn apply_explosion(
@@ -56,7 +58,9 @@ fn apply_explosion(
         transform.scale.x += 0.01;
         transform.scale.y += 0.01;
         if explosion.timer.finished() {
-            commands.entity(entity).despawn_recursive();
+            if let Some(entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn_recursive();
+            }
         }
     }
 }

@@ -110,22 +110,24 @@ fn handle_return_button_interaction(
 ) {
     let window_entity = window_query.get_single_mut().unwrap();
     let (interaction, mut background) = return_button_query.get_single_mut().unwrap();
-    match interaction {
-        Interaction::None => {
-            commands.entity(window_entity).insert(CursorIcon::default());
-            background.0.set_alpha(1.)
-        }
-        Interaction::Hovered => {
-            commands
-                .entity(window_entity)
-                .insert(CursorIcon::System(SystemCursorIcon::Pointer));
-            background.0.set_alpha(0.5)
-        }
-        Interaction::Pressed => {
-            commands.entity(window_entity).insert(CursorIcon::default());
-            let result = result_query.get_single().unwrap();
-            commands.entity(result).despawn_recursive();
-            next_state.set(AppState::MainMenu)
+    if let Some(mut window_entity_commands) = commands.get_entity(window_entity) {
+        match interaction {
+            Interaction::None => {
+                window_entity_commands.insert(CursorIcon::default());
+                background.0.set_alpha(1.)
+            }
+            Interaction::Hovered => {
+                window_entity_commands.insert(CursorIcon::System(SystemCursorIcon::Pointer));
+                background.0.set_alpha(0.5)
+            }
+            Interaction::Pressed => {
+                window_entity_commands.insert(CursorIcon::default());
+                let result = result_query.get_single().unwrap();
+                if let Some(mut result_commands) = commands.get_entity(result) {
+                    result_commands.despawn_recursive();
+                }
+                next_state.set(AppState::MainMenu)
+            }
         }
     }
 }

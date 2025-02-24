@@ -38,6 +38,8 @@ fn handle_selectable_text(
             if selectable_text.selected { "-> " } else { "" },
             selectable_text.text
         );
-        commands.entity(entity).insert(Text::new(text));
+        if let Some(mut entity_commands) = commands.get_entity(entity) {
+            entity_commands.insert(Text::new(text));
+        }
     }
 }

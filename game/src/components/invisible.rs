@@ -41,8 +41,10 @@ fn handle_invisible_timer(
     for (entity, mut invisible) in invisible_query.iter_mut() {
         invisible.timer.tick(time.delta());
         if invisible.timer.finished() {
-            commands.entity(entity).remove::<Invisible>();
-            commands.entity(entity).remove::<Blink>();
+            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                entity_commands.remove::<Invisible>();
+                entity_commands.remove::<Blink>();
+            }
         }
     }
 }

@@ -151,7 +151,9 @@ fn handle_start_button_interaction(
         let Ok(main_menu) = main_menu_query.get_single() else {
             panic!("Main Menu not found in handle_start_button_interaction");
         };
-        commands.entity(main_menu).despawn_recursive();
+        if let Some(entity_commands) = commands.get_entity(main_menu) {
+            entity_commands.despawn_recursive();
+        }
         next_state.set(AppState::Game)
     };
 }

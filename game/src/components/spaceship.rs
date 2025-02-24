@@ -51,15 +51,17 @@ fn handle_spaceship_on_added(
     spaceship_query: Query<&Spaceship>,
 ) {
     let spaceship = spaceship_query.get(ev.entity()).unwrap();
-    commands.entity(ev.entity()).insert((
-        Sprite {
-            image: image_handles.spaceship.clone(),
-            custom_size: Some(SPACESHIP_SIZE),
-            ..default()
-        },
-        Transform::from_translation(spaceship.position.extend(ZIndex::SPACESHIP.z_value())),
-        Collisable::Player,
-    ));
+    if let Some(mut entity_commands) = commands.get_entity(ev.entity()) {
+        entity_commands.insert((
+            Sprite {
+                image: image_handles.spaceship.clone(),
+                custom_size: Some(SPACESHIP_SIZE),
+                ..default()
+            },
+            Transform::from_translation(spaceship.position.extend(ZIndex::SPACESHIP.z_value())),
+            Collisable::Player,
+        ));
+    }
 }
 
 fn listen_spaceship_position(mut spaceship_query: Query<(&Transform, &mut Spaceship)>) {
