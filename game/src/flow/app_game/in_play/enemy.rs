@@ -36,7 +36,7 @@ fn check_and_spawn_enemy(
         return;
     };
     let stage = Stage::new(score.0);
-    if ufo_number == 0 || stage.random_generator(ufo_number as f64) {
+    if ufo_number == 0 || stage.random_generator(ufo_number) {
         spawn_ufo(commands, Velocity::from_vec2(stage.get_ufo_velocity()));
     }
 }
@@ -73,13 +73,13 @@ impl Stage {
         }
     }
 
-    fn random_generator(&self, existing_ufo: f64) -> bool {
+    fn random_generator(&self, existing_ufo: usize) -> bool {
         let mut rng = rng();
         return match self {
             Stage::Warmup => rng.random_bool(0.01),
-            Stage::One | Stage::Two => rng.random_bool(1. / (existing_ufo * 10.)),
-            Stage::Three | Stage::Four => rng.random_bool(1. / (existing_ufo * 3.)),
-            Stage::Five | Stage::Six => rng.random_bool(1. / (existing_ufo)),
+            Stage::One | Stage::Two => rng.random_bool(1. / (existing_ufo as f64 * 10.)),
+            Stage::Three | Stage::Four => rng.random_bool(1. / (existing_ufo as f64 * 3.)),
+            Stage::Five | Stage::Six => rng.random_bool(1. / (existing_ufo as f64)),
         };
     }
 
@@ -89,7 +89,7 @@ impl Stage {
             Stage::Warmup | Stage::One => Vec2::new(0., -3.),
             Stage::Two | Stage::Three => Vec2::new(rng.random_range(-3.0..3.0), -3.),
             Stage::Four | Stage::Five => {
-                Vec2::new(rng.random_range(-5.0..5.0), rng.random_range(-5.0..5.0))
+                Vec2::new(rng.random_range(-5.0..5.0), rng.random_range(-10.0..-5.0))
             }
             Stage::Six => Vec2::new(rng.random_range(-10.0..10.0), rng.random_range(-10.0..-5.0)),
         }
