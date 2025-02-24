@@ -36,6 +36,8 @@ fn handle_interaction_ui(
     }
     if let Ok(window) = windows.get_single() {
         commands.entity(window).insert(curosr_icon);
+    } else {
+        warn!("Window not found in handle_interaction_ui");
     }
 }
 

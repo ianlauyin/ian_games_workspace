@@ -32,6 +32,7 @@ pub fn handle_spaceship_movement(
     mut spaceship_query: Query<(&mut Velocity, &Transform), With<Spaceship>>,
 ) {
     let Ok((mut velocity, transform)) = spaceship_query.get_single_mut() else {
+        warn!("Spaceship not found in handle_spaceship_movement");
         return;
     };
 

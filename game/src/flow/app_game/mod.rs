@@ -1,3 +1,4 @@
+mod cleanup;
 mod in_play;
 mod ready;
 mod triggers;
@@ -10,6 +11,7 @@ impl Plugin for AppGamePlugin {
             ready::ReadyPlugin,
             in_play::InPlayPlugin,
             triggers::TriggersPlugin,
+            cleanup::CleanupPlugin,
         ));
     }
 }

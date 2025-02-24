@@ -1,6 +1,7 @@
 use crate::{
     components::{CollidedEvent, Explosion, Invisible, Player, Spaceship, UFO},
     flow::app_game::triggers::{HealthReduceEvent, RemoveUFOEvent},
+    states::GameState,
 };
 use bevy::prelude::*;
 
@@ -8,7 +9,10 @@ pub struct CollisionPlugin;
 
 impl Plugin for CollisionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, handle_collisions);
+        app.add_systems(
+            Update,
+            handle_collisions.run_if(in_state(GameState::InPlay)),
+        );
     }
 }
 

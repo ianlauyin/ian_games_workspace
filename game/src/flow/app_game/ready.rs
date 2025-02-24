@@ -37,7 +37,9 @@ fn check_spaceship_position(
     mut spaceship_query: Query<(&Transform, &mut Velocity), With<Spaceship>>,
 ) {
     let edge = EdgeUtil::new(SPACESHIP_SIZE);
-    let (transform, mut velocity) = spaceship_query.get_single_mut().unwrap();
+    let Ok((transform, mut velocity)) = spaceship_query.get_single_mut() else {
+        panic!("Spaceship not found in check_spaceship_position");
+    };
     if !edge.over_bottom_in(transform.translation.y) {
         velocity.y = 0.;
         next_state.set(GameState::InPlay);

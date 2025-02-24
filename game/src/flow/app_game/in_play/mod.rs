@@ -4,6 +4,7 @@ mod enemy;
 mod finish;
 mod health_display;
 mod score_display;
+mod shooting;
 
 use bevy::prelude::*;
 pub struct InPlayPlugin;
@@ -17,6 +18,7 @@ impl Plugin for InPlayPlugin {
             enemy::EnemyPlugin,
             collision::CollisionPlugin,
             finish::FinishPlugin,
+            shooting::ShootingPlugin,
         ));
     }
 }

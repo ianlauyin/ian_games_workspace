@@ -10,12 +10,7 @@ impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (
-                check_and_spawn_enemy,
-                handle_horizontal_movement,
-                ufo_cleanup,
-            )
-                .run_if(in_state(GameState::InPlay)),
+            (check_and_spawn_enemy, handle_horizontal_movement).run_if(in_state(GameState::InPlay)),
         );
     }
 }
@@ -26,15 +21,6 @@ fn handle_horizontal_movement(mut ufo_query: Query<(&mut Velocity, &Transform), 
         let x = transform.translation.x;
         if edge.over_left_in(x) || edge.over_right_in(x) {
             velocity.x = -velocity.x;
-        }
-    }
-}
-
-fn ufo_cleanup(mut commands: Commands, ufo_query: Query<(Entity, &Transform), With<UFO>>) {
-    let edge = EdgeUtil::new(UFO_SIZE);
-    for (entity, transform) in ufo_query.iter() {
-        if edge.over_bottom_out(transform.translation.y) {
-            commands.entity(entity).despawn_recursive();
         }
     }
 }

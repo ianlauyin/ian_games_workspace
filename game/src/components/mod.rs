@@ -1,3 +1,4 @@
+mod bullet;
 mod collisable;
 mod explosion;
 mod health;
@@ -9,6 +10,7 @@ mod ufo;
 mod velocity;
 
 use bevy::prelude::{App, Plugin};
+pub use bullet::Bullet;
 pub use collisable::CollidedEvent;
 pub use explosion::Explosion;
 pub use health::Health;
@@ -29,6 +31,7 @@ impl Plugin for ComponentPlugin {
             explosion::ExplosionPlugin,
             velocity::VelocityPlugin,
             invisible::InvisiblePlugin,
+            bullet::BulletPlugin,
         ));
     }
 }

@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use bevy::prelude::*;
 
 use crate::constant::ZIndex;
@@ -10,18 +12,27 @@ use super::collisable::Collisable;
 #[require(Collisable)]
 pub struct Spaceship {
     position: Vec2,
-    bullet_cd: Option<Timer>,
+    cooldown: Option<Timer>,
 }
 
 impl Spaceship {
     pub fn new(position: Vec2) -> Self {
         Self {
             position,
-            bullet_cd: None,
+            cooldown: None,
         }
     }
+
     pub fn get_position(&self) -> Vec2 {
         self.position
+    }
+
+    pub fn can_shoot(&self) -> bool {
+        self.cooldown.is_none()
+    }
+
+    pub fn start_cd(&mut self) {
+        self.cooldown = Some(Timer::new(Duration::from_millis(100), TimerMode::Once));
     }
 }
 
@@ -29,7 +40,7 @@ pub struct SpaceshipPlugin;
 
 impl Plugin for SpaceshipPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, listen_spaceship_position)
+        app.add_systems(Update, (listen_spaceship_position, handle_cooldown))
             .add_observer(handle_spaceship_on_added);
     }
 }
@@ -57,29 +68,13 @@ fn listen_spaceship_position(mut spaceship_query: Query<(&Transform, &mut Spaces
     }
 }
 
-// fn handle_shoot_bullet(
-//     mut commands: Commands,
-//     keys: Res<ButtonInput<KeyCode>>,
-//     mut spaceship_query: Query<(&Transform, &mut Spaceship)>,
-//     control_option: Res<ControlOption>,
-// ) {
-//     if keys.pressed(KeyCode::Space) || control_option.mode == ControlMode::Button {
-//         let (transform, mut spaceship) = spaceship_query.get_single_mut().unwrap();
-//         let Vec3 { x, y, .. } = transform.translation;
-//         if spaceship.bullet_cd.is_none() {
-//             commands.trigger(ShootBulletEvent { x, y });
-//             spaceship.bullet_cd = Some(Timer::new(Duration::from_millis(200), TimerMode::Once));
-//         }
-//     }
-// }
-
-// fn handle_bullet_cooldown(mut spaceship_query: Query<&mut Spaceship>, time: Res<Time>) {
-//     let mut spaceship = spaceship_query.get_single_mut().unwrap();
-//     let Some(ref mut timer) = &mut spaceship.bullet_cd else {
-//         return;
-//     };
-//     timer.tick(time.delta());
-//     if timer.finished() {
-//         spaceship.bullet_cd = None;
-//     }
-// }
+fn handle_cooldown(mut spaceship_query: Query<&mut Spaceship>, time: Res<Time>) {
+    for mut spaceship in spaceship_query.iter_mut() {
+        if let Some(timer) = &mut spaceship.cooldown {
+            timer.tick(time.delta());
+            if timer.finished() {
+                spaceship.cooldown = None;
+            }
+        };
+    }
+}

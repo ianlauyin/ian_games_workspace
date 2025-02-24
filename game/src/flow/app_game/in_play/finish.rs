@@ -19,9 +19,11 @@ fn check_finish(
     mut next_state: ResMut<NextState<GameState>>,
     spaceship_q: Query<(Entity, &Spaceship)>,
 ) {
-    for health in health_q.iter() {
+    let Ok(health) = health_q.get_single() else {
+        panic!("Health not found");
+    };
+    if let Ok((entity, spaceship)) = spaceship_q.get_single() {
         if health.0 == 0 {
-            let (entity, spaceship) = spaceship_q.get_single().unwrap();
             commands.spawn(Explosion::new(spaceship.get_position()));
             commands.entity(entity).despawn_recursive();
             next_state.set(GameState::Result);

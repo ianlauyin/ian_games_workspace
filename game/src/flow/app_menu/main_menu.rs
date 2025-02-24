@@ -143,9 +143,14 @@ fn handle_start_button_interaction(
     main_menu_query: Query<Entity, With<MainMenu>>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    let interaction = start_button_query.get_single_mut().unwrap();
+    let Ok(interaction) = start_button_query.get_single_mut() else {
+        warn!("Start button not found in handle_start_button_interaction");
+        return;
+    };
     if *interaction == Interaction::Pressed {
-        let main_menu = main_menu_query.get_single().unwrap();
+        let Ok(main_menu) = main_menu_query.get_single() else {
+            panic!("Main Menu not found in handle_start_button_interaction");
+        };
         commands.entity(main_menu).despawn_recursive();
         next_state.set(AppState::Game)
     };
