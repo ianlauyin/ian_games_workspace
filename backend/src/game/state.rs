@@ -1,39 +1,58 @@
-use serde::{Deserialize, Serialize};
-use std::sync::{LazyLock, Mutex};
+use std::{collections::HashMap, sync::Arc};
 
-pub static GAME_STATE: LazyLock<GameState> = LazyLock::new(|| GameState::default());
+use futures::SinkExt;
+use rocket::tokio::sync::Mutex;
+use rocket_ws::Message;
 
-#[derive(Default)]
+use super::message::Sender;
+
+pub type ArcGameState = Arc<Mutex<GameState>>;
+
 pub struct GameState {
-    players: Mutex<Vec<PlayerInfo>>,
+    players: Mutex<HashMap<u8, Player>>,
     enemies: Vec<Enemy>,
 }
 
 impl GameState {
-    pub fn new_player(&self) -> u8 {
-        let mut players = self.players.lock().unwrap();
+    pub fn new() -> Self {
+        Self {
+            players: Mutex::new(HashMap::new()),
+            enemies: Vec::new(),
+        }
+    }
+
+    pub async fn new_player(&self, sender: Arc<Mutex<Sender>>) {
+        let mut players = self.players.lock().await;
         let player_tag = players.len() as u8 + 1;
-        players.push(PlayerInfo {
-            player_tag,
-            health: 3,
-            ..Default::default()
-        });
-        player_tag
+        let player = Player {
+            info: PlayerInfo::default(),
+            sender: sender.clone(),
+        };
+        players.insert(player_tag, player);
+        sender
+            .lock()
+            .await
+            .send(Message::text(format!("Joined {player_tag}")))
+            .await
+            .unwrap();
     }
 }
 
-pub struct PlayerInfo {
-    pub player_tag: u8,
-    pub score: u16,
-    pub health: u16,
-    pub position: (f32, f32),
-    pub bullets: Vec<(f32, f32)>,
+struct Player {
+    info: PlayerInfo,
+    sender: Arc<Mutex<Sender>>,
+}
+
+struct PlayerInfo {
+    score: u16,
+    health: u16,
+    position: (f32, f32),
+    bullets: Vec<(f32, f32)>,
 }
 
 impl Default for PlayerInfo {
     fn default() -> Self {
         Self {
-            player_tag: 0,
             score: 0,
             health: 3,
             position: (0.0, 0.0),

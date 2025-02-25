@@ -1,29 +1,44 @@
-use rocket_ws::{Message, Stream, WebSocket};
-use serde_json;
+use std::sync::Arc;
 
-use super::message::{ClientMessage, ServerMessage};
-use super::state::GAME_STATE;
+use rocket::{
+    futures::{SinkExt, StreamExt},
+    tokio::sync::Mutex,
+    State,
+};
+use rocket_ws::{Channel, Message, WebSocket};
+
+use super::{
+    message::{Receiver, Sender},
+    state::ArcGameState,
+};
 
 #[rocket::get("/game")]
-pub fn ws_handler(ws: WebSocket) -> Stream!['static] {
-    Stream! {
-        ws => {
-            for await message in ws {
-                match message {
-                    Ok(Message::Text(text)) => {
-                        if let Ok(client_msg) = serde_json::from_str::<ClientMessage>(&text) {
-                            match client_msg {
-                                ClientMessage::Join => {
-                                    let tag = GAME_STATE.new_player();
-                                    let response = ServerMessage::Joined { player_tag: tag };
-                                    yield Message::Text(serde_json::to_string(&response).unwrap());
-                                }
-                            }
-                        }
-                    }
-                    _ => yield message?,
+pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<ArcGameState>) -> Channel<'a> {
+    ws.channel(move |stream| {
+        Box::pin(async move {
+            let (sender, receiver) = stream.split();
+            let player_sender = Arc::new(Mutex::new(sender));
+
+            match game_state.try_lock() {
+                Ok(lock_state) => {
+                    lock_state.new_player(player_sender.clone()).await;
                 }
-            }
+                Err(_) => {
+                    panic!("new player join failed")
+                }
+            };
+
+            handle_client_message(receiver).await;
+
+            Ok(())
+        })
+    })
+}
+
+async fn handle_client_message(mut receiver: Receiver) {
+    while let Some(message) = receiver.next().await {
+        if let Ok(msg) = message {
+            println!("Received message: {:?}", msg);
         }
     }
 }
