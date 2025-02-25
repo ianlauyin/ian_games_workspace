@@ -1,30 +1,20 @@
-use std::sync::Arc;
+use rocket::{futures::StreamExt, State};
+use rocket_ws::{Channel, WebSocket};
 
-use rocket::{
-    futures::{SinkExt, StreamExt},
-    tokio::sync::Mutex,
-    State,
-};
-use rocket_ws::{Channel, Message, WebSocket};
-
-use super::{
-    message::{Receiver, Sender},
-    state::ArcGameState,
-};
+use crate::{message::Receiver, state::SharedGameState};
 
 #[rocket::get("/game")]
-pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<ArcGameState>) -> Channel<'a> {
+pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<SharedGameState>) -> Channel<'a> {
     ws.channel(move |stream| {
         Box::pin(async move {
             let (sender, receiver) = stream.split();
-            let player_sender = Arc::new(Mutex::new(sender));
 
             match game_state.try_lock() {
                 Ok(lock_state) => {
-                    lock_state.new_player(player_sender.clone()).await;
+                    lock_state.new_player(sender).await;
                 }
                 Err(_) => {
-                    panic!("new player join failed")
+                    println!("new player join failed")
                 }
             };
 
