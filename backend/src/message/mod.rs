@@ -1,5 +1,5 @@
-mod client;
+mod receiver;
 mod sender;
 
-pub use client::{ClientMessageHandler, Receiver};
+pub use receiver::ClientMessageHandler;
 pub use sender::{Sender, ServerMessageHandler};

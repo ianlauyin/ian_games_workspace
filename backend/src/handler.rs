@@ -1,7 +1,8 @@
 use rocket::{futures::StreamExt, State};
 use rocket_ws::{Channel, WebSocket};
 
-use crate::{message::Receiver, state::SharedGameState};
+use crate::message::ClientMessageHandler;
+use crate::state::SharedGameState;
 
 #[rocket::get("/game")]
 pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<SharedGameState>) -> Channel<'a> {
@@ -9,6 +10,7 @@ pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<SharedGameState
         Box::pin(async move {
             let (sender, receiver) = stream.split();
 
+            // Add Sender to ServerMessageHandler
             match game_state.try_lock() {
                 Ok(lock_state) => {
                     lock_state.new_player(sender).await;
@@ -18,17 +20,11 @@ pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<SharedGameState
                 }
             };
 
-            handle_client_message(receiver).await;
+            // Add Receiver to ClientMessageHandler
+            let message_handler = ClientMessageHandler::new(game_state.inner().clone());
+            message_handler.handle_messages(receiver).await;
 
             Ok(())
         })
     })
-}
-
-async fn handle_client_message(mut receiver: Receiver) {
-    while let Some(message) = receiver.next().await {
-        if let Ok(msg) = message {
-            println!("Received message: {:?}", msg);
-        }
-    }
 }

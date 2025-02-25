@@ -11,7 +11,7 @@ pub type SharedGameState = Arc<Mutex<GameState>>;
 pub struct GameState {
     players: Mutex<HashMap<u8, PlayerInfo>>,
     enemies: Mutex<Vec<Enemy>>,
-    message_handler: ServerMessageHandler,
+    server_message_handler: ServerMessageHandler,
 }
 
 impl GameState {
@@ -21,6 +21,8 @@ impl GameState {
         let player = PlayerInfo::default();
         players.insert(player_tag, player);
 
-        self.message_handler.add_sender(player_tag, sender).await;
+        self.server_message_handler
+            .add_sender(player_tag, sender)
+            .await;
     }
 }
