@@ -8,7 +8,6 @@ use crate::state::SharedGameState;
 pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<SharedGameState>) -> Channel<'a> {
     ws.channel(move |stream| {
         Box::pin(async move {
-            println!("new player joined");
             let (sender, receiver) = stream.split();
 
             // Add Sender to ServerMessageHandler

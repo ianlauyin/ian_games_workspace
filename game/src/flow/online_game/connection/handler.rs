@@ -1,12 +1,10 @@
-use std::net::TcpStream;
-
 use bevy::{
     ecs::world::CommandQueue,
     prelude::*,
     tasks::{block_on, futures_lite::future::poll_once, AsyncComputeTaskPool, Task},
 };
 
-use tungstenite::{connect, http::Response, stream::MaybeTlsStream, WebSocket};
+use tungstenite::{connect, stream::MaybeTlsStream};
 
 use crate::states::AppState;
 
@@ -42,7 +40,7 @@ fn setup_connection(mut commands: Commands) {
             command_queue.push(move |world: &mut World| {
                 world
                     .entity_mut(entity)
-                    .insert(WebSocketClient::new(client))
+                    .insert(WebSocketClient::new(client.0))
                     .remove::<WebSocketConnectionSetupTask>();
             });
 

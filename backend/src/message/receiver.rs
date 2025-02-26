@@ -23,5 +23,7 @@ impl ClientMessageHandler {
         }
     }
 
-    async fn handle_message(&self, message: ClientMessage) {}
+    async fn handle_message(&self, message: ClientMessage) {
+        println!("Received message: {:?}", message);
+    }
 }

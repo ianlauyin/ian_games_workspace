@@ -3,24 +3,20 @@ use std::{collections::HashMap, sync::Arc};
 
 use crate::message::{Sender, ServerMessageHandler};
 
-use super::{enemy::Enemy, player_info::PlayerInfo};
+use super::{enemies::Enemies, players::Players};
 
 pub type SharedGameState = Arc<Mutex<GameState>>;
 
 #[derive(Default)]
 pub struct GameState {
-    players: Mutex<HashMap<u8, PlayerInfo>>,
-    enemies: Mutex<Vec<Enemy>>,
+    players: Players,
+    enemies: Enemies,
     server_message_handler: ServerMessageHandler,
 }
 
 impl GameState {
     pub async fn new_player(&self, sender: Sender) {
-        let mut players = self.players.lock().await;
-        let player_tag = players.len() as u8 + 1;
-        let player = PlayerInfo::default();
-        players.insert(player_tag, player);
-
+        let player_tag = self.players.new_player().await;
         self.server_message_handler
             .add_sender(player_tag, sender)
             .await;

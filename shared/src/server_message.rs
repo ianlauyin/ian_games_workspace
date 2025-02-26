@@ -1,4 +1,3 @@
-use bevy_eventwork::NetworkMessage;
 use rocket_ws::Message;
 use serde::{Deserialize, Serialize};
 
@@ -6,10 +5,6 @@ use serde::{Deserialize, Serialize};
 pub enum ServerMessage {
     Joined { player_tag: u8 },
     StartGame,
-}
-
-impl NetworkMessage for ServerMessage {
-    const NAME: &'static str = "ServerMessage";
 }
 
 impl ServerMessage {

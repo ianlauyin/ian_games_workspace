@@ -1,5 +1,5 @@
-mod enemy;
+mod enemies;
 mod game_state;
-mod player_info;
+mod players;
 
 pub use game_state::{GameState, SharedGameState};
