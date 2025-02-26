@@ -1,7 +1,8 @@
 use bevy::prelude::*;
+use shooting_game_util::EdgeUtil;
 
 use crate::components::{Player, Spaceship, Velocity};
-use crate::{constant::SPACESHIP_SIZE, util::EdgeUtil};
+use crate::constant::SPACESHIP_SIZE;
 
 #[derive(Event)]
 pub struct SpaceShipMovementEvent {

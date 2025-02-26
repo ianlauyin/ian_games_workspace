@@ -1,8 +1,9 @@
 use bevy::prelude::*;
 use rand::{rng, Rng};
+use shooting_game_util::{EdgeUtil, UFO_SIZE};
 
 use crate::components::{Player, Score, Velocity, UFO};
-use crate::{constant::UFO_SIZE, states::GameState, util::EdgeUtil};
+use crate::states::GameState;
 
 pub struct EnemyPlugin;
 
@@ -10,7 +11,12 @@ impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (check_and_spawn_enemy, handle_horizontal_movement).run_if(in_state(GameState::InPlay)),
+            (
+                check_and_spawn_enemy,
+                handle_horizontal_movement,
+                cleanup_on_out_screen,
+            )
+                .run_if(in_state(GameState::InPlay)),
         );
     }
 }
@@ -92,6 +98,20 @@ impl Stage {
                 Vec2::new(rng.random_range(-5.0..5.0), rng.random_range(-10.0..-5.0))
             }
             Stage::Six => Vec2::new(rng.random_range(-10.0..10.0), rng.random_range(-10.0..-5.0)),
+        }
+    }
+}
+
+fn cleanup_on_out_screen(
+    mut commands: Commands,
+    ufo_query: Query<(Entity, &Transform), With<UFO>>,
+) {
+    let edge = EdgeUtil::new(UFO_SIZE);
+    for (entity, transform) in ufo_query.iter() {
+        if edge.over_bottom_out(transform.translation.y) {
+            if let Some(mut entity_commands) = commands.get_entity(entity) {
+                entity_commands.despawn();
+            }
         }
     }
 }

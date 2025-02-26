@@ -1,0 +1,13 @@
+[package]
+name = "shooting_game_util"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "shooting_game_util"
+path = "src/lib.rs"
+
+[dependencies]
+bevy_math = "0.15.2"
+
+

@@ -1,7 +1,8 @@
 use bevy::prelude::*;
+use shooting_game_util::EdgeUtil;
 
 use crate::components::{Health, Player, Score, Spaceship, Velocity};
-use crate::{constant::SPACESHIP_SIZE, states::GameState, util::EdgeUtil};
+use crate::{constant::SPACESHIP_SIZE, states::GameState};
 
 pub struct ReadyPlugin;
 

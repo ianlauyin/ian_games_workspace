@@ -1,8 +1,7 @@
-use bevy::prelude::*;
-
-use crate::constant::{ZIndex, UFO_SIZE};
+use crate::constant::ZIndex;
 use crate::res::ImageHandles;
-use crate::util::EdgeUtil;
+use bevy::prelude::*;
+use shooting_game_util::UFO_SIZE;
 
 use super::collisable::Collisable;
 
@@ -24,7 +23,7 @@ pub struct UFOPlugin;
 
 impl Plugin for UFOPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (listen_ufo_position, cleanup_on_out_screen))
+        app.add_systems(Update, listen_ufo_position)
             .add_observer(handle_ufo_on_added);
     }
 }
@@ -52,19 +51,5 @@ fn handle_ufo_on_added(
 fn listen_ufo_position(mut ufo_query: Query<(&Transform, &mut UFO)>) {
     for (transform, mut ufo) in ufo_query.iter_mut() {
         ufo.position = transform.translation.xy();
-    }
-}
-
-fn cleanup_on_out_screen(
-    mut commands: Commands,
-    ufo_query: Query<(Entity, &Transform), With<UFO>>,
-) {
-    let edge = EdgeUtil::new(UFO_SIZE);
-    for (entity, transform) in ufo_query.iter() {
-        if edge.over_bottom_out(transform.translation.y) {
-            if let Some(mut entity_commands) = commands.get_entity(entity) {
-                entity_commands.despawn();
-            }
-        }
     }
 }

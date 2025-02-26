@@ -4459,6 +4459,7 @@ dependencies = [
  "bevy",
  "bevy_embedded_assets",
  "rand 0.9.0",
+ "shooting_game_util",
 ]
 
 [[package]]
@@ -4469,6 +4470,13 @@ dependencies = [
  "rocket_ws",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "shooting_game_util"
+version = "0.1.0"
+dependencies = [
+ "bevy_math",
 ]
 
 [[package]]

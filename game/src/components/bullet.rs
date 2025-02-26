@@ -1,10 +1,7 @@
 use bevy::color::palettes::css::YELLOW;
 use bevy::prelude::*;
 
-use crate::{
-    constant::{ZIndex, BULLET_SIZE},
-    util::EdgeUtil,
-};
+use crate::constant::{ZIndex, BULLET_SIZE};
 
 use super::{collisable::Collisable, Player, Spaceship, Velocity};
 
@@ -26,8 +23,7 @@ pub struct BulletPlugin;
 
 impl Plugin for BulletPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, cleanup_on_out_screen)
-            .add_observer(bullet_on_added);
+        app.add_observer(bullet_on_added);
     }
 }
 
@@ -53,20 +49,6 @@ fn bullet_on_added(
                     },
                     Collisable::Player,
                 ));
-            }
-        }
-    }
-}
-
-fn cleanup_on_out_screen(
-    mut commands: Commands,
-    bullet_queries: Query<(Entity, &Transform), With<Bullet>>,
-) {
-    let edge = EdgeUtil::new(BULLET_SIZE);
-    for (entity, transform) in bullet_queries.iter() {
-        if edge.over_top_out(transform.translation.y) {
-            if let Some(mut entity_commands) = commands.get_entity(entity) {
-                entity_commands.despawn();
             }
         }
     }

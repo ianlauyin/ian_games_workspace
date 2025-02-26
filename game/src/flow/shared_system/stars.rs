@@ -1,11 +1,11 @@
 use bevy::prelude::*;
+use shooting_game_util::EdgeUtil;
 
 use crate::components::Velocity;
 use crate::constant::{ZIndex, STAR_SIZE};
 use crate::res::ImageHandles;
 use crate::states::AppState;
 use crate::ui_components::Blink;
-use crate::util::EdgeUtil;
 
 pub struct StarsPlugin;
 
