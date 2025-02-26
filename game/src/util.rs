@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use std::f32::consts::PI;
-use shooting_game_util::MOBILE_WINDOW_SIZE;
 
 pub fn angle_to_radian(angle: f32) -> f32 {
     angle * PI / 180.
