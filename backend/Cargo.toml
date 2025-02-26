@@ -3,6 +3,10 @@ name = "shooting_game_backend"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "shooting_game_backend"
+path = "src/lib.rs"
+
 [dependencies]
 rocket = "0.5"
 rocket_ws = "0.1"

@@ -4459,6 +4459,7 @@ dependencies = [
  "bevy",
  "bevy_embedded_assets",
  "rand 0.9.0",
+ "shooting_game_backend",
  "shooting_game_util",
 ]
 

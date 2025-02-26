@@ -33,7 +33,7 @@ impl ServerMessageHandler {
 }
 
 #[derive(Serialize, Deserialize, Clone)]
-enum ServerMessage {
+pub enum ServerMessage {
     Joined { player_tag: u8 },
 }
 
