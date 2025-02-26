@@ -3,12 +3,9 @@ name = "shooting_game_backend"
 version = "0.1.0"
 edition = "2021"
 
-[lib]
-name = "shooting_game_backend"
-path = "src/lib.rs"
-
 [dependencies]
 rocket = "0.5"
 rocket_ws = "0.1"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+shooting_game_shared = { path = "../shared" }

@@ -8,10 +8,7 @@ pub struct CleanupPlugin;
 impl Plugin for CleanupPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
-            OnTransition {
-                exited: AppState::Game,
-                entered: AppState::MainMenu,
-            },
+            OnEnter(AppState::MainMenu),
             (
                 cleanup_components::<Player>,
                 cleanup_components::<Bullet>,

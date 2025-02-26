@@ -3,7 +3,7 @@ use rocket::{
     tokio::sync::Mutex,
 };
 use rocket_ws::{stream::DuplexStream, Message};
-use serde::{Deserialize, Serialize};
+use shooting_game_shared::ServerMessage;
 use std::collections::HashMap;
 
 pub type Sender = SplitSink<DuplexStream, Message>;
@@ -24,21 +24,10 @@ impl ServerMessageHandler {
     async fn send_to(&self, tag: u8, message: ServerMessage) {
         let mut senders = self.0.lock().await;
         if let Some(sender) = senders.get_mut(&tag) {
-            match sender.send(message.into_message()).await {
+            match sender.send(message.text()).await {
                 Ok(_) => (),
                 Err(_) => println!("Failed to send message to player {}", tag),
             }
         }
-    }
-}
-
-#[derive(Serialize, Deserialize, Clone)]
-pub enum ServerMessage {
-    Joined { player_tag: u8 },
-}
-
-impl ServerMessage {
-    fn into_message(self) -> Message {
-        Message::text(serde_json::to_string(&self).unwrap())
     }
 }

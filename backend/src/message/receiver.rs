@@ -2,7 +2,7 @@ use crate::state::SharedGameState;
 use rocket::futures::stream::SplitStream;
 use rocket::futures::StreamExt;
 use rocket_ws::stream::DuplexStream;
-use serde::{Deserialize, Serialize};
+use shooting_game_shared::ClientMessage;
 
 pub type Receiver = SplitStream<DuplexStream>;
 
@@ -24,9 +24,4 @@ impl ClientMessageHandler {
     }
 
     async fn handle_message(&self, message: ClientMessage) {}
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub enum ClientMessage {
-    PlayerMove { x: f32, y: f32 },
 }

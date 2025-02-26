@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use shooting_game_util::EdgeUtil;
+use shooting_game_shared::util::EdgeUtil;
 
 use crate::components::Velocity;
 use crate::constant::{ZIndex, STAR_SIZE};
@@ -13,8 +13,11 @@ impl Plugin for StarsPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (check_stars_number, cleanup_stars)
-                .run_if(in_state(AppState::Game).or(in_state(AppState::MainMenu))),
+            (check_stars_number, cleanup_stars).run_if(
+                in_state(AppState::Game)
+                    .or(in_state(AppState::MainMenu))
+                    .or(in_state(AppState::OnlineGame)),
+            ),
         );
     }
 }

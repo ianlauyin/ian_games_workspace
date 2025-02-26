@@ -1,5 +1,5 @@
-mod stars;
 mod cleanup;
+mod stars;
 
 use bevy::prelude::{App, Plugin};
 pub struct SharedSystemPlugin;

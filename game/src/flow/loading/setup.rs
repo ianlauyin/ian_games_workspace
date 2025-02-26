@@ -1,7 +1,7 @@
 use bevy::app::App;
 use bevy::prelude::*;
 use bevy::window::WindowResolution;
-use shooting_game_util::MOBILE_WINDOW_SIZE;
+use shooting_game_shared::util::MOBILE_WINDOW_SIZE;
 
 use crate::constant::ZIndex;
 use crate::states::AppState;

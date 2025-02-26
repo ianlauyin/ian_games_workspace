@@ -1,6 +1,6 @@
 use crate::{
     components::{Bullet, CollidedEvent, Explosion, Invisible, Player, Spaceship, UFO},
-    flow::app_game::triggers::{HealthReduceEvent, RemoveUFOEvent},
+    flow::game::triggers::{HealthReduceEvent, RemoveUFOEvent},
     states::GameState,
 };
 use bevy::prelude::*;

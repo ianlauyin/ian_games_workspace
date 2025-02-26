@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use shooting_game_util::EdgeUtil;
+use shooting_game_shared::util::EdgeUtil;
 
 use crate::components::{Health, Player, Score, Spaceship, Velocity};
 use crate::{constant::SPACESHIP_SIZE, states::GameState};

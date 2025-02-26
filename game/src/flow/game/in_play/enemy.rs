@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use rand::{rng, Rng};
-use shooting_game_util::{EdgeUtil, UFO_SIZE};
+use shooting_game_shared::util::{EdgeUtil, UFO_SIZE};
 
 use crate::components::{Player, Score, Velocity, UFO};
 use crate::states::GameState;

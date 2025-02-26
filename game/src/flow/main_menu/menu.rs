@@ -6,9 +6,9 @@ use crate::states::AppState;
 use crate::ui_components::{Blink, InteractionUI, MainContainer, SelectableText};
 use crate::util::cleanup_components;
 
-pub struct MainMenuPlugin;
+pub struct MenuPlugin;
 
-impl Plugin for MainMenuPlugin {
+impl Plugin for MenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::MainMenu), show_main_menu)
             .add_systems(
@@ -31,7 +31,10 @@ impl Plugin for MainMenuPlugin {
 struct MainMenu;
 
 #[derive(Component)]
-struct StartButton;
+enum StartButton {
+    Game,
+    OnlineGame,
+}
 
 fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
     let is_keyboard_mode = control_option.mode == ControlMode::Keyboard;
@@ -94,7 +97,7 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                     ));
                     option_node
                         .spawn((
-                            StartButton,
+                            StartButton::Game,
                             InteractionUI,
                             Node {
                                 align_self: AlignSelf::FlexEnd,
@@ -111,6 +114,25 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                             BorderRadius::all(Val::Px(5.))
                         ))
                         .with_child(Text::new("Start"));
+                    option_node
+                    .spawn((
+                        StartButton::OnlineGame,
+                        InteractionUI,
+                        Node {
+                            align_self: AlignSelf::FlexEnd,
+                            width: Val::Px(100.),
+                            height: Val::Px(50.),
+                            border: UiRect::all(Val::Px(2.)),
+                            display: Display::Flex,
+                            align_items: AlignItems::Center,
+                            justify_content: JustifyContent::Center,
+                            ..default()
+                        },
+                        BackgroundColor::from(Color::srgba(0.1, 0.1, 0.1, 1.)),
+                        BorderColor::from(Color::BLACK),
+                        BorderRadius::all(Val::Px(5.))
+                    ))
+                    .with_child(Text::new("Online Game"));
                 });
         });
 }
@@ -139,21 +161,23 @@ fn handle_control_mode_selection_text(
 
 fn handle_start_button_interaction(
     mut commands: Commands,
-    mut start_button_query: Query<&Interaction, With<StartButton>>,
+    start_button_query: Query<(&Interaction, &StartButton)>,
     main_menu_query: Query<Entity, With<MainMenu>>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    let Ok(interaction) = start_button_query.get_single_mut() else {
-        warn!("Start button not found in handle_start_button_interaction");
-        return;
-    };
-    if *interaction == Interaction::Pressed {
-        let Ok(main_menu) = main_menu_query.get_single() else {
-            panic!("Main Menu not found in handle_start_button_interaction");
+    for (interaction, start_button) in start_button_query.iter() {
+        if *interaction == Interaction::Pressed {
+            let Ok(main_menu) = main_menu_query.get_single() else {
+                panic!("Main Menu not found in handle_start_button_interaction");
+            };
+            if let Some(entity_commands) = commands.get_entity(main_menu) {
+                entity_commands.despawn_recursive();
+            }
+            let target_state = match start_button {
+                StartButton::Game => AppState::Game,
+                StartButton::OnlineGame => AppState::OnlineGame,
+            };
+            next_state.set(target_state);
         };
-        if let Some(entity_commands) = commands.get_entity(main_menu) {
-            entity_commands.despawn_recursive();
-        }
-        next_state.set(AppState::Game)
-    };
+    }
 }

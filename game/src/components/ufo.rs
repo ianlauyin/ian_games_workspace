@@ -1,7 +1,7 @@
 use crate::constant::ZIndex;
 use crate::res::ImageHandles;
 use bevy::prelude::*;
-use shooting_game_util::UFO_SIZE;
+use shooting_game_shared::util::UFO_SIZE;
 
 use super::collisable::Collisable;
 
