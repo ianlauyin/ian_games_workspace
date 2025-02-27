@@ -2,7 +2,7 @@ mod game;
 mod loading;
 mod main_menu;
 mod online_game;
-mod shared_system;
+mod shared;
 
 use bevy::prelude::{App, Plugin};
 pub struct FlowPlugin;
@@ -13,7 +13,7 @@ impl Plugin for FlowPlugin {
             game::AppGamePlugin,
             loading::AppLoadingPlugin,
             main_menu::MainMenuPlugin,
-            shared_system::SharedSystemPlugin,
+            shared::SharedSystemPlugin,
             online_game::OnlineGamePlugin,
         ));
     }

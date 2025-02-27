@@ -15,7 +15,7 @@ pub use collisable::CollidedEvent;
 pub use explosion::Explosion;
 pub use health::Health;
 pub use invisible::Invisible;
-pub use player::Player;
+pub use player::{Player, SelfPlayer};
 pub use score::Score;
 pub use spaceship::Spaceship;
 pub use ufo::UFO;
@@ -32,6 +32,7 @@ impl Plugin for ComponentPlugin {
             velocity::VelocityPlugin,
             invisible::InvisiblePlugin,
             bullet::BulletPlugin,
+            player::PlayerPlugin,
         ));
     }
 }

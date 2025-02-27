@@ -2,16 +2,20 @@ use bevy_math::Vec2;
 
 pub const MOBILE_WINDOW_SIZE: Vec2 = Vec2::new(540., 960.);
 pub const UFO_SIZE: Vec2 = Vec2::new(80., 54.);
-
-pub fn get_ufo_edge_util() -> EdgeUtil {
-    EdgeUtil::new(UFO_SIZE)
-}
+pub const SPACESHIP_SIZE: Vec2 = Vec2::new(100., 100.);
 
 pub struct EdgeUtil {
     object_size: Vec2,
 }
 
 impl EdgeUtil {
+    pub fn ufo() -> Self {
+        EdgeUtil::new(UFO_SIZE)
+    }
+    pub fn spaceship() -> Self {
+        EdgeUtil::new(SPACESHIP_SIZE)
+    }
+
     pub fn new(object_size: Vec2) -> Self {
         Self { object_size }
     }

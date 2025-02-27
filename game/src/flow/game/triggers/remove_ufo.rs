@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::components::UFO;
 
-use super::AddScoreEvent;
+use crate::flow::shared::game_trigger::AddScoreEvent;
 
 #[derive(Event)]
 pub struct RemoveUFOEvent {

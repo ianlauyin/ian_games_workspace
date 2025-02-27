@@ -5,6 +5,7 @@ pub enum ZIndex {
     STARS,
     EXPLOSION,
     SPACESHIP,
+    SELFSPACESHIP,
     UFO,
     BULLET,
     MAINCONTAINER,
@@ -18,8 +19,9 @@ impl ZIndex {
             ZIndex::STARS => 1.,
             ZIndex::EXPLOSION => 2.,
             ZIndex::SPACESHIP | ZIndex::UFO | ZIndex::BULLET => 3.,
-            ZIndex::MAINCONTAINER => 4.,
-            ZIndex::TEXT => 5.,
+            ZIndex::SELFSPACESHIP => 4.,
+            ZIndex::MAINCONTAINER => 5.,
+            ZIndex::TEXT => 6.,
         }
     }
 

@@ -6,11 +6,17 @@ use shooting_game_shared::ClientMessage;
 
 pub type Receiver = SplitStream<DuplexStream>;
 
-pub struct ClientMessageHandler(SharedGameState);
+pub struct ClientMessageHandler {
+    player_tag: u8,
+    shared_game_state: SharedGameState,
+}
 
 impl ClientMessageHandler {
-    pub fn new(game_state: SharedGameState) -> Self {
-        Self(game_state)
+    pub fn new(player_tag: u8, shared_game_state: SharedGameState) -> Self {
+        Self {
+            player_tag,
+            shared_game_state,
+        }
     }
 
     pub async fn handle_messages(&self, mut receiver: Receiver) {
@@ -24,6 +30,13 @@ impl ClientMessageHandler {
     }
 
     async fn handle_message(&self, message: ClientMessage) {
-        println!("Received message: {:?}", message);
+        let game_state = self.shared_game_state.lock().await;
+        match message {
+            ClientMessage::UpdatePlayerInfo { position, bullets } => {
+                game_state
+                    .update_player_info(self.player_tag, position, bullets)
+                    .await
+            }
+        }
     }
 }

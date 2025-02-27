@@ -4,6 +4,7 @@ use rocket_ws::{Channel, WebSocket};
 use crate::message::ClientMessageHandler;
 use crate::state::SharedGameState;
 
+// TODO: need to handle user diconnect
 #[rocket::get("/game")]
 pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<SharedGameState>) -> Channel<'a> {
     ws.channel(move |stream| {
@@ -11,10 +12,10 @@ pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<SharedGameState
             let (sender, receiver) = stream.split();
 
             // Add Sender to ServerMessageHandler
-            game_state.lock().await.new_player(sender).await;
+            let player_tag = game_state.lock().await.new_player(sender).await;
 
             // Add Receiver to ClientMessageHandler
-            let message_handler = ClientMessageHandler::new(game_state.inner().clone());
+            let message_handler = ClientMessageHandler::new(player_tag, game_state.inner().clone());
             message_handler.handle_messages(receiver).await;
 
             Ok(())

@@ -2,7 +2,8 @@ use bevy::prelude::*;
 use shooting_game_shared::util::EdgeUtil;
 
 use crate::components::{Health, Player, Score, Spaceship, Velocity};
-use crate::{constant::SPACESHIP_SIZE, states::GameState};
+use crate::res::PlayerTag;
+use crate::states::GameState;
 
 pub struct ReadyPlugin;
 
@@ -19,15 +20,15 @@ impl Plugin for ReadyPlugin {
     }
 }
 
-fn setup_score_and_health(mut commands: Commands) {
-    commands.spawn((Score::new(), Player(1)));
-    commands.spawn((Health::new(), Player(1)));
+fn setup_score_and_health(mut commands: Commands, player_tag: Res<PlayerTag>) {
+    commands.spawn((Score::new(), Player::new_from_res(&player_tag)));
+    commands.spawn((Health::new(), Player::new_from_res(&player_tag)));
 }
 
-fn spawn_spaceship(mut commands: Commands) {
-    let edge = EdgeUtil::new(SPACESHIP_SIZE);
+fn spawn_spaceship(mut commands: Commands, player_tag: Res<PlayerTag>) {
+    let edge = EdgeUtil::spaceship();
     commands.spawn((
-        Player(1),
+        Player::new_from_res(&player_tag),
         Spaceship::new(Vec2::new(0., edge.bottom_out())),
         Velocity { x: 0., y: 5. },
     ));
@@ -37,7 +38,7 @@ fn check_spaceship_position(
     mut next_state: ResMut<NextState<GameState>>,
     mut spaceship_query: Query<(&Transform, &mut Velocity), With<Spaceship>>,
 ) {
-    let edge = EdgeUtil::new(SPACESHIP_SIZE);
+    let edge = EdgeUtil::spaceship();
     let Ok((transform, mut velocity)) = spaceship_query.get_single_mut() else {
         panic!("Spaceship not found in check_spaceship_position");
     };

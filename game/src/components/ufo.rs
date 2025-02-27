@@ -1,5 +1,6 @@
 use crate::constant::ZIndex;
 use crate::res::ImageHandles;
+use crate::util::{listen_position, Position};
 use bevy::prelude::*;
 use shooting_game_shared::util::UFO_SIZE;
 
@@ -10,12 +11,18 @@ pub struct UFO {
     position: Vec2,
 }
 
+impl Position for UFO {
+    fn get_position(&self) -> Vec2 {
+        self.position
+    }
+    fn set_position(&mut self, position: Vec2) {
+        self.position = position;
+    }
+}
+
 impl UFO {
     pub fn new(position: Vec2) -> Self {
         Self { position }
-    }
-    pub fn get_position(&self) -> Vec2 {
-        self.position
     }
 }
 
@@ -23,7 +30,7 @@ pub struct UFOPlugin;
 
 impl Plugin for UFOPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, listen_ufo_position)
+        app.add_systems(Update, listen_position::<UFO>)
             .add_observer(handle_ufo_on_added);
     }
 }
@@ -45,11 +52,5 @@ fn handle_ufo_on_added(
             Transform::from_translation(ufo.position.extend(ZIndex::UFO.z_value())),
             Collisable::Enemy,
         ));
-    }
-}
-
-fn listen_ufo_position(mut ufo_query: Query<(&Transform, &mut UFO)>) {
-    for (transform, mut ufo) in ufo_query.iter_mut() {
-        ufo.position = transform.translation.xy();
     }
 }

@@ -6,6 +6,7 @@ use crate::{
     constant::BULLET_SIZE,
     res::{ControlMode, ControlOption},
     states::GameState,
+    util::Position,
 };
 
 pub struct ShootingPlugin;
@@ -30,7 +31,7 @@ fn shooting_bullet(
             return;
         };
         if spaceship.can_shoot() {
-            commands.spawn(Bullet::by_player(player.0));
+            commands.spawn(Bullet::by_player(player.0, spaceship.get_position()));
             spaceship.start_cd();
         }
     }

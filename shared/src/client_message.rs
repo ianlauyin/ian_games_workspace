@@ -3,7 +3,10 @@ use tungstenite::{Message, Utf8Bytes};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum ClientMessage {
-    PlayerMove { x: f32, y: f32 },
+    UpdatePlayerInfo {
+        position: (f32, f32),
+        bullets: Vec<(f32, f32)>,
+    },
 }
 
 impl ClientMessage {

@@ -6,6 +6,7 @@ use bevy::prelude::*;
 use crate::ui_components::Blink;
 
 #[derive(Component)]
+#[require(Sprite)]
 pub struct Invisible {
     timer: Timer,
 }
@@ -27,10 +28,19 @@ impl Plugin for InvisiblePlugin {
     }
 }
 
-fn invisible_on_add(ev: Trigger<OnAdd, Invisible>, mut commands: Commands) {
+fn invisible_on_add(
+    ev: Trigger<OnAdd, Invisible>,
+    mut commands: Commands,
+    transform_q: Query<&Sprite, With<Invisible>>,
+) {
+    let Ok(sprite) = transform_q.get(ev.entity()) else {
+        warn!("Invisible component should have sprite");
+        return;
+    };
+    let original_alpha = sprite.color.alpha();
     commands
         .entity(ev.entity())
-        .insert(Blink::new_with_speed(1.1));
+        .insert(Blink::new_with_range(original_alpha, 0.));
 }
 
 fn handle_invisible_timer(

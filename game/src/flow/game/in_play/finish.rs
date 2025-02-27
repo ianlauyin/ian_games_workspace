@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use crate::{
     components::{Explosion, Health, Spaceship},
     states::GameState,
+    util::Position,
 };
 
 pub struct FinishPlugin;

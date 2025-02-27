@@ -1,6 +1,8 @@
 #![windows_subsystem = "windows"]
 
-use bevy::prelude::App;
+use std::time::Duration;
+
+use bevy::prelude::*;
 use bevy_embedded_assets::EmbeddedAssetPlugin;
 
 mod components;

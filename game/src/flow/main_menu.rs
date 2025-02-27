@@ -6,9 +6,9 @@ use crate::states::AppState;
 use crate::ui_components::{Blink, InteractionUI, MainContainer, SelectableText};
 use crate::util::cleanup_components;
 
-pub struct MenuPlugin;
+pub struct MainMenuPlugin;
 
-impl Plugin for MenuPlugin {
+impl Plugin for MainMenuPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(AppState::MainMenu), show_main_menu)
             .add_systems(
@@ -120,7 +120,7 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                         InteractionUI,
                         Node {
                             align_self: AlignSelf::FlexEnd,
-                            width: Val::Px(100.),
+                            width: Val::Px(200.),
                             height: Val::Px(50.),
                             border: UiRect::all(Val::Px(2.)),
                             display: Display::Flex,

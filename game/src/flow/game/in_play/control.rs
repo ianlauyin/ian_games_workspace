@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 
-use super::super::triggers::{SpaceShipMovement, SpaceShipMovementEvent};
+use crate::flow::shared::game_trigger::{SpaceShipMovement, SpaceShipMovementEvent};
+use crate::res::PlayerTag;
 use crate::ui_components::{ControlButton, ControlButtonPanel};
 use crate::{
     res::{ControlMode, ControlOption},
@@ -34,6 +35,7 @@ fn handle_clicking_interaction(
     mut commands: Commands,
     mut control_button_query: Query<(&Interaction, &mut BackgroundColor, &ControlButton)>,
     control_option: Res<ControlOption>,
+    player_tag: Res<PlayerTag>,
 ) {
     if control_option.mode == ControlMode::Keyboard {
         return;
@@ -55,7 +57,7 @@ fn handle_clicking_interaction(
             };
             commands.trigger(SpaceShipMovementEvent {
                 movement,
-                player: 1,
+                player: player_tag.0,
             });
         }
         background_color.0.set_alpha(0.5);
@@ -63,7 +65,7 @@ fn handle_clicking_interaction(
     if all_not_pressed {
         commands.trigger(SpaceShipMovementEvent {
             movement: SpaceShipMovement::Rest,
-            player: 1,
+            player: player_tag.0,
         });
     }
 }
@@ -73,6 +75,7 @@ fn handle_spaceship_keyboard_interaction(
     mut commands: Commands,
     keys: Res<ButtonInput<KeyCode>>,
     control_option: Res<ControlOption>,
+    player_tag: Res<PlayerTag>,
 ) {
     if control_option.mode != ControlMode::Keyboard {
         return;
@@ -95,6 +98,6 @@ fn handle_spaceship_keyboard_interaction(
     };
     commands.trigger(SpaceShipMovementEvent {
         movement,
-        player: 1,
+        player: player_tag.0,
     });
 }

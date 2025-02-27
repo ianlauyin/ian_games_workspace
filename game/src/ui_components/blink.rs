@@ -38,17 +38,17 @@ impl Blink {
         }
     }
 
-    // pub fn new_with_range(mut max_alpha: f32, mut min_alpha: f32) -> Self {
-    //     if max_alpha < min_alpha {
-    //         warn!("max_alpha must be greater than min_alpha");
-    //         swap(&mut max_alpha, &mut min_alpha);
-    //     };
-    //     Self {
-    //         max_alpha,
-    //         min_alpha,
-    //         ..default()
-    //     }
-    // }
+    pub fn new_with_range(mut max_alpha: f32, mut min_alpha: f32) -> Self {
+        if max_alpha < min_alpha {
+            warn!("max_alpha must be greater than min_alpha");
+            swap(&mut max_alpha, &mut min_alpha);
+        };
+        Self {
+            max_alpha,
+            min_alpha,
+            ..default()
+        }
+    }
 
     pub fn new_with_speed(speed: f32) -> Self {
         Self { speed, ..default() }

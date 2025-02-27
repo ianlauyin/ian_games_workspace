@@ -15,3 +15,14 @@ pub fn cleanup_components<T: Component>(
         };
     }
 }
+
+pub trait Position {
+    fn get_position(&self) -> Vec2;
+    fn set_position(&mut self, position: Vec2);
+}
+
+pub fn listen_position<T: Position + Component>(mut query: Query<(&Transform, &mut T)>) {
+    for (transform, mut position) in query.iter_mut() {
+        position.set_position(transform.translation.xy());
+    }
+}
