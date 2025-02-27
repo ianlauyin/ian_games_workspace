@@ -55,9 +55,13 @@ fn stop_spaceship(mut spaceship_q: Query<&mut Velocity, (With<Spaceship>, With<S
 fn listen_message(
     trigger: Trigger<ReceiveMessageEvent>,
     mut commands: Commands,
+    current_state: ResMut<State<OnlineGameState>>,
     mut next_state: ResMut<NextState<OnlineGameState>>,
     self_player_tag: Res<PlayerTag>,
 ) {
+    if *current_state.get() != OnlineGameState::Ready {
+        return;
+    }
     match trigger.event().0.clone() {
         ServerMessage::GameStart => {
             next_state.set(OnlineGameState::InPlay);
@@ -71,7 +75,7 @@ fn listen_message(
                 commands.trigger(UpdatePositionEvent {
                     player_tag,
                     position: Vec2::new(position.0, position.1),
-                    bullets: bullets.iter().map(|b| Vec2::new(b.0, b.1)).collect(),
+                    bullets,
                 });
             }
         }

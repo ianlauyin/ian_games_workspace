@@ -1,7 +1,9 @@
 use bevy::prelude::*;
 
 use crate::flow::shared::game_trigger::{SpaceShipMovement, SpaceShipMovementEvent};
+use crate::states::OnlineGameState;
 use crate::ui_components::{ControlButton, ControlButtonPanel};
+use crate::util::cleanup_components;
 use crate::{
     res::{ControlMode, ControlOption},
     states::GameState,
@@ -11,13 +13,22 @@ pub struct ControlPlugin;
 impl Plugin for ControlPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::InPlay), spawn_control_button_panel)
+            .add_systems(OnEnter(OnlineGameState::InPlay), spawn_control_button_panel)
             .add_systems(
                 Update,
                 (
                     handle_clicking_interaction,
                     handle_spaceship_keyboard_interaction,
                 )
-                    .run_if(in_state(GameState::InPlay)),
+                    .run_if(in_state(GameState::InPlay).or(in_state(OnlineGameState::InPlay))),
+            )
+            .add_systems(
+                OnExit(GameState::InPlay),
+                cleanup_components::<ControlButtonPanel>,
+            )
+            .add_systems(
+                OnExit(OnlineGameState::InPlay),
+                cleanup_components::<ControlButtonPanel>,
             );
     }
 }

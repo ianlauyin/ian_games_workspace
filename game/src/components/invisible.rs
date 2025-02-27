@@ -28,19 +28,10 @@ impl Plugin for InvisiblePlugin {
     }
 }
 
-fn invisible_on_add(
-    ev: Trigger<OnAdd, Invisible>,
-    mut commands: Commands,
-    transform_q: Query<&Sprite, With<Invisible>>,
-) {
-    let Ok(sprite) = transform_q.get(ev.entity()) else {
-        warn!("Invisible component should have sprite");
-        return;
-    };
-    let original_alpha = sprite.color.alpha();
+fn invisible_on_add(ev: Trigger<OnAdd, Invisible>, mut commands: Commands) {
     commands
         .entity(ev.entity())
-        .insert(Blink::new_with_range(original_alpha, 0.));
+        .insert(Blink::new_with_speed(1.1));
 }
 
 fn handle_invisible_timer(

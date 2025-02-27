@@ -4483,6 +4483,7 @@ name = "shooting_game_shared"
 version = "0.1.0"
 dependencies = [
  "bevy_math",
+ "rand 0.9.0",
  "rocket_ws",
  "serde",
  "serde_json",

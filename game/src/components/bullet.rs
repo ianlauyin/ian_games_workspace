@@ -7,7 +7,7 @@ use crate::{
     util::{listen_position, Position},
 };
 
-use super::{collisable::Collisable, Velocity};
+use super::{collisable::Collisable, Player, Velocity};
 
 #[derive(Component)]
 pub struct Bullet {
@@ -68,6 +68,7 @@ fn bullet_on_added(
                 ..default()
             },
             Collisable::Player,
+            Player(bullet.get_player()),
         ));
     }
 }

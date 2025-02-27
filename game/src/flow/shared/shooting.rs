@@ -2,10 +2,10 @@ use bevy::prelude::*;
 use shooting_game_shared::util::EdgeUtil;
 
 use crate::{
-    components::{Bullet, Player, Spaceship},
+    components::{Bullet, SelfPlayer, Spaceship},
     constant::BULLET_SIZE,
-    res::{ControlMode, ControlOption},
-    states::GameState,
+    res::{ControlMode, ControlOption, PlayerTag},
+    states::{GameState, OnlineGameState},
     util::Position,
 };
 
@@ -15,7 +15,8 @@ impl Plugin for ShootingPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (shooting_bullet, cleanup_on_out_screen).run_if(in_state(GameState::InPlay)),
+            (shooting_bullet, cleanup_on_out_screen)
+                .run_if(in_state(GameState::InPlay).or(in_state(OnlineGameState::InPlay))),
         );
     }
 }
@@ -24,14 +25,15 @@ fn shooting_bullet(
     mut commands: Commands,
     keys: Res<ButtonInput<KeyCode>>,
     control_option: Res<ControlOption>,
-    mut spaceship_query: Query<(&mut Spaceship, &Player)>,
+    mut spaceship_query: Query<&mut Spaceship, With<SelfPlayer>>,
+    player_tag: Res<PlayerTag>,
 ) {
     if keys.pressed(KeyCode::Space) || control_option.mode == ControlMode::Button {
-        let Ok((mut spaceship, player)) = spaceship_query.get_single_mut() else {
+        let Ok(mut spaceship) = spaceship_query.get_single_mut() else {
             return;
         };
         if spaceship.can_shoot() {
-            commands.spawn(Bullet::by_player(player.0, spaceship.get_position()));
+            commands.spawn(Bullet::by_player(player_tag.0, spaceship.get_position()));
             spaceship.start_cd();
         }
     }

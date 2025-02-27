@@ -1,6 +1,6 @@
 use rocket::tokio::time::sleep;
-use rocket::tokio::{spawn, sync::Mutex};
-use state::SharedGameState;
+use rocket::tokio::{spawn, sync::RwLock};
+use state::{Cycle, SharedGameState};
 use std::sync::Arc;
 use std::time::Duration;
 
@@ -10,7 +10,7 @@ mod state;
 
 #[rocket::main]
 async fn main() -> Result<(), rocket::Error> {
-    let game_state = Arc::new(Mutex::new(state::GameState::default()));
+    let game_state = Arc::new(RwLock::new(state::GameState::default()));
 
     let game_state_clone = Arc::clone(&game_state);
     spawn(game_loop(game_state_clone));
@@ -26,9 +26,13 @@ async fn main() -> Result<(), rocket::Error> {
 
 async fn game_loop(game_state: SharedGameState) {
     loop {
-        let mut locked_state = game_state.lock().await;
-        locked_state.check_cycle().await;
+        let mut locked_state = game_state.write().await;
+        let cycle = locked_state.check_cycle().await;
         drop(locked_state);
-        sleep(Duration::from_millis(500)).await;
+        let sleep_millis = match cycle {
+            Cycle::Playing => 20,
+            _ => 500,
+        };
+        sleep(Duration::from_millis(sleep_millis)).await
     }
 }

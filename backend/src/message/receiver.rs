@@ -30,7 +30,7 @@ impl ClientMessageHandler {
     }
 
     async fn handle_message(&self, message: ClientMessage) {
-        let game_state = self.shared_game_state.lock().await;
+        let game_state = self.shared_game_state.read().await;
         match message {
             ClientMessage::UpdatePlayerInfo { position, bullets } => {
                 game_state

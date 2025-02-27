@@ -1,5 +1,10 @@
+use std::collections::HashMap;
+
 use rocket_ws::Message;
 use serde::{Deserialize, Serialize};
+
+pub type Position = (f32, f32);
+pub type Velocity = (f32, f32);
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub enum ServerMessage {
@@ -10,8 +15,13 @@ pub enum ServerMessage {
     GameStart,
     UpdatePosition {
         player_tag: u8,
-        position: (f32, f32),
-        bullets: Vec<(f32, f32)>,
+        position: Position,
+        bullets: Vec<Position>,
+    },
+    SpawnEnemy {
+        tag: u128,
+        position: Position,
+        velocity: Velocity,
     },
 }
 

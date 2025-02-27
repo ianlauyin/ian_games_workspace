@@ -1,3 +1,4 @@
+mod spawn_enemy;
 mod update_position;
 
 use bevy::prelude::*;
@@ -7,6 +8,9 @@ pub struct TriggerPlugin;
 
 impl Plugin for TriggerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((update_position::UpdatePositionPlugin,));
+        app.add_plugins((
+            update_position::UpdatePositionPlugin,
+            spawn_enemy::SpawnEnemyPlugin,
+        ));
     }
 }

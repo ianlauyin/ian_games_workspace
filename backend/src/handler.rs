@@ -12,7 +12,7 @@ pub async fn ws_handler<'a>(ws: WebSocket, game_state: &'a State<SharedGameState
             let (sender, receiver) = stream.split();
 
             // Add Sender to ServerMessageHandler
-            let player_tag = game_state.lock().await.new_player(sender).await;
+            let player_tag = game_state.read().await.new_player(sender).await;
 
             // Add Receiver to ClientMessageHandler
             let message_handler = ClientMessageHandler::new(player_tag, game_state.inner().clone());

@@ -1,27 +1,36 @@
 use std::collections::HashMap;
 
-use rocket::tokio::sync::Mutex;
+use rocket::tokio::sync::RwLock;
 use shooting_game_shared::util::EdgeUtil;
 
 #[derive(Default)]
-pub struct Players(Mutex<HashMap<u8, PlayerInfo>>);
+pub struct Players(RwLock<HashMap<u8, PlayerInfo>>);
 
 impl Players {
     pub async fn new_player(&self) -> u8 {
-        let mut players = self.0.lock().await;
+        let mut players = self.0.write().await;
         let player_tag = players.len() as u8 + 1;
         let player = PlayerInfo::default();
         players.insert(player_tag, player);
         player_tag
     }
 
+    pub async fn get_players_info(&self) -> Vec<(u8, (f32, f32), Vec<(f32, f32)>)> {
+        self.0
+            .read()
+            .await
+            .iter()
+            .map(|(tag, player)| (*tag, player.position, player.bullets.clone()))
+            .collect()
+    }
+
     pub async fn matched(&self) -> bool {
-        let players = self.0.lock().await;
+        let players = self.0.read().await;
         players.len() == 2
     }
 
     pub async fn ready(&self) -> bool {
-        let players = self.0.lock().await;
+        let players = self.0.read().await;
         let mut ready_count = 0;
         for player in players.values() {
             let edge_util = EdgeUtil::spaceship();
@@ -38,7 +47,7 @@ impl Players {
         position: (f32, f32),
         bullets: Vec<(f32, f32)>,
     ) {
-        let mut players = self.0.lock().await;
+        let mut players = self.0.write().await;
         players.entry(player_tag).and_modify(|player| {
             player.position = position;
             player.bullets = bullets;

@@ -1,4 +1,5 @@
 mod client_message;
+pub mod game_related;
 mod server_message;
 pub mod util;
 

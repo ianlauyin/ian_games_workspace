@@ -13,3 +13,4 @@ rocket_ws = "0.1.1"
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 tungstenite = "0.26.2"
+rand = { workspace = true }

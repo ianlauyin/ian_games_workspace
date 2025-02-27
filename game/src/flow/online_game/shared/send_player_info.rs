@@ -7,9 +7,9 @@ use crate::{
     states::OnlineGameState,
 };
 
-pub struct NoticePlayerInfoPlugin;
+pub struct SendPlayerInfoPlugin;
 
-impl Plugin for NoticePlayerInfoPlugin {
+impl Plugin for SendPlayerInfoPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,

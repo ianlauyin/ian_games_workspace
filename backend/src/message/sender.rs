@@ -1,20 +1,20 @@
 use rocket::{
     futures::{stream::SplitSink, SinkExt},
-    tokio::sync::Mutex,
+    tokio::{spawn, sync::RwLock},
 };
 use rocket_ws::{stream::DuplexStream, Message};
 use shooting_game_shared::ServerMessage;
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::Arc};
 
 pub type Sender = SplitSink<DuplexStream, Message>;
 
 #[derive(Default)]
-pub struct ServerMessageHandler(Mutex<HashMap<u8, Sender>>);
+pub struct ServerMessageHandler(RwLock<HashMap<u8, Arc<RwLock<Sender>>>>);
 
 impl ServerMessageHandler {
     pub async fn add_sender(&self, player_tag: u8, sender: Sender) {
-        let mut senders = self.0.lock().await;
-        senders.insert(player_tag, sender);
+        let mut senders = self.0.write().await;
+        senders.insert(player_tag, Arc::new(RwLock::new(sender)));
         drop(senders);
 
         self.send(player_tag, ServerMessage::Joined { player_tag })
@@ -29,7 +29,7 @@ impl ServerMessageHandler {
         self.send_all(ServerMessage::GameStart).await;
     }
 
-    pub async fn update_others_position(
+    pub async fn notice_others_position(
         &self,
         player_tag: u8,
         position: (f32, f32),
@@ -46,18 +46,30 @@ impl ServerMessageHandler {
         .await;
     }
 
+    pub async fn enemy_spawn(&self, tag: u128, position: (f32, f32), velocity: (f32, f32)) {
+        self.send_all(ServerMessage::SpawnEnemy {
+            tag,
+            position,
+            velocity,
+        })
+        .await;
+    }
+
     async fn send(&self, tag: u8, message: ServerMessage) {
-        let mut senders = self.0.lock().await;
-        if let Some(sender) = senders.get_mut(&tag) {
-            match sender.send(message.text()).await {
-                Ok(_) => (),
-                Err(_) => println!("Failed to send message to player {}", tag),
-            }
+        let senders = self.0.read().await;
+        if let Some(sender) = senders.get(&tag) {
+            let sender_clone = sender.clone();
+            spawn(async move {
+                match sender_clone.write().await.send(message.text()).await {
+                    Ok(_) => (),
+                    Err(_) => println!("Failed to send message to player {}", tag),
+                }
+            });
         }
     }
 
     async fn send_all(&self, message: ServerMessage) {
-        let senders = self.0.lock().await;
+        let senders = self.0.read().await;
         let sender_tags: Vec<u8> = senders.keys().cloned().collect();
         drop(senders);
 
@@ -67,7 +79,7 @@ impl ServerMessageHandler {
     }
 
     async fn send_all_except(&self, except_tag: u8, message: ServerMessage) {
-        let senders = self.0.lock().await;
+        let senders = self.0.read().await;
         let sender_tags: Vec<u8> = senders.keys().cloned().collect();
         drop(senders);
 
