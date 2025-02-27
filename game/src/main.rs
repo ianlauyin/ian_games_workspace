@@ -1,7 +1,5 @@
 #![windows_subsystem = "windows"]
 
-use std::time::Duration;
-
 use bevy::prelude::*;
 use bevy_embedded_assets::EmbeddedAssetPlugin;
 

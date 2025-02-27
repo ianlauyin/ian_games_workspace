@@ -1,13 +1,10 @@
 use bevy::prelude::*;
 use shooting_game_shared::util::EdgeUtil;
 
-use crate::components::{Player, SelfPlayer, Spaceship, Velocity};
+use crate::components::{SelfPlayer, Spaceship, Velocity};
 
 #[derive(Event)]
-pub struct SpaceShipMovementEvent {
-    pub movement: SpaceShipMovement,
-    pub player: u8,
-}
+pub struct SpaceShipMovementEvent(pub SpaceShipMovement);
 
 #[derive(Eq, PartialEq)]
 pub enum SpaceShipMovement {
@@ -39,7 +36,7 @@ pub fn handle_spaceship_movement(
         return;
     };
     let Vec3 { x, y, z: _ } = transform.translation;
-    let movement = &trigger.event().movement;
+    let movement = &trigger.event().0;
 
     if *movement == SpaceShipMovement::Rest {
         velocity.x = 0.;

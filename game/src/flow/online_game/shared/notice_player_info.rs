@@ -24,14 +24,10 @@ fn notice_player_info(
     spaceship_q: Query<&Spaceship, With<SelfPlayer>>,
     bullet_q: Query<&Bullet, With<SelfPlayer>>,
 ) {
-    let mut position = (0., 0.);
-
     let Ok(spaceship) = spaceship_q.get_single() else {
         warn!("Should only have one spaceship with SelfPlayer in notice_player_info");
         return;
     };
-
-    position = spaceship.get_position_tuple();
 
     let bullets = bullet_q
         .iter()
@@ -39,7 +35,7 @@ fn notice_player_info(
         .collect();
 
     commands.trigger(SendMessageEvent(ClientMessage::UpdatePlayerInfo {
-        position,
+        position: spaceship.get_position_tuple(),
         bullets,
     }));
 }
