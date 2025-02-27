@@ -19,9 +19,13 @@ pub enum ServerMessage {
         bullets: Vec<Position>,
     },
     SpawnEnemy {
-        tag: u128,
+        tag: u16,
         position: Position,
         velocity: Velocity,
+    },
+    ConfirmDamaged {
+        player_tag: u8,
+        enemy_tag: u16,
     },
 }
 

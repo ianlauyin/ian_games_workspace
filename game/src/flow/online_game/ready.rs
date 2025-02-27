@@ -66,19 +66,6 @@ fn listen_message(
         ServerMessage::GameStart => {
             next_state.set(OnlineGameState::InPlay);
         }
-        ServerMessage::UpdatePosition {
-            player_tag,
-            position,
-            bullets,
-        } => {
-            if player_tag != self_player_tag.0 {
-                commands.trigger(UpdatePositionEvent {
-                    player_tag,
-                    position: Vec2::new(position.0, position.1),
-                    bullets,
-                });
-            }
-        }
         _ => {}
     }
 }

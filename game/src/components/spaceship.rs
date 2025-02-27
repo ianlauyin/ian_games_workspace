@@ -82,8 +82,10 @@ fn handle_spaceship_on_added(
                 ..default()
             },
             Transform::from_translation(spaceship.position.extend(z)),
-            Collisable::Player,
         ));
+        if player_tag.0 == player.0 {
+            entity_commands.insert(Collisable::Player);
+        }
     }
 }
 

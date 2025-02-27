@@ -5,7 +5,7 @@ use crate::components::{Velocity, UFO};
 
 #[derive(Event)]
 pub struct SpawnEnemyEvent {
-    pub tag: u128,
+    pub tag: u16,
     pub position: (f32, f32),
     pub velocity: (f32, f32),
 }

@@ -59,9 +59,9 @@ impl Stage {
 pub struct UFORandomGenerator;
 
 impl UFORandomGenerator {
-    pub fn tag() -> u128 {
+    pub fn tag() -> u16 {
         let mut rng = rng();
-        rng.random_range(u128::MIN..u128::MAX)
+        rng.random_range(u16::MIN..u16::MAX)
     }
 
     pub fn position() -> (f32, f32) {
@@ -69,7 +69,7 @@ impl UFORandomGenerator {
         let mut rng = rng();
         (
             rng.random_range(ufo_edge.left_in()..ufo_edge.right_in()),
-            ufo_edge.bottom_out(),
+            ufo_edge.top_out(),
         )
     }
 }

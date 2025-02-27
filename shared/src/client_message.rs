@@ -7,6 +7,9 @@ pub enum ClientMessage {
         position: (f32, f32),
         bullets: Vec<(f32, f32)>,
     },
+    DamagedIntent {
+        enemy_tag: u16,
+    },
 }
 
 impl ClientMessage {

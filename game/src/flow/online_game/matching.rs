@@ -36,8 +36,12 @@ fn setup_matching_notice(mut commands: Commands) {
 fn handle_matching_message(
     ev: Trigger<ReceiveMessageEvent>,
     mut current_player_tag: ResMut<PlayerTag>,
+    current_state: ResMut<State<OnlineGameState>>,
     mut next_state: ResMut<NextState<OnlineGameState>>,
 ) {
+    if *current_state.get() != OnlineGameState::Matching {
+        return;
+    }
     match ev.0 {
         ServerMessage::Joined { player_tag } => current_player_tag.0 = player_tag,
         ServerMessage::GameReady => next_state.set(OnlineGameState::Ready),

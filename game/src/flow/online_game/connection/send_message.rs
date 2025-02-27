@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use shooting_game_shared::ClientMessage;
 
+use crate::states::AppState;
+
 use super::websocket_client::WebSocketClient;
 
 #[derive(Event)]
@@ -15,8 +17,12 @@ impl Plugin for SendMessagePlugin {
 
 fn send_message(
     trigger: Trigger<SendMessageEvent>,
+    current_state: Res<State<AppState>>,
     mut web_socket_clients: Query<&mut WebSocketClient>,
 ) {
+    if *current_state.get() != AppState::OnlineGame {
+        return;
+    }
     if web_socket_clients.is_empty() {
         return;
     };

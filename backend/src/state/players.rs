@@ -53,12 +53,19 @@ impl Players {
             player.bullets = bullets;
         });
     }
+
+    pub async fn damaged(&self, player_tag: u8) -> u8 {
+        let mut players = self.0.write().await;
+        let mut health = players.get_mut(&player_tag).unwrap().health;
+        health -= 1;
+        health
+    }
 }
 
 #[derive(Debug)]
 struct PlayerInfo {
-    score: u16,
-    health: u16,
+    score: u8,
+    health: u8,
     position: (f32, f32),
     bullets: Vec<(f32, f32)>,
 }

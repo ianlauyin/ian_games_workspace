@@ -22,7 +22,7 @@ pub struct GameState {
     cycle: Cycle,
     players: Players,
     stage: RwLock<Stage>,
-    enemies: RwLock<Vec<u128>>,
+    enemies: RwLock<Vec<u16>>,
     server_message_handler: ServerMessageHandler,
 }
 
@@ -46,6 +46,18 @@ impl GameState {
             .await;
     }
 
+    pub async fn player_damaged(&self, player_tag: u8, enemy_tag: u16) {
+        let mut enemies = self.enemies.write().await;
+        if enemies.contains(&enemy_tag) {
+            self.players.damaged(player_tag).await;
+            self.server_message_handler
+                .confirm_damaged(player_tag, enemy_tag)
+                .await;
+            enemies.retain(|&tag| tag != enemy_tag);
+        }
+    }
+
+    // Private
     async fn notice_player_info(&mut self) {
         let players = self.players.get_players_info().await;
         for (player_tag, position, bullets) in players {
@@ -65,9 +77,10 @@ impl GameState {
         let tag = UFORandomGenerator::tag();
         let position = UFORandomGenerator::position();
         let velocity = stage.get_ufo_velocity_tuple();
-        if !enemies.contains(&tag) {
-            enemies.push(tag);
+        if enemies.contains(&tag) {
+            return;
         }
+        enemies.push(tag);
         self.server_message_handler
             .enemy_spawn(tag, position, velocity)
             .await;

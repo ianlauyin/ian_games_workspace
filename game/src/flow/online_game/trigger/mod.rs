@@ -3,7 +3,8 @@ mod update_position;
 
 use bevy::prelude::*;
 
-pub use update_position::*;
+pub use spawn_enemy::SpawnEnemyEvent;
+pub use update_position::UpdatePositionEvent;
 pub struct TriggerPlugin;
 
 impl Plugin for TriggerPlugin {

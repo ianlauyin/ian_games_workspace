@@ -67,8 +67,10 @@ fn bullet_on_added(
                 custom_size: Some(BULLET_SIZE),
                 ..default()
             },
-            Collisable::Player,
             Player(bullet.get_player()),
         ));
+        if bullet.get_player() == player_tag.0 {
+            entity_commands.insert(Collisable::Player);
+        }
     }
 }

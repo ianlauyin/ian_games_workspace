@@ -1,6 +1,6 @@
 use crate::{
     components::{Bullet, CollidedEvent, Explosion, Invisible, Player, Spaceship, UFO},
-    flow::{game::triggers::RemoveUFOEvent, shared::game_trigger::HealthReduceEvent},
+    flow::game::triggers::{HealthReduceEvent, RemoveUFOEvent},
     states::GameState,
     util::Position,
 };

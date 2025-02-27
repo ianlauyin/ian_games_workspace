@@ -46,7 +46,7 @@ impl ServerMessageHandler {
         .await;
     }
 
-    pub async fn enemy_spawn(&self, tag: u128, position: (f32, f32), velocity: (f32, f32)) {
+    pub async fn enemy_spawn(&self, tag: u16, position: (f32, f32), velocity: (f32, f32)) {
         self.send_all(ServerMessage::SpawnEnemy {
             tag,
             position,
@@ -55,6 +55,15 @@ impl ServerMessageHandler {
         .await;
     }
 
+    pub async fn confirm_damaged(&self, player_tag: u8, enemy_tag: u16) {
+        self.send_all(ServerMessage::ConfirmDamaged {
+            player_tag,
+            enemy_tag,
+        })
+        .await;
+    }
+
+    // Private
     async fn send(&self, tag: u8, message: ServerMessage) {
         let senders = self.0.read().await;
         if let Some(sender) = senders.get(&tag) {
