@@ -7,6 +7,9 @@ use shooting_game_shared::util::UFO_SIZE;
 use super::collisable::Collisable;
 
 #[derive(Component)]
+pub struct EnemyTag(pub u16);
+
+#[derive(Component)]
 pub struct UFO {
     position: Vec2,
 }

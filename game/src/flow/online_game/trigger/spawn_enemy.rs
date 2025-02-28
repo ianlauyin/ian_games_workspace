@@ -1,13 +1,12 @@
 use bevy::prelude::*;
 
-use super::super::in_play::EnemyTag;
-use crate::components::{Velocity, UFO};
+use crate::components::{EnemyTag, Velocity, UFO};
 
 #[derive(Event)]
 pub struct SpawnEnemyEvent {
     pub tag: u16,
-    pub position: (f32, f32),
-    pub velocity: (f32, f32),
+    pub position: Vec2,
+    pub velocity: Vec2,
 }
 
 pub struct SpawnEnemyPlugin;
@@ -21,11 +20,8 @@ impl Plugin for SpawnEnemyPlugin {
 fn spawn_enemy(ev: Trigger<SpawnEnemyEvent>, mut commands: Commands) {
     let enemy = ev.event();
     commands.spawn((
-        UFO::new(Vec2::new(enemy.position.0, enemy.position.1)),
+        UFO::new(enemy.position),
         EnemyTag(enemy.tag),
-        Velocity {
-            x: enemy.velocity.0,
-            y: enemy.velocity.1,
-        },
+        Velocity::from_vec2(enemy.velocity),
     ));
 }

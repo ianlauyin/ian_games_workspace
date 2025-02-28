@@ -49,11 +49,23 @@ impl GameState {
     pub async fn player_damaged(&self, player_tag: u8, enemy_tag: u16) {
         let mut enemies = self.enemies.write().await;
         if enemies.contains(&enemy_tag) {
-            self.players.damaged(player_tag).await;
+            let health = self.players.damaged(player_tag).await;
             self.server_message_handler
-                .confirm_damaged(player_tag, enemy_tag)
+                .confirm_damaged(player_tag, enemy_tag, health)
                 .await;
             enemies.retain(|&tag| tag != enemy_tag);
+        }
+    }
+
+    pub async fn destroy_enemy(&self, player_tag: u8, bullet_tag: u16, enemy_tag: u16) {
+        let mut enemies = self.enemies.write().await;
+        if enemies.contains(&enemy_tag) {
+            let new_score = self.players.add_score(player_tag).await;
+            self.server_message_handler
+                .confirm_destroy_enemy(player_tag, bullet_tag, enemy_tag, new_score)
+                .await;
+            enemies.retain(|&tag| tag != enemy_tag);
+            self.update_stage().await;
         }
     }
 
@@ -84,6 +96,13 @@ impl GameState {
         self.server_message_handler
             .enemy_spawn(tag, position, velocity)
             .await;
+    }
+
+    async fn update_stage(&self) {
+        let total_score = self.players.get_total_score().await;
+        let new_stage = Stage::new(total_score);
+        let mut stage = self.stage.write().await;
+        *stage = new_stage;
     }
 
     // Cycle Related (Not run in the main thread)

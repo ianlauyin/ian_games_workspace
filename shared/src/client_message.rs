@@ -10,6 +10,10 @@ pub enum ClientMessage {
     DamagedIntent {
         enemy_tag: u16,
     },
+    DestroyEnemyIntent {
+        bullet_tag: u16,
+        enemy_tag: u16,
+    },
 }
 
 impl ClientMessage {

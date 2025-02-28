@@ -15,6 +15,11 @@ impl Players {
         player_tag
     }
 
+    pub async fn get_total_score(&self) -> u8 {
+        let players = self.0.read().await;
+        players.values().map(|player| player.score).sum()
+    }
+
     pub async fn get_players_info(&self) -> Vec<(u8, (f32, f32), Vec<(f32, f32)>)> {
         self.0
             .read()
@@ -56,9 +61,16 @@ impl Players {
 
     pub async fn damaged(&self, player_tag: u8) -> u8 {
         let mut players = self.0.write().await;
-        let mut health = players.get_mut(&player_tag).unwrap().health;
-        health -= 1;
-        health
+        let player = players.get_mut(&player_tag).unwrap();
+        player.health -= 1;
+        player.health
+    }
+
+    pub async fn add_score(&self, player_tag: u8) -> u8 {
+        let mut players = self.0.write().await;
+        let player = players.get_mut(&player_tag).unwrap();
+        player.score += 1;
+        player.score
     }
 }
 

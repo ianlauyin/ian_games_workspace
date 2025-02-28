@@ -10,7 +10,7 @@ mod ufo;
 mod velocity;
 
 use bevy::prelude::{App, Plugin};
-pub use bullet::Bullet;
+pub use bullet::{Bullet, BulletTag};
 pub use collisable::CollidedEvent;
 pub use explosion::Explosion;
 pub use health::Health;
@@ -18,7 +18,7 @@ pub use invisible::Invisible;
 pub use player::{Player, SelfPlayer};
 pub use score::Score;
 pub use spaceship::Spaceship;
-pub use ufo::UFO;
+pub use ufo::{EnemyTag, UFO};
 pub use velocity::Velocity;
 pub struct ComponentPlugin;
 

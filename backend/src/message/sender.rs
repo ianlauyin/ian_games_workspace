@@ -55,10 +55,21 @@ impl ServerMessageHandler {
         .await;
     }
 
-    pub async fn confirm_damaged(&self, player_tag: u8, enemy_tag: u16) {
+    pub async fn confirm_damaged(&self, player_tag: u8, enemy_tag: u16, health: u8) {
         self.send_all(ServerMessage::ConfirmDamaged {
             player_tag,
             enemy_tag,
+            health,
+        })
+        .await;
+    }
+
+    pub async fn confirm_destroy_enemy(&self, player_tag: u8, bullet_tag: u16, enemy_tag: u16, new_score: u8) {
+        self.send_all(ServerMessage::ConfirmDestroyEnemy {
+            player_tag,
+            bullet_tag,
+            enemy_tag,
+            new_score,
         })
         .await;
     }

@@ -31,8 +31,8 @@ impl Stage {
     pub fn random_generator(&self, existing_ufo: usize) -> bool {
         let mut rng = rng();
         return match self {
-            Stage::Warmup => rng.random_bool(0.01),
-            Stage::One | Stage::Two => rng.random_bool(1. / (existing_ufo as f64 * 10.)),
+            Stage::Warmup => rng.random_bool(0.1),
+            Stage::One | Stage::Two => rng.random_bool(1. / (existing_ufo as f64 * 5.)),
             Stage::Three | Stage::Four => rng.random_bool(1. / (existing_ufo as f64 * 3.)),
             Stage::Five | Stage::Six => rng.random_bool(1. / (existing_ufo as f64)),
         };

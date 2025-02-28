@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use rocket_ws::Message;
 use serde::{Deserialize, Serialize};
 
@@ -26,6 +24,13 @@ pub enum ServerMessage {
     ConfirmDamaged {
         player_tag: u8,
         enemy_tag: u16,
+        health: u8,
+    },
+    ConfirmDestroyEnemy {
+        player_tag: u8,
+        bullet_tag: u16,
+        enemy_tag: u16,
+        new_score: u8,
     },
 }
 

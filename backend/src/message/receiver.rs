@@ -38,8 +38,10 @@ impl ClientMessageHandler {
                     .await
             }
             ClientMessage::DamagedIntent { enemy_tag } => {
-                println!("DamagedIntent: {}", enemy_tag);
                 game_state.player_damaged(self.player_tag, enemy_tag).await;
+            }
+            ClientMessage::DestroyEnemyIntent { bullet_tag, enemy_tag } => {
+                game_state.destroy_enemy(self.player_tag, bullet_tag, enemy_tag).await;
             }
         }
     }

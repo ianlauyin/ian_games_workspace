@@ -1,5 +1,6 @@
 use bevy::color::palettes::css::YELLOW;
 use bevy::prelude::*;
+use rand::{rng, Rng};
 
 use crate::{
     constant::{ZIndex, BULLET_SIZE},
@@ -8,6 +9,10 @@ use crate::{
 };
 
 use super::{collisable::Collisable, Player, Velocity};
+
+// Only SelfPlayer can have this component
+#[derive(Component)]
+pub struct BulletTag(pub u16);
 
 #[derive(Component)]
 pub struct Bullet {
@@ -70,7 +75,8 @@ fn bullet_on_added(
             Player(bullet.get_player()),
         ));
         if bullet.get_player() == player_tag.0 {
-            entity_commands.insert(Collisable::Player);
+            let bullet_tag = rng().random_range(u16::MIN..u16::MAX);
+            entity_commands.insert((Collisable::Player, BulletTag(bullet_tag)));
         }
     }
 }
