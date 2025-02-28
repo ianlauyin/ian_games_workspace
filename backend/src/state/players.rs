@@ -9,15 +9,13 @@ pub struct Players(RwLock<HashMap<u8, PlayerInfo>>);
 impl Players {
     pub async fn new_player(&self) -> u8 {
         let mut players = self.0.write().await;
-        let player_tag = players.len() as u8 + 1;
+        let mut player_tag = 1;
+        while players.contains_key(&player_tag) {
+            player_tag += 1;
+        }
         let player = PlayerInfo::default();
         players.insert(player_tag, player);
         player_tag
-    }
-
-    pub async fn remove_player(&self, player_tag: u8) {
-        let mut players = self.0.write().await;
-        players.remove(&player_tag);
     }
 
     pub async fn all_players_dead(&self) -> bool {

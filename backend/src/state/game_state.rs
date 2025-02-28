@@ -29,16 +29,9 @@ pub struct GameState {
 impl GameState {
     pub async fn new_player(&mut self, sender: Sender) -> u8 {
         let player_tag = self.players.new_player().await;
-        if let Err((error, player_tag)) = self
-            .server_message_handler
+        self.server_message_handler
             .add_sender(player_tag, sender)
-            .await
-        {
-            match error {
-                Error::ConnectionClosed => self.remove_player(player_tag).await,
-                e => println!("Error: {:?}", e),
-            }
-        }
+            .await;
         player_tag
     }
 
@@ -57,24 +50,13 @@ impl GameState {
         let mut enemies = self.enemies.write().await;
         if enemies.contains(&enemy_tag) {
             let health = self.players.damaged(player_tag).await;
-            match self
+            let _ = self
                 .server_message_handler
                 .confirm_damaged(player_tag, enemy_tag, health)
-                .await
-            {
-                Ok(_) => {
-                    enemies.retain(|&tag| tag != enemy_tag);
-                    drop(enemies);
-                    self.check_game_over().await;
-                }
-                Err((error, _)) => match error {
-                    Error::ConnectionClosed => {
-                        drop(enemies);
-                        self.interrupt_game().await;
-                    }
-                    e => println!("Error: {:?}", e),
-                },
-            }
+                .await;
+            enemies.retain(|&tag| tag != enemy_tag);
+            drop(enemies);
+            self.check_game_over().await;
         }
     }
 
@@ -82,29 +64,18 @@ impl GameState {
         let mut enemies = self.enemies.write().await;
         if enemies.contains(&enemy_tag) {
             let new_score = self.players.add_score(player_tag).await;
-            match self
+            let _ = self
                 .server_message_handler
                 .confirm_destroy_enemy(player_tag, bullet_tag, enemy_tag, new_score)
-                .await
-            {
-                Ok(_) => {
-                    enemies.retain(|&tag| tag != enemy_tag);
-                    drop(enemies);
-                    self.update_stage().await;
-                }
-                Err((error, _)) => match error {
-                    Error::ConnectionClosed => {
-                        drop(enemies);
-                        self.interrupt_game().await;
-                    }
-                    e => println!("Error: {:?}", e),
-                },
-            }
+                .await;
+            enemies.retain(|&tag| tag != enemy_tag);
+            drop(enemies);
+            self.update_stage().await;
         }
     }
 
     // Private
-    async fn notice_player_info(&mut self) -> Result<(), (Error, u8)> {
+    async fn notice_player_info(&mut self) -> Result<(), Error> {
         let players = self.players.get_players_info().await;
         for (player_tag, position, bullets) in players {
             self.server_message_handler
@@ -114,7 +85,7 @@ impl GameState {
         Ok(())
     }
 
-    async fn spawn_enemy(&mut self) -> Result<(), (Error, u8)> {
+    async fn spawn_enemy(&mut self) -> Result<(), Error> {
         let mut enemies = self.enemies.write().await;
         let stage = self.stage.read().await;
         let ufo_numbers = enemies.len() + 1;
@@ -155,16 +126,6 @@ impl GameState {
         *stage = new_stage;
     }
 
-    async fn remove_player(&mut self, player_tag: u8) {
-        self.players.remove_player(player_tag).await;
-        self.server_message_handler.clear_sender(player_tag).await;
-    }
-
-    async fn interrupt_game(&mut self) {
-        self.server_message_handler.game_interrupted().await;
-        self.cleanup().await;
-    }
-
     // Cycle Related (Not run in the main thread)
     pub async fn check_cycle(&mut self) -> Cycle {
         match self.cycle {
@@ -177,50 +138,21 @@ impl GameState {
 
     async fn handle_cycle_matching(&mut self) {
         if self.players.matched().await {
-            match self.server_message_handler.game_ready().await {
-                Ok(_) => {
-                    self.cycle = Cycle::Ready;
-                }
-                Err((error, _)) => match error {
-                    Error::ConnectionClosed => self.interrupt_game().await,
-                    e => println!("Error: {:?}", e),
-                },
-            }
+            let _ = self.server_message_handler.game_ready().await;
+            self.cycle = Cycle::Ready;
         }
     }
 
     async fn handle_cycle_ready(&mut self) {
-        if let Err((error, _)) = self.notice_player_info().await {
-            match error {
-                Error::ConnectionClosed => self.interrupt_game().await,
-                e => println!("Error: {:?}", e),
-            }
-        }
+        let _ = self.notice_player_info().await;
         if self.players.ready().await {
-            match self.server_message_handler.game_start().await {
-                Ok(_) => {
-                    self.cycle = Cycle::Playing;
-                }
-                Err((error, _)) => match error {
-                    Error::ConnectionClosed => self.interrupt_game().await,
-                    e => println!("Error: {:?}", e),
-                },
-            }
+            let _ = self.server_message_handler.game_start().await;
+            self.cycle = Cycle::Playing;
         }
     }
 
     async fn handle_cycle_playing(&mut self) {
-        if let Err((error, _)) = self.notice_player_info().await {
-            match error {
-                Error::ConnectionClosed => self.interrupt_game().await,
-                e => println!("Error: {:?}", e),
-            }
-        }
-        if let Err((error, _)) = self.spawn_enemy().await {
-            match error {
-                Error::ConnectionClosed => self.interrupt_game().await,
-                e => println!("Error: {:?}", e),
-            }
-        }
+        let _ = self.notice_player_info().await;
+        let _ = self.spawn_enemy().await;
     }
 }
