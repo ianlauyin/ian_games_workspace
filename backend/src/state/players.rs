@@ -13,7 +13,6 @@ impl Players {
         while players.contains_key(&player_tag) {
             player_tag += 1;
         }
-        println!("new player tag: {}", player_tag);
         let player = PlayerInfo::default();
         players.insert(player_tag, player);
         player_tag
