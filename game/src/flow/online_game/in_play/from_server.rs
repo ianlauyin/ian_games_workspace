@@ -26,16 +26,18 @@ fn listen_from_server(
     commands: Commands,
     current_state: Res<State<OnlineGameState>>,
     self_player_tag: Res<PlayerTag>,
+    next_state: ResMut<NextState<OnlineGameState>>,
 ) {
-    if *current_state.get() != OnlineGameState::InPlay {
-        return;
-    }
     match ev.0 {
         ServerMessage::SpawnEnemy {
             tag,
             position,
             velocity,
-        } => handle_spawn_enemy(commands, tag, position, velocity),
+        } => {
+            if *current_state.get() == OnlineGameState::InPlay {
+                handle_spawn_enemy(commands, tag, position, velocity);
+            }
+        }
         ServerMessage::ConfirmDamaged {
             player_tag,
             enemy_tag,
@@ -54,6 +56,7 @@ fn listen_from_server(
             enemy_tag,
             new_score,
         ),
+        ServerMessage::GameOver => handle_game_over(next_state),
         _ => {}
     }
 }
@@ -94,4 +97,8 @@ fn handle_confirm_destroy_enemy(
     if self_player_tag.0 == player_tag {
         commands.trigger(RemoveBulletEvent(bullet_tag));
     }
+}
+
+fn handle_game_over(mut next_state: ResMut<NextState<OnlineGameState>>) {
+    next_state.set(OnlineGameState::Result);
 }

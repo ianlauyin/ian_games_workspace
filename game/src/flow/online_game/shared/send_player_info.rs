@@ -13,21 +13,21 @@ impl Plugin for SendPlayerInfoPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            notice_player_info
+            send_player_info
                 .run_if(in_state(OnlineGameState::Ready).or(in_state(OnlineGameState::InPlay))),
         );
     }
 }
 
-fn notice_player_info(
+fn send_player_info(
     mut commands: Commands,
     spaceship_q: Query<&Spaceship, With<SelfPlayer>>,
     bullet_q: Query<&Bullet, With<SelfPlayer>>,
 ) {
-    let Ok(spaceship) = spaceship_q.get_single() else {
-        warn!("Should only have one spaceship with SelfPlayer in notice_player_info");
-        return;
-    };
+    let position = spaceship_q
+        .get_single()
+        .map(|spaceship| Some(spaceship.get_position_tuple()))
+        .unwrap_or(None);
 
     let bullets = bullet_q
         .iter()
@@ -35,7 +35,7 @@ fn notice_player_info(
         .collect();
 
     commands.trigger(SendMessageEvent(ClientMessage::UpdatePlayerInfo {
-        position: spaceship.get_position_tuple(),
+        position,
         bullets,
     }));
 }

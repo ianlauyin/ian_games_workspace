@@ -2,6 +2,7 @@ mod connection;
 mod in_play;
 mod matching;
 mod ready;
+mod result;
 mod shared;
 mod trigger;
 
@@ -18,6 +19,7 @@ impl Plugin for OnlineGamePlugin {
             shared::SharedPlugin,
             trigger::TriggerPlugin,
             in_play::InPlayPlugin,
+            result::ResultPlugin,
         ));
     }
 }

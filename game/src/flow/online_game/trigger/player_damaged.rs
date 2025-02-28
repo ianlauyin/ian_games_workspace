@@ -1,6 +1,9 @@
 use bevy::prelude::*;
 
-use crate::components::{Health, Invisible, Player, Spaceship};
+use crate::{
+    components::{Explosion, Health, Invisible, Player, Spaceship},
+    util::Position,
+};
 
 #[derive(Event)]
 pub struct PlayerDamagedEvent {
@@ -25,7 +28,7 @@ impl Plugin for PlayerDamagedPlugin {
 fn player_damaged(
     ev: Trigger<PlayerDamagedEvent>,
     mut commands: Commands,
-    spaceship_q: Query<(Entity, &Player), With<Spaceship>>,
+    spaceship_q: Query<(Entity, &Player, &Spaceship)>,
     mut health_q: Query<(&mut Health, &Player)>,
 ) {
     let event = ev.event();
@@ -35,9 +38,14 @@ fn player_damaged(
             break;
         }
     }
-    for (entity, player) in spaceship_q.iter() {
+    for (entity, player, spaceship) in spaceship_q.iter() {
         if player.0 == event.tag {
-            commands.entity(entity).insert(Invisible::new());
+            if event.new_health == 0 {
+                commands.spawn(Explosion::new(spaceship.get_position()));
+                commands.entity(entity).despawn_recursive();
+            } else {
+                commands.entity(entity).insert(Invisible::new());
+            }
             return;
         }
     }

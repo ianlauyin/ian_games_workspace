@@ -6,7 +6,6 @@ use shooting_game_shared::util::EdgeUtil;
 use shooting_game_shared::ServerMessage;
 
 use super::connection::ReceiveMessageEvent;
-use super::trigger::UpdatePositionEvent;
 
 pub struct ReadyPlugin;
 
@@ -54,10 +53,8 @@ fn stop_spaceship(mut spaceship_q: Query<&mut Velocity, (With<Spaceship>, With<S
 
 fn listen_message(
     trigger: Trigger<ReceiveMessageEvent>,
-    mut commands: Commands,
     current_state: ResMut<State<OnlineGameState>>,
     mut next_state: ResMut<NextState<OnlineGameState>>,
-    self_player_tag: Res<PlayerTag>,
 ) {
     if *current_state.get() != OnlineGameState::Ready {
         return;

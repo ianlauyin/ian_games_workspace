@@ -15,6 +15,16 @@ impl Players {
         player_tag
     }
 
+    pub async fn remove_player(&self, player_tag: u8) {
+        let mut players = self.0.write().await;
+        players.remove(&player_tag);
+    }
+
+    pub async fn all_players_dead(&self) -> bool {
+        let players = self.0.read().await;
+        players.values().all(|player| player.health == 0)
+    }
+
     pub async fn get_total_score(&self) -> u8 {
         let players = self.0.read().await;
         players.values().map(|player| player.score).sum()
@@ -49,12 +59,14 @@ impl Players {
     pub async fn update_player_info(
         &self,
         player_tag: u8,
-        position: (f32, f32),
+        position: Option<(f32, f32)>,
         bullets: Vec<(f32, f32)>,
     ) {
         let mut players = self.0.write().await;
         players.entry(player_tag).and_modify(|player| {
-            player.position = position;
+            if let Some(position) = position {
+                player.position = position;
+            }
             player.bullets = bullets;
         });
     }
@@ -71,6 +83,11 @@ impl Players {
         let player = players.get_mut(&player_tag).unwrap();
         player.score += 1;
         player.score
+    }
+
+    pub async fn clear_players(&self) {
+        let mut players = self.0.write().await;
+        players.clear();
     }
 }
 

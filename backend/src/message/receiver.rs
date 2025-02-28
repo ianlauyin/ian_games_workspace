@@ -30,7 +30,7 @@ impl ClientMessageHandler {
     }
 
     async fn handle_message(&self, message: ClientMessage) {
-        let game_state = self.shared_game_state.read().await;
+        let mut game_state = self.shared_game_state.write().await;
         match message {
             ClientMessage::UpdatePlayerInfo { position, bullets } => {
                 game_state
@@ -40,8 +40,13 @@ impl ClientMessageHandler {
             ClientMessage::DamagedIntent { enemy_tag } => {
                 game_state.player_damaged(self.player_tag, enemy_tag).await;
             }
-            ClientMessage::DestroyEnemyIntent { bullet_tag, enemy_tag } => {
-                game_state.destroy_enemy(self.player_tag, bullet_tag, enemy_tag).await;
+            ClientMessage::DestroyEnemyIntent {
+                bullet_tag,
+                enemy_tag,
+            } => {
+                game_state
+                    .destroy_enemy(self.player_tag, bullet_tag, enemy_tag)
+                    .await;
             }
         }
     }

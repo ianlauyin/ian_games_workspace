@@ -32,7 +32,6 @@ pub fn handle_spaceship_movement(
     mut spaceship_query: Query<(&mut Velocity, &Transform), (With<Spaceship>, With<SelfPlayer>)>,
 ) {
     let Ok((mut velocity, transform)) = spaceship_query.get_single_mut() else {
-        warn!("Should only have one spaceship with SelfPlayer");
         return;
     };
     let Vec3 { x, y, z: _ } = transform.translation;

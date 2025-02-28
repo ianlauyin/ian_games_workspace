@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use shooting_game_shared::util::EdgeUtil;
 
 use crate::{
-    components::{Bullet, UFO},
+    components::{BulletTag, UFO},
     constant::BULLET_SIZE,
 };
 
@@ -17,7 +17,7 @@ impl Plugin for OutScreenCleanupPlugin {
 fn cleanup_on_out_screen(
     mut commands: Commands,
     ufo_query: Query<(Entity, &Transform), With<UFO>>,
-    bullet_query: Query<(Entity, &Transform), With<Bullet>>,
+    bullet_query: Query<(Entity, &Transform), With<BulletTag>>,
 ) {
     let ufo_edge = EdgeUtil::ufo();
     for (entity, transform) in ufo_query.iter() {

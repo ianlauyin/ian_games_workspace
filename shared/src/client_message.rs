@@ -4,7 +4,7 @@ use tungstenite::{Message, Utf8Bytes};
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub enum ClientMessage {
     UpdatePlayerInfo {
-        position: (f32, f32),
+        position: Option<(f32, f32)>,
         bullets: Vec<(f32, f32)>,
     },
     DamagedIntent {

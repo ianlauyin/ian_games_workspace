@@ -32,6 +32,8 @@ pub enum ServerMessage {
         enemy_tag: u16,
         new_score: u8,
     },
+    GameOver,
+    GameInterrupted,
 }
 
 impl ServerMessage {
