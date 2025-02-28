@@ -35,4 +35,5 @@ pub enum OnlineGameState {
     Ready,
     InPlay,
     Result,
+    Error,
 }

@@ -1,4 +1,5 @@
 mod connection;
+mod error_page;
 mod in_play;
 mod matching;
 mod ready;
@@ -20,6 +21,7 @@ impl Plugin for OnlineGamePlugin {
             trigger::TriggerPlugin,
             in_play::InPlayPlugin,
             result::ResultPlugin,
+            error_page::ErrorPagePlugin,
         ));
     }
 }

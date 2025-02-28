@@ -19,7 +19,8 @@ impl Plugin for HandlerPlugin {
                 Update,
                 handle_setup_task.run_if(in_state(OnlineGameState::Matching)),
             )
-            .add_systems(OnExit(AppState::OnlineGame), teardown_connection);
+            .add_systems(OnEnter(OnlineGameState::Error), teardown_connection)
+            .add_systems(OnEnter(OnlineGameState::Result), teardown_connection);
     }
 }
 

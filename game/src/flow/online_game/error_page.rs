@@ -1,58 +1,42 @@
 use bevy::prelude::*;
+use shooting_game_shared::ServerMessage;
 
 use crate::{
-    components::{Score, SelfPlayer},
     states::{AppState, OnlineGameState},
     ui_components::{Blink, InteractionUI, MainContainer},
     util::cleanup_components,
 };
 
-pub struct ResultPlugin;
+use super::connection::ReceiveMessageEvent;
+pub struct ErrorPagePlugin;
 
-impl Plugin for ResultPlugin {
+impl Plugin for ErrorPagePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(OnlineGameState::Result), show_result)
+        app.add_systems(OnEnter(OnlineGameState::Error), show_error_page)
             .add_systems(
                 Update,
-                handle_return_button_interaction.run_if(in_state(OnlineGameState::Result)),
+                handle_return_button_interaction.run_if(in_state(OnlineGameState::Error)),
             )
             .add_systems(
-                OnExit(OnlineGameState::Result),
-                cleanup_components::<Result>,
-            );
+                OnExit(OnlineGameState::Error),
+                cleanup_components::<ErrorPage>,
+            )
+            .add_observer(listen_to_game_interrupted);
     }
 }
 
 #[derive(Component)]
-struct Result;
+struct ErrorPage;
 
 #[derive(Component)]
 struct ReturnButton;
 
-fn show_result(mut commands: Commands, score_q: Query<(&Score, Option<&SelfPlayer>)>) {
-    let mut your_score = 0;
-    let mut opponent_score = 0;
-    for (score, self_player_op) in score_q.iter() {
-        if self_player_op.is_none() {
-            opponent_score = score.0 as i8;
-        } else {
-            your_score = score.0 as i8;
-        }
-    }
-    let result_text = match your_score - opponent_score {
-        0 => "Draw",
-        x if x > 0 => "You Win",
-        x if x < 0 => "You Lose",
-        _ => "Error",
-    };
-
+fn show_error_page(mut commands: Commands) {
     commands
-        .spawn((Result, MainContainer))
-        .with_children(|result_background| {
-            result_background.spawn(Text::new(result_text));
-            result_background.spawn(Text::new(format!("Your Score: {}", your_score)));
-            result_background.spawn(Text::new(format!("Opponent Score: {}", opponent_score)));
-            result_background
+        .spawn((ErrorPage, MainContainer))
+        .with_children(|error_page_background| {
+            error_page_background.spawn(Text::new("Error Occured"));
+            error_page_background
                 .spawn(Node {
                     height: Val::Percent(100.),
                     display: Display::Flex,
@@ -100,4 +84,20 @@ fn handle_return_button_interaction(
     if *interaction == Interaction::Pressed {
         next_state.set(AppState::MainMenu);
     };
+}
+
+fn listen_to_game_interrupted(
+    trigger: Trigger<ReceiveMessageEvent>,
+    current_state: Res<State<OnlineGameState>>,
+    mut next_state: ResMut<NextState<OnlineGameState>>,
+) {
+    if matches!(
+        current_state.get(),
+        OnlineGameState::Error | OnlineGameState::Result
+    ) {
+        return;
+    }
+    if matches!(trigger.event().0, ServerMessage::GameInterrupted) {
+        next_state.set(OnlineGameState::Error);
+    }
 }
