@@ -37,7 +37,7 @@ fn check_and_spawn_enemy(
     score_query: Query<&Score, With<Player>>,
 ) {
     let ufo_number = ufo_query.iter().len();
-    let Ok(score) = score_query.get_single() else {
+    let Ok(score) = score_query.single() else {
         warn!("Should have exactly one player");
         return;
     };
@@ -64,7 +64,7 @@ fn cleanup_on_out_screen(
     let edge = EdgeUtil::new(UFO_SIZE);
     for (entity, transform) in ufo_query.iter() {
         if edge.over_bottom_out(transform.translation.y) {
-            if let Some(mut entity_commands) = commands.get_entity(entity) {
+            if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.despawn();
             }
         }

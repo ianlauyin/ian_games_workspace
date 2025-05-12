@@ -60,7 +60,7 @@ fn handle_control_button_on_add(ev: Trigger<OnAdd, ControlButtonPanel>, mut comm
         )),
     ];
     commands
-        .entity(ev.entity())
+        .entity(ev.target())
         .insert((Node {
             position_type: PositionType::Absolute,
             justify_self: JustifySelf::Center,

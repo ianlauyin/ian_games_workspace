@@ -28,11 +28,11 @@ fn on_player_added(
     player_tag: Res<PlayerTag>,
     player_q: Query<&Player>,
 ) {
-    let Ok(player) = player_q.get(ev.entity()) else {
+    let Ok(player) = player_q.get(ev.target()) else {
         warn!("Player not found in on_player_added");
         return;
     };
     if player.0 == player_tag.0 {
-        commands.entity(ev.entity()).insert(SelfPlayer);
+        commands.entity(ev.target()).insert(SelfPlayer);
     }
 }

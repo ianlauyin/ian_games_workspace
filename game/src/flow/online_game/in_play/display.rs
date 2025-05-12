@@ -52,14 +52,14 @@ fn setup_display(
         ))
         .with_children(|your_info| {
             your_info.spawn(Text::new("Your"));
-            if let Ok((health, player)) = self_health_q.get_single() {
+            if let Ok((health, player)) = self_health_q.single() {
                 your_info.spawn(Text::new("Health: ")).with_child((
                     player.clone(),
                     HealthText,
                     TextSpan::new(health.0.to_string()),
                 ));
             }
-            if let Ok((score, player)) = self_score_q.get_single() {
+            if let Ok((score, player)) = self_score_q.single() {
                 your_info.spawn(Text::new("Score: ")).with_child((
                     player.clone(),
                     ScoreText,
@@ -81,14 +81,14 @@ fn setup_display(
         ))
         .with_children(|your_info| {
             your_info.spawn(Text::new("Opponent"));
-            if let Ok((health, player)) = health_without_self_q.get_single() {
+            if let Ok((health, player)) = health_without_self_q.single() {
                 your_info.spawn(Text::new("Health: ")).with_child((
                     player.clone(),
                     HealthText,
                     TextSpan::new(health.0.to_string()),
                 ));
             }
-            if let Ok((score, player)) = score_without_self_q.get_single() {
+            if let Ok((score, player)) = score_without_self_q.single() {
                 your_info.spawn(Text::new("Score: ")).with_child((
                     player.clone(),
                     ScoreText,

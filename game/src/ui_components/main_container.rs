@@ -16,9 +16,9 @@ impl Plugin for MainContainerPlugin {
 fn handle_main_container_on_add(
     ev: Trigger<OnAdd, MainContainer>,
     mut commands: Commands,
-    text_query: Query<(Entity, &Parent), With<Text>>,
+    text_query: Query<(Entity, &ChildOf), With<Text>>,
 ) {
-    if let Some(mut entity_commands) = commands.get_entity(ev.entity()) {
+    if let Ok(mut entity_commands) = commands.get_entity(ev.target()) {
         entity_commands.insert((
             Node {
                 justify_self: JustifySelf::Center,
@@ -36,8 +36,8 @@ fn handle_main_container_on_add(
         ));
     }
     for (entity, parent) in text_query.iter() {
-        if parent.get() == ev.entity() {
-            if let Some(mut entity_commands) = commands.get_entity(entity) {
+        if parent.parent() == ev.target() {
+            if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.insert(ZIndex::TEXT.component());
             }
         }

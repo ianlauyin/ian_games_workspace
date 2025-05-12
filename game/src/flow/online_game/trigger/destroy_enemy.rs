@@ -25,7 +25,7 @@ fn remove_enemy(
     for (enemy, ufo, enemy_tag) in enemy_q.iter() {
         if enemy_tag.0 == remove_enemy_tag {
             commands.spawn(Explosion::new(ufo.get_position()));
-            commands.entity(enemy).despawn_recursive();
+            commands.entity(enemy).despawn();
             return;
         }
     }

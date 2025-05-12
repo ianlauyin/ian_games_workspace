@@ -61,7 +61,7 @@ fn handle_ufo_spaceship_collision(
     ufo_entity: Entity,
 ) {
     commands.trigger(HealthReduceEvent::new(player.0));
-    if let Some(mut entity_commands) = commands.get_entity(player_entity) {
+    if let Ok(mut entity_commands) = commands.get_entity(player_entity) {
         entity_commands.insert(Invisible::new());
     }
     commands.spawn(Explosion::new(ufo.get_position()));
@@ -75,7 +75,7 @@ fn handle_bullet_ufo_collision(
     ufo: &UFO,
     ufo_entity: Entity,
 ) {
-    if let Some(mut entity_commands) = commands.get_entity(bullet_entity) {
+    if let Ok(mut entity_commands) = commands.get_entity(bullet_entity) {
         entity_commands.despawn();
     }
     commands.trigger(RemoveUFOEvent::by_player(ufo_entity, bullet.get_player()));

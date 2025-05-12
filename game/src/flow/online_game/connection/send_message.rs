@@ -26,7 +26,7 @@ fn send_message(
     if web_socket_clients.is_empty() {
         return;
     };
-    let Ok(mut client) = web_socket_clients.get_single_mut() else {
+    let Ok(mut client) = web_socket_clients.single_mut() else {
         warn!("Should only have one websocket client");
         return;
     };

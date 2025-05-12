@@ -33,7 +33,7 @@ fn update_position(
     }
     for (entity, player) in bullets.iter() {
         if player.0 == ev.player_tag {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
         }
     }
     for bullet in ev.bullets.iter() {

@@ -43,7 +43,7 @@ fn spawn_spaceship(mut commands: Commands, player_tag: Res<PlayerTag>) {
 }
 
 fn stop_spaceship(mut spaceship_q: Query<&mut Velocity, (With<Spaceship>, With<SelfPlayer>)>) {
-    let Ok(mut velocity) = spaceship_q.get_single_mut() else {
+    let Ok(mut velocity) = spaceship_q.single_mut() else {
         warn!("Should only have one spaceship with SelfPlayer in stop_spaceship");
         return;
     };

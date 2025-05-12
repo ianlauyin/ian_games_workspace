@@ -64,7 +64,7 @@ fn handle_spaceship_on_added(
     spaceship_query: Query<(&Player, &Spaceship)>,
     player_tag: Res<PlayerTag>,
 ) {
-    let Ok((player, spaceship)) = spaceship_query.get(ev.entity()) else {
+    let Ok((player, spaceship)) = spaceship_query.get(ev.target()) else {
         warn!("Player not found in handle_spaceship_on_added");
         return;
     };
@@ -73,7 +73,7 @@ fn handle_spaceship_on_added(
     } else {
         (ZIndex::SPACESHIP.z_value(), Color::srgb(0.5, 0.5, 0.5))
     };
-    if let Some(mut entity_commands) = commands.get_entity(ev.entity()) {
+    if let Ok(mut entity_commands) = commands.get_entity(ev.target()) {
         entity_commands.insert((
             Sprite {
                 image: image_handles.spaceship.clone(),

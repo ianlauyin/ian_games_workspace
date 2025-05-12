@@ -42,7 +42,7 @@ fn player_damaged(
         if player.0 == event.tag {
             if event.new_health == 0 {
                 commands.spawn(Explosion::new(spaceship.get_position()));
-                commands.entity(entity).despawn_recursive();
+                commands.entity(entity).despawn();
             } else {
                 commands.entity(entity).insert(Invisible::new());
             }

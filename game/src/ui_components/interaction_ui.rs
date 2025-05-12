@@ -35,7 +35,7 @@ fn handle_interaction_ui(
         }
     }
     for window in windows.iter() {
-        if let Some(mut entity_commands) = commands.get_entity(window) {
+        if let Ok(mut entity_commands) = commands.get_entity(window) {
             entity_commands.insert(curosr_icon.clone());
         }
     }

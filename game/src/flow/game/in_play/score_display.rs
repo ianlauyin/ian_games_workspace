@@ -41,7 +41,7 @@ fn display_score(mut commands: Commands, score_q: Query<&Score>) {
             },
         ))
         .with_children(|score_display| {
-            let Ok(score) = score_q.get_single() else {
+            let Ok(score) = score_q.single() else {
                 warn!("Score not found in display_score");
                 return;
             };
@@ -58,11 +58,11 @@ fn update_score_text(
     if score_q.is_empty() {
         return;
     }
-    let Ok(score) = score_q.get_single() else {
+    let Ok(score) = score_q.single() else {
         warn!("Score not found in update_score_text");
         return;
     };
-    let Ok(mut text_span) = player_score_text_q.get_single_mut() else {
+    let Ok(mut text_span) = player_score_text_q.single_mut() else {
         warn!("Player score text not found in update_score_text");
         return;
     };

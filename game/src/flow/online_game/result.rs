@@ -93,7 +93,7 @@ fn handle_return_button_interaction(
     mut return_button_query: Query<&Interaction, With<ReturnButton>>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    let Ok(interaction) = return_button_query.get_single_mut() else {
+    let Ok(interaction) = return_button_query.single_mut() else {
         warn!("Start button not found in handle_return_button_interaction");
         return;
     };

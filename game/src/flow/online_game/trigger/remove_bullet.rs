@@ -21,7 +21,7 @@ fn remove_bullet(
     let event = ev.event();
     for (entity, bullet_tag) in bullet_q.iter() {
         if bullet_tag.0 == event.0 {
-            commands.entity(entity).despawn_recursive();
+            commands.entity(entity).despawn();
         }
     }
 }

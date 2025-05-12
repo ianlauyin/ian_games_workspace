@@ -25,7 +25,7 @@ fn send_player_info(
     bullet_q: Query<&Bullet, With<SelfPlayer>>,
 ) {
     let position = spaceship_q
-        .get_single()
+        .single()
         .map(|spaceship| Some(spaceship.get_position_tuple()))
         .unwrap_or(None);
 

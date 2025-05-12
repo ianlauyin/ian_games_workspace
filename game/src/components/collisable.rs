@@ -49,7 +49,7 @@ fn check_collision(
     for (player_entity, player_aabb) in players.iter() {
         for (enemy_entity, enemy_aabb) in enemies.iter() {
             if player_aabb.intersects(enemy_aabb) {
-                event_writer.send(CollidedEvent {
+                event_writer.write(CollidedEvent {
                     player: *player_entity,
                     enemy: *enemy_entity,
                 });

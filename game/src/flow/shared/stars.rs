@@ -62,7 +62,7 @@ fn cleanup_stars(mut commands: Commands, stars_query: Query<(Entity, &Transform)
     let edge = EdgeUtil::new(STAR_SIZE);
     for (entity, transform) in stars_query.iter() {
         if edge.over_bottom_out(transform.translation.y) {
-            if let Some(mut entity_commands) = commands.get_entity(entity) {
+            if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.despawn();
             }
         }

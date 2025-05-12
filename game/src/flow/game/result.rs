@@ -24,7 +24,7 @@ struct Result;
 struct ReturnButton;
 
 fn show_result(mut commands: Commands, score_query: Query<&Score>) {
-    let Ok(score) = score_query.get_single() else {
+    let Ok(score) = score_query.single() else {
         warn!("Score not found in show_result");
         return;
     };
@@ -75,16 +75,16 @@ fn handle_return_button_interaction(
     result_query: Query<Entity, With<Result>>,
     mut next_state: ResMut<NextState<AppState>>,
 ) {
-    let Ok(interaction) = return_button_query.get_single_mut() else {
+    let Ok(interaction) = return_button_query.single_mut() else {
         warn!("Start button not found in handle_return_button_interaction");
         return;
     };
     if *interaction == Interaction::Pressed {
-        let Ok(result) = result_query.get_single() else {
+        let Ok(result) = result_query.single() else {
             panic!("Result not found in handle_return_button_interaction");
         };
-        if let Some(entity_commands) = commands.get_entity(result) {
-            entity_commands.despawn_recursive();
+        if let Ok(mut entity_commands) = commands.get_entity(result) {
+            entity_commands.despawn();
         }
         next_state.set(AppState::MainMenu);
     };

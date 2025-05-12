@@ -35,8 +35,8 @@ fn handle_explosion_on_added(
     explosion_query: Query<&Explosion>,
     image_handles: Res<ImageHandles>,
 ) {
-    let explosion = explosion_query.get(ev.entity()).unwrap();
-    if let Some(mut entity_commands) = commands.get_entity(ev.entity()) {
+    let explosion = explosion_query.get(ev.target()).unwrap();
+    if let Ok(mut entity_commands) = commands.get_entity(ev.target()) {
         entity_commands.insert((
             Sprite {
                 image: image_handles.explosion.clone(),
@@ -58,7 +58,7 @@ fn apply_explosion(
         transform.scale.x += 0.01;
         transform.scale.y += 0.01;
         if explosion.timer.finished() {
-            if let Some(mut entity_commands) = commands.get_entity(entity) {
+            if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.despawn();
             }
         }

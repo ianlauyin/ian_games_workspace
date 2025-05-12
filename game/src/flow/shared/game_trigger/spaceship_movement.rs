@@ -31,7 +31,7 @@ pub fn handle_spaceship_movement(
     trigger: Trigger<SpaceShipMovementEvent>,
     mut spaceship_query: Query<(&mut Velocity, &Transform), (With<Spaceship>, With<SelfPlayer>)>,
 ) {
-    let Ok((mut velocity, transform)) = spaceship_query.get_single_mut() else {
+    let Ok((mut velocity, transform)) = spaceship_query.single_mut() else {
         return;
     };
     let Vec3 { x, y, z: _ } = transform.translation;

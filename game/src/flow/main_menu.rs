@@ -167,11 +167,11 @@ fn handle_start_button_interaction(
 ) {
     for (interaction, start_button) in start_button_query.iter() {
         if *interaction == Interaction::Pressed {
-            let Ok(main_menu) = main_menu_query.get_single() else {
+            let Ok(main_menu) = main_menu_query.single() else {
                 panic!("Main Menu not found in handle_start_button_interaction");
             };
-            if let Some(entity_commands) = commands.get_entity(main_menu) {
-                entity_commands.despawn_recursive();
+            if let Ok(mut entity_commands) = commands.get_entity(main_menu) {
+                entity_commands.despawn();
             }
             let target_state = match start_button {
                 StartButton::Game => AppState::Game,

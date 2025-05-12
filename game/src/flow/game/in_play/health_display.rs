@@ -41,7 +41,7 @@ fn display_health(mut commands: Commands, health_q: Query<&Health>) {
             },
         ))
         .with_children(|health_display| {
-            let Ok(health) = health_q.get_single() else {
+            let Ok(health) = health_q.single() else {
                 warn!("Health not found in display_health");
                 return;
             };
@@ -58,11 +58,11 @@ fn update_health_text(
     if health_q.is_empty() {
         return;
     }
-    let Ok(health) = health_q.get_single() else {
+    let Ok(health) = health_q.single() else {
         warn!("Health not found in update_health_text");
         return;
     };
-    let Ok(mut text_span) = player_health_text_q.get_single_mut() else {
+    let Ok(mut text_span) = player_health_text_q.single_mut() else {
         warn!("Player health text not found in update_health_text");
         return;
     };

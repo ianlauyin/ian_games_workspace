@@ -38,7 +38,7 @@ fn handle_selectable_text(
             if selectable_text.selected { "-> " } else { "" },
             selectable_text.text
         );
-        if let Some(mut entity_commands) = commands.get_entity(entity) {
+        if let Ok(mut entity_commands) = commands.get_entity(entity) {
             entity_commands.insert(Text::new(text));
         }
     }

@@ -44,8 +44,8 @@ fn handle_ufo_on_added(
     image_handles: Res<ImageHandles>,
     ufo_query: Query<&UFO>,
 ) {
-    let ufo = ufo_query.get(ev.entity()).unwrap();
-    if let Some(mut entity_commands) = commands.get_entity(ev.entity()) {
+    let ufo = ufo_query.get(ev.target()).unwrap();
+    if let Ok(mut entity_commands) = commands.get_entity(ev.target()) {
         entity_commands.insert((
             Sprite {
                 image: image_handles.ufo.clone(),
