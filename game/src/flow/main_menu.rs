@@ -79,7 +79,7 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                             ControlMode::Keyboard,
                             SelectableText::new("Use Keyboard Mode to play",is_keyboard_mode),
                             Interaction::default(),
-                            TextLayout::new_with_justify(JustifyText::Right),
+                            TextLayout::new_with_justify(Justify::Right),
                             TextColor(Color::srgba(0., 0., 1., 1.)),
                         ));
                     option_node
@@ -87,12 +87,12 @@ fn show_main_menu(mut commands: Commands, control_option: Res<ControlOption>) {
                             ControlMode::Button,
                             SelectableText::new("Use Button Mode to play",!is_keyboard_mode),
                             Interaction::default(),
-                            TextLayout::new_with_justify(JustifyText::Right),
+                            TextLayout::new_with_justify(Justify::Right),
                             TextColor(Color::srgba(0., 1., 0., 1.)),
                         ));
                     option_node.spawn((
                         Blink::new_with_speed(0.02),
-                        TextLayout::new_with_justify(JustifyText::Center),
+                        TextLayout::new_with_justify(Justify::Center),
                         Text::new("Click Start to start the game"),
                     ));
                     option_node

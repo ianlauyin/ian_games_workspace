@@ -21,7 +21,7 @@ impl Plugin for HealthReducePlugin {
     }
 }
 
-fn reduce_health(ev: Trigger<HealthReduceEvent>, mut health_query: Query<(&mut Health, &Player)>) {
+fn reduce_health(ev: On<HealthReduceEvent>, mut health_query: Query<(&mut Health, &Player)>) {
     for (mut health, player) in health_query.iter_mut() {
         if player.0 == ev.player {
             if health.0 > 0 {

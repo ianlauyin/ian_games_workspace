@@ -58,13 +58,13 @@ impl Plugin for SpaceshipPlugin {
 }
 
 fn handle_spaceship_on_added(
-    ev: Trigger<OnAdd, Spaceship>,
+    ev: On<Add, Spaceship>,
     mut commands: Commands,
     image_handles: Res<ImageHandles>,
     spaceship_query: Query<(&Player, &Spaceship)>,
     player_tag: Res<PlayerTag>,
 ) {
-    let Ok((player, spaceship)) = spaceship_query.get(ev.target()) else {
+    let Ok((player, spaceship)) = spaceship_query.get(ev.entity) else {
         warn!("Player not found in handle_spaceship_on_added");
         return;
     };
@@ -73,7 +73,7 @@ fn handle_spaceship_on_added(
     } else {
         (ZIndex::SPACESHIP.z_value(), Color::srgb(0.5, 0.5, 0.5))
     };
-    if let Ok(mut entity_commands) = commands.get_entity(ev.target()) {
+    if let Ok(mut entity_commands) = commands.get_entity(ev.entity) {
         entity_commands.insert((
             Sprite {
                 image: image_handles.spaceship.clone(),
@@ -93,7 +93,7 @@ fn handle_cooldown(mut spaceship_query: Query<&mut Spaceship>, time: Res<Time>) 
     for mut spaceship in spaceship_query.iter_mut() {
         if let Some(timer) = &mut spaceship.cooldown {
             timer.tick(time.delta());
-            if timer.finished() {
+            if timer.is_finished() {
                 spaceship.cooldown = None;
             }
         };

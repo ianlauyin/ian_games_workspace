@@ -65,7 +65,7 @@ fn show_result(mut commands: Commands, score_q: Query<(&Score, Option<&SelfPlaye
                     return_container.spawn((
                         Blink::new_with_speed(0.02),
                         Text::new("Click Return to return to main menu"),
-                        TextLayout::new_with_justify(JustifyText::Center),
+                        TextLayout::new_with_justify(Justify::Center),
                     ));
                     return_container
                         .spawn((

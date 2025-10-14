@@ -49,7 +49,7 @@ fn show_error_page(mut commands: Commands) {
                     return_container.spawn((
                         Blink::new_with_speed(0.02),
                         Text::new("Click Return to return to main menu"),
-                        TextLayout::new_with_justify(JustifyText::Center),
+                        TextLayout::new_with_justify(Justify::Center),
                     ));
                     return_container
                         .spawn((
@@ -87,7 +87,7 @@ fn handle_return_button_interaction(
 }
 
 fn listen_to_game_interrupted(
-    trigger: Trigger<ReceiveMessageEvent>,
+    trigger: On<ReceiveMessageEvent>,
     current_state: Res<State<OnlineGameState>>,
     mut next_state: ResMut<NextState<OnlineGameState>>,
 ) {

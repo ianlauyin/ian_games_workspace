@@ -52,7 +52,7 @@ fn stop_spaceship(mut spaceship_q: Query<&mut Velocity, (With<Spaceship>, With<S
 }
 
 fn listen_message(
-    trigger: Trigger<ReceiveMessageEvent>,
+    trigger: On<ReceiveMessageEvent>,
     current_state: ResMut<State<OnlineGameState>>,
     mut next_state: ResMut<NextState<OnlineGameState>>,
 ) {

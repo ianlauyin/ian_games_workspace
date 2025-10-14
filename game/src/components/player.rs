@@ -23,16 +23,16 @@ impl Plugin for PlayerPlugin {
 }
 
 fn on_player_added(
-    ev: Trigger<OnAdd, Player>,
+    ev: On<Add, Player>,
     mut commands: Commands,
     player_tag: Res<PlayerTag>,
     player_q: Query<&Player>,
 ) {
-    let Ok(player) = player_q.get(ev.target()) else {
+    let Ok(player) = player_q.get(ev.entity) else {
         warn!("Player not found in on_player_added");
         return;
     };
     if player.0 == player_tag.0 {
-        commands.entity(ev.target()).insert(SelfPlayer);
+        commands.entity(ev.entity).insert(SelfPlayer);
     }
 }

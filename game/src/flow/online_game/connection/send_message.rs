@@ -16,7 +16,7 @@ impl Plugin for SendMessagePlugin {
 }
 
 fn send_message(
-    trigger: Trigger<SendMessageEvent>,
+    trigger: On<SendMessageEvent>,
     current_state: Res<State<AppState>>,
     mut web_socket_clients: Query<&mut WebSocketClient>,
 ) {

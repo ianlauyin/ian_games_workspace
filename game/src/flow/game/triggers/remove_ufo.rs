@@ -32,7 +32,7 @@ impl Plugin for RemoveUFOPlugin {
 }
 
 fn handle_remove_ufo(
-    ev: Trigger<RemoveUFOEvent>,
+    ev: On<RemoveUFOEvent>,
     mut commands: Commands,
     ufo_query: Query<Entity, With<UFO>>,
 ) {

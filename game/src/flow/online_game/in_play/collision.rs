@@ -19,7 +19,7 @@ impl Plugin for CollisionPlugin {
 
 pub fn handle_collisions(
     mut commands: Commands,
-    mut collision_events: EventReader<CollidedEvent>,
+    mut collision_events: MessageReader<CollidedEvent>,
     enemy_tag_q: Query<&EnemyTag, With<UFO>>,
     spaceship_q: Query<Entity, (With<Spaceship>, With<SelfPlayer>)>,
     bullet_q: Query<&BulletTag>,

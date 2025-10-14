@@ -26,7 +26,7 @@ impl Plugin for PlayerDamagedPlugin {
 }
 
 fn player_damaged(
-    ev: Trigger<PlayerDamagedEvent>,
+    ev: On<PlayerDamagedEvent>,
     mut commands: Commands,
     spaceship_q: Query<(Entity, &Player, &Spaceship)>,
     mut health_q: Query<(&mut Health, &Player)>,

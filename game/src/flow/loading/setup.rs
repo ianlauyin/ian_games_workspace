@@ -14,7 +14,7 @@ impl Plugin for SetupPlugin {
             primary_window: Some(Window {
                 canvas: Some("#shooting-game".into()),
                 fit_canvas_to_parent: true,
-                resolution: WindowResolution::from(MOBILE_WINDOW_SIZE),
+                resolution: WindowResolution::from(MOBILE_WINDOW_SIZE.as_uvec2()),
                 ..default()
             }),
             ..default()

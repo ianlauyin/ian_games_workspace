@@ -16,7 +16,7 @@ impl Plugin for UpdatePlayerInfoPlugin {
 }
 
 fn update_player_info(
-    trigger: Trigger<ReceiveMessageEvent>,
+    trigger: On<ReceiveMessageEvent>,
     mut commands: Commands,
     current_state: ResMut<State<OnlineGameState>>,
     self_player_tag: Res<PlayerTag>,

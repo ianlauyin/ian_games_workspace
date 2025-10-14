@@ -30,13 +30,13 @@ impl Plugin for ExplosionPlugin {
 }
 
 fn handle_explosion_on_added(
-    ev: Trigger<OnAdd, Explosion>,
+    ev: On<Add, Explosion>,
     mut commands: Commands,
     explosion_query: Query<&Explosion>,
     image_handles: Res<ImageHandles>,
 ) {
-    let explosion = explosion_query.get(ev.target()).unwrap();
-    if let Ok(mut entity_commands) = commands.get_entity(ev.target()) {
+    let explosion = explosion_query.get(ev.entity).unwrap();
+    if let Ok(mut entity_commands) = commands.get_entity(ev.entity) {
         entity_commands.insert((
             Sprite {
                 image: image_handles.explosion.clone(),
@@ -57,7 +57,7 @@ fn apply_explosion(
         explosion.timer.tick(time.delta());
         transform.scale.x += 0.01;
         transform.scale.y += 0.01;
-        if explosion.timer.finished() {
+        if explosion.timer.is_finished() {
             if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.despawn();
             }

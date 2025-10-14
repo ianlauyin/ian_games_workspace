@@ -51,19 +51,19 @@ impl Plugin for BulletPlugin {
 }
 
 fn bullet_on_added(
-    ev: Trigger<OnAdd, Bullet>,
+    ev: On<Add, Bullet>,
     mut commands: Commands,
     bullet_q: Query<&Bullet>,
     player_tag: Res<PlayerTag>,
 ) {
-    let bullet = bullet_q.get(ev.target()).unwrap();
+    let bullet = bullet_q.get(ev.entity).unwrap();
     let color = if bullet.get_player() == player_tag.0 {
         Color::from(YELLOW)
     } else {
         Color::srgb(0.5, 0.5, 0.)
     };
 
-    if let Ok(mut entity_commands) = commands.get_entity(ev.target()) {
+    if let Ok(mut entity_commands) = commands.get_entity(ev.entity) {
         entity_commands.insert((
             Velocity { x: 0., y: 10. },
             Transform::from_translation(bullet.get_position().extend(ZIndex::BULLET.z_value())),

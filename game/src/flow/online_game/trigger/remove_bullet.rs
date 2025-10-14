@@ -14,7 +14,7 @@ impl Plugin for RemoveBulletPlugin {
 }
 
 fn remove_bullet(
-    ev: Trigger<RemoveBulletEvent>,
+    ev: On<RemoveBulletEvent>,
     mut commands: Commands,
     bullet_q: Query<(Entity, &BulletTag)>,
 ) {

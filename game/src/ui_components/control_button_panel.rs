@@ -26,7 +26,7 @@ pub enum ControlButton {
     UpLeft,
 }
 
-fn handle_control_button_on_add(ev: Trigger<OnAdd, ControlButtonPanel>, mut commands: Commands) {
+fn handle_control_button_on_add(ev: On<Add, ControlButtonPanel>, mut commands: Commands) {
     let button_layout_vec = [
         Some((
             ControlButton::UpLeft,
@@ -60,7 +60,7 @@ fn handle_control_button_on_add(ev: Trigger<OnAdd, ControlButtonPanel>, mut comm
         )),
     ];
     commands
-        .entity(ev.target())
+        .entity(ev.entity)
         .insert((Node {
             position_type: PositionType::Absolute,
             justify_self: JustifySelf::Center,

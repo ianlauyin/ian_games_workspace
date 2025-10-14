@@ -22,7 +22,7 @@ impl Plugin for FromServerPlugin {
 }
 
 fn listen_from_server(
-    ev: Trigger<ReceiveMessageEvent>,
+    ev: On<ReceiveMessageEvent>,
     commands: Commands,
     current_state: Res<State<OnlineGameState>>,
     self_player_tag: Res<PlayerTag>,

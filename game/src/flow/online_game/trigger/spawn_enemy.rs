@@ -17,7 +17,7 @@ impl Plugin for SpawnEnemyPlugin {
     }
 }
 
-fn spawn_enemy(ev: Trigger<SpawnEnemyEvent>, mut commands: Commands) {
+fn spawn_enemy(ev: On<SpawnEnemyEvent>, mut commands: Commands) {
     let enemy = ev.event();
     commands.spawn((
         UFO::new(enemy.position),

@@ -22,7 +22,7 @@ impl Plugin for AddScorePlugin {
     }
 }
 
-fn add_score(ev: Trigger<AddScoreEvent>, mut score_query: Query<(&mut Score, &Player)>) {
+fn add_score(ev: On<AddScoreEvent>, mut score_query: Query<(&mut Score, &Player)>) {
     for (mut score, player) in score_query.iter_mut() {
         if player.0 == ev.player {
             score.add(ev.amount);

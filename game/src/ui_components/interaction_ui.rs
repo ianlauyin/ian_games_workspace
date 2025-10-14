@@ -1,4 +1,7 @@
-use bevy::{prelude::*, window::SystemCursorIcon, winit::cursor::CursorIcon};
+use bevy::{
+    prelude::*,
+    window::{CursorIcon, SystemCursorIcon},
+};
 
 #[derive(Component, Default)]
 #[require(Interaction)]

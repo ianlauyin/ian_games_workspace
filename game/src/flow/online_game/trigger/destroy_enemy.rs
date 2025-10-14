@@ -17,7 +17,7 @@ impl Plugin for DestroyEnemyPlugin {
 }
 
 fn remove_enemy(
-    ev: Trigger<DestroyEnemyEvent>,
+    ev: On<DestroyEnemyEvent>,
     mut commands: Commands,
     enemy_q: Query<(Entity, &UFO, &EnemyTag)>,
 ) {

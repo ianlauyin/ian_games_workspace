@@ -12,7 +12,7 @@ pub enum Collisable {
     Player,
 }
 
-#[derive(Event)]
+#[derive(Message)]
 pub struct CollidedEvent {
     pub player: Entity,
     pub enemy: Entity,
@@ -22,13 +22,13 @@ pub struct CollisablePlugin;
 
 impl Plugin for CollisablePlugin {
     fn build(&self, app: &mut App) {
-        app.add_event::<CollidedEvent>()
+        app.add_message::<CollidedEvent>()
             .add_systems(Update, check_collision);
     }
 }
 
 fn check_collision(
-    mut event_writer: EventWriter<CollidedEvent>,
+    mut event_writer: MessageWriter<CollidedEvent>,
     collisable_query: Query<(Entity, &Transform, &Sprite, &Collisable), Without<Invisible>>,
 ) {
     let mut players: Vec<(Entity, Aabb2d)> = Vec::new();

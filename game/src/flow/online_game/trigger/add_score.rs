@@ -16,7 +16,7 @@ impl Plugin for AddScorePlugin {
     }
 }
 
-fn add_score(ev: Trigger<AddScoreEvent>, mut score_q: Query<(&mut Score, &Player)>) {
+fn add_score(ev: On<AddScoreEvent>, mut score_q: Query<(&mut Score, &Player)>) {
     let event = ev.event();
     for (mut score, player) in score_q.iter_mut() {
         if player.0 == event.player_tag {

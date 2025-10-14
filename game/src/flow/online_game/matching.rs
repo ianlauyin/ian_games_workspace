@@ -27,14 +27,14 @@ impl Plugin for MatchingPlugin {
 struct MatchingNotice;
 fn setup_matching_notice(mut commands: Commands) {
     commands.spawn((MainContainer, MatchingNotice)).with_child((
-        TextLayout::new_with_justify(JustifyText::Center),
+        TextLayout::new_with_justify(Justify::Center),
         Text::new("Matching"),
         Blink::new_with_speed(0.01),
     ));
 }
 
 fn handle_matching_message(
-    ev: Trigger<ReceiveMessageEvent>,
+    ev: On<ReceiveMessageEvent>,
     mut current_player_tag: ResMut<PlayerTag>,
     current_state: ResMut<State<OnlineGameState>>,
     mut next_state: ResMut<NextState<OnlineGameState>>,

@@ -18,7 +18,7 @@ impl Plugin for UpdatePositionPlugin {
 }
 
 fn update_position(
-    trigger: Trigger<UpdatePositionEvent>,
+    trigger: On<UpdatePositionEvent>,
     mut commands: Commands,
     mut spaceships: Query<(&mut Transform, &Player), With<Spaceship>>,
     bullets: Query<(Entity, &Player), With<Bullet>>,

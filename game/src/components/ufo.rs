@@ -39,13 +39,13 @@ impl Plugin for UFOPlugin {
 }
 
 fn handle_ufo_on_added(
-    ev: Trigger<OnAdd, UFO>,
+    ev: On<Add, UFO>,
     mut commands: Commands,
     image_handles: Res<ImageHandles>,
     ufo_query: Query<&UFO>,
 ) {
-    let ufo = ufo_query.get(ev.target()).unwrap();
-    if let Ok(mut entity_commands) = commands.get_entity(ev.target()) {
+    let ufo = ufo_query.get(ev.entity).unwrap();
+    if let Ok(mut entity_commands) = commands.get_entity(ev.entity) {
         entity_commands.insert((
             Sprite {
                 image: image_handles.ufo.clone(),

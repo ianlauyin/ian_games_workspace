@@ -28,7 +28,7 @@ impl Plugin for SpaceshipMovementPlugin {
 }
 
 pub fn handle_spaceship_movement(
-    trigger: Trigger<SpaceShipMovementEvent>,
+    trigger: On<SpaceShipMovementEvent>,
     mut spaceship_query: Query<(&mut Velocity, &Transform), (With<Spaceship>, With<SelfPlayer>)>,
 ) {
     let Ok((mut velocity, transform)) = spaceship_query.single_mut() else {

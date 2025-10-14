@@ -28,9 +28,9 @@ impl Plugin for InvisiblePlugin {
     }
 }
 
-fn invisible_on_add(ev: Trigger<OnAdd, Invisible>, mut commands: Commands) {
+fn invisible_on_add(ev: On<Add, Invisible>, mut commands: Commands) {
     commands
-        .entity(ev.target())
+        .entity(ev.entity)
         .insert(Blink::new_with_speed(1.1));
 }
 
@@ -41,7 +41,7 @@ fn handle_invisible_timer(
 ) {
     for (entity, mut invisible) in invisible_query.iter_mut() {
         invisible.timer.tick(time.delta());
-        if invisible.timer.finished() {
+        if invisible.timer.is_finished() {
             if let Ok(mut entity_commands) = commands.get_entity(entity) {
                 entity_commands.remove::<Invisible>();
                 entity_commands.remove::<Blink>();
