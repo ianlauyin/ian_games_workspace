@@ -1,4 +1,4 @@
-use bevy_math::Vec2;
+use bevy::math::Vec2;
 
 pub const MOBILE_WINDOW_SIZE: Vec2 = Vec2::new(540., 960.);
 pub const UFO_SIZE: Vec2 = Vec2::new(80., 54.);

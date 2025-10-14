@@ -8,9 +8,11 @@ name = "shooting_game_shared"
 path = "src/lib.rs"
 
 [dependencies]
-bevy_math = "0.16.0"
-rocket_ws = "0.1.1"
-serde = { workspace = true, features = ["derive"] }
-serde_json = { workspace = true }
-tungstenite = "0.26.2"
-rand = { workspace = true }
+serde.workspace = true
+serde_json.workspace = true
+rand.workspace = true
+
+bevy.workspace = true
+tungstenite.workspace = true
+
+rocket_ws.workspace = true

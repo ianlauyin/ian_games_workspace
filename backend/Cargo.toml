@@ -5,7 +5,9 @@ edition = "2021"
 
 [dependencies]
 rocket = "0.5"
-rocket_ws = "0.1"
-serde = { workspace = true, features = ["derive"] }
-serde_json = { workspace = true }
-shooting_game_shared = { path = "../shared" }
+
+rocket_ws.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+shooting_game_shared.path = "../shared"

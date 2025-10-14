@@ -4,10 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-bevy = "0.16.0"
-bevy_embedded_assets = "0.13.0"
-tungstenite = "0.26.2"
-serde = { workspace = true, features = ["derive"] }
-serde_json = {workspace = true}
-rand = {workspace = true}
-shooting_game_shared = { path = "../shared" }
+bevy_embedded_assets = "0.14.0"
+
+serde.workspace = true
+serde_json.workspace = true
+rand.workspace = true
+
+bevy.workspace = true
+tungstenite.workspace = true
+
+shooting_game_shared.path = "../shared"
