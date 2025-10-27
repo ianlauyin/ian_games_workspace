@@ -13,13 +13,15 @@ impl Plugin for SetupPlugin {
         app.add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 canvas: Some("#shooting-game".into()),
+                resizable: false,
                 fit_canvas_to_parent: true,
                 resolution: WindowResolution::from(MOBILE_WINDOW_SIZE.as_uvec2()),
                 ..default()
             }),
             ..default()
         }))
-        .add_systems(OnExit(AppState::Loading), (setup_camera, setup_background));
+        .add_systems(PreStartup, setup_camera)
+        .add_systems(OnExit(AppState::Loading), setup_background);
     }
 }
 
