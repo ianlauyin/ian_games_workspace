@@ -1,5 +1,5 @@
 [workspace]
-members = ["shooting-game/*", "lib"]
+members = ["games/*", "lib"]
 resolver = "2"
 
 [workspace.dependencies]
@@ -9,9 +9,5 @@ rand = "0.9.2"
 
 bevy = "0.17.2"
 bevy_embedded_assets = "0.14.0"
-
-rocket = "0.5"
-rocket_ws = "0.1.1"
-tungstenite = "0.28.0"
 
 games-lib.path = "lib"
