@@ -19,5 +19,6 @@ fn main() {
         .add_plugins(res::ResPlugin)
         .add_plugins(states::StatePlugin)
         .add_plugins(ui_components::UIComponentsPlugin)
+        .add_plugins(games_lib::DevtoolPlugin)
         .run();
 }

@@ -1,16 +1,17 @@
 [package]
 name = "shooting_game"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-bevy_embedded_assets = "0.14.0"
+bevy.workspace = true
+bevy_embedded_assets.workspace = true
 
 serde.workspace = true
 serde_json.workspace = true
 rand.workspace = true
 
-bevy.workspace = true
 tungstenite.workspace = true
 
 shooting_game_shared.path = "../shared"
+games-lib.workspace = true

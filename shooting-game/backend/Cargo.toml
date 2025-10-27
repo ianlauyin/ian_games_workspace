@@ -1,11 +1,10 @@
 [package]
 name = "shooting_game_backend"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
-rocket = "0.5"
-
+rocket.workspace = true
 rocket_ws.workspace = true
 serde.workspace = true
 serde_json.workspace = true
