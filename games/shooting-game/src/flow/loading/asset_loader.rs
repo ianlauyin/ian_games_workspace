@@ -1,4 +1,4 @@
-use bevy::asset::LoadState;
+use bevy::asset::{LoadState, embedded_asset, load_embedded_asset};
 use bevy::prelude::*;
 
 use crate::res::ImageHandles;
@@ -8,17 +8,19 @@ pub struct AssetLoaderPlugin;
 
 impl Plugin for AssetLoaderPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(PreStartup, load_assets)
-            .add_systems(Update, check_assets.run_if(in_state(AppState::Loading)));
+        embedded_asset!(app, "../../assets/explosion.png");
+        embedded_asset!(app, "../../assets/spaceship.png");
+        embedded_asset!(app, "../../assets/ufo.png");
+        embedded_asset!(app, "../../assets/stars.png");
+
+        app.insert_resource(ImageHandles {
+            explosion: load_embedded_asset!(app, "../../assets/explosion.png"),
+            spaceship: load_embedded_asset!(app, "../../assets/spaceship.png"),
+            ufo: load_embedded_asset!(app, "../../assets/ufo.png"),
+            stars: load_embedded_asset!(app, "../../assets/stars.png"),
+        })
+        .add_systems(Update, check_assets.run_if(in_state(AppState::Loading)));
     }
-}
-fn load_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.insert_resource(ImageHandles {
-        explosion: asset_server.load("embedded://explosion.png"),
-        spaceship: asset_server.load("embedded://spaceship.png"),
-        ufo: asset_server.load("embedded://ufo.png"),
-        stars: asset_server.load("embedded://stars.png"),
-    });
 }
 
 fn check_assets(

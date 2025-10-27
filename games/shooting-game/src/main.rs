@@ -1,7 +1,6 @@
 #![windows_subsystem = "windows"]
 
 use bevy::prelude::*;
-use bevy_embedded_assets::EmbeddedAssetPlugin;
 
 mod components;
 mod constant;
@@ -14,7 +13,6 @@ mod util;
 
 fn main() {
     App::new()
-        .add_plugins(EmbeddedAssetPlugin::default())
         .add_plugins(flow::FlowPlugin)
         .add_plugins(games_lib::DevtoolPlugin)
         .add_plugins(components::ComponentPlugin)
