@@ -1,3 +1,3 @@
-mod devtool;
+mod plugin;
 
-pub use devtool::DevtoolPlugin;
+pub use plugin::*;

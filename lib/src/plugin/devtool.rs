@@ -12,6 +12,7 @@ use bevy_inspector_egui::egui;
 
 const DEFAULT_DEVTOOL_WINDOW_SIZE: (f32, f32) = (320., 600.);
 
+// Add a secondary window for debugging
 pub struct DevtoolPlugin;
 
 impl Plugin for DevtoolPlugin {
