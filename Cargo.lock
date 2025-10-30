@@ -4178,6 +4178,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "roguelike-game"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "games-lib",
+]
+
+[[package]]
 name = "ron"
 version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4188,14 +4196,6 @@ dependencies = [
  "serde",
  "serde_derive",
  "unicode-ident",
-]
-
-[[package]]
-name = "rougelike_game"
-version = "0.1.0"
-dependencies = [
- "bevy",
- "games-lib",
 ]
 
 [[package]]
