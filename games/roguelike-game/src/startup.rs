@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use bevy::window::WindowResolution;
-use game_lib::DevtoolPlugin;
 
 pub struct StartupPlugin;
 
@@ -14,7 +13,6 @@ impl Plugin for StartupPlugin {
             }),
             ..default()
         }))
-        .add_plugins(DevtoolPlugin)
         .add_systems(PreStartup, setup_camera);
     }
 }
