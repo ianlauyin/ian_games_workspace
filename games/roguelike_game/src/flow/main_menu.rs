@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use game_lib::component::OverlayNode;
 use game_lib::system::cleanup_components;
 
 use crate::state::AppState;
@@ -16,12 +17,5 @@ impl Plugin for MainMenuPlugin {
 struct MainMenu;
 
 fn spawn_main_menu(mut commands: Commands) {
-    commands.spawn((
-        MainMenu,
-        Node {
-            width: Val::Percent(80.),
-            height: Val::Percent(80.),
-            ..default()
-        },
-    ));
+    commands.spawn((MainMenu, OverlayNode));
 }
