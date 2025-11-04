@@ -2,7 +2,8 @@ use bevy::prelude::*;
 
 use crate::components::{Bullet, Player, UFO};
 use crate::res::PlayerTag;
-use crate::{states::AppState, util::cleanup_components};
+use crate::states::AppState;
+use game_lib::system::cleanup_components;
 
 pub struct CleanupPlugin;
 

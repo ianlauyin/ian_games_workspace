@@ -2,11 +2,11 @@ use bevy::prelude::*;
 
 use crate::flow::shared::game_trigger::{SpaceShipMovement, SpaceShipMovementEvent};
 use crate::ui_components::{ControlButton, ControlButtonPanel};
-use crate::util::cleanup_components;
 use crate::{
     res::{ControlMode, ControlOption},
     states::GameState,
 };
+use game_lib::system::cleanup_components;
 pub struct ControlPlugin;
 
 impl Plugin for ControlPlugin {

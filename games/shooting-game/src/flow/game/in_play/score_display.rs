@@ -3,7 +3,7 @@ use bevy::prelude::*;
 
 use crate::components::Score;
 use crate::states::GameState;
-use crate::util::cleanup_components;
+use game_lib::system::cleanup_components;
 
 pub struct ScoreDisplayPlugin;
 
