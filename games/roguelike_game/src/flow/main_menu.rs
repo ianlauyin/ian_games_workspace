@@ -20,6 +20,6 @@ fn spawn_main_menu(mut commands: Commands) {
     commands
         .spawn((MainMenu, OverlayNode))
         .with_children(|parent| {
-            parent.spawn((Text::new("Main Menu"), TextColor::from(Color::WHITE)));
+            parent.spawn(Text::new("Main Menu"));
         });
 }
