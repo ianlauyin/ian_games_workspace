@@ -20,6 +20,7 @@ impl Plugin for GameLibPlugin {
         app.add_plugins((
             game_lib::plugin::DevtoolPlugin,
             game_lib::component::OverlayNodePlugin,
+            game_lib::plugin::InteractionHoverPlugin,
         ));
     }
 }
